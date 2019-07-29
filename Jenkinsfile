@@ -16,7 +16,8 @@ pipeline {
                 git url: 'https://github.com/schmandr/oereb-gretljobs.git'
                 sh 'pwd && ls -la'
                 echo 'Executing gradle importStaging (transform data, export data, import data)'
-                archiveArtifacts artifacts: 'README.md'
+                sh 'touch a.xtf && touch b.xtf'
+                archiveArtifacts artifacts: '*.xtf'
                 echo "Send E-Mails (containing link to ${BUILD_URL}input/)"
             }
         }
@@ -29,8 +30,9 @@ pipeline {
         stage('Import into live schema') {
             agent { label 'gretl' }
             steps {
-                sh 'curl --insecure -L ${BUILD_URL}artifact/README.md -o README.md'
                 git url: 'https://github.com/schmandr/oereb-gretljobs.git'
+                // Following command needs authentication, so use rather Copy Artifact plugin
+                //sh 'curl --insecure -L -O ${BUILD_URL}artifact/*zip*/archive.zip'
                 sh 'pwd && ls -la'
                 echo 'Executing gradle importLive (import data, uploda data)'
             }
