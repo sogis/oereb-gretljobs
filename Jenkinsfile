@@ -1,5 +1,8 @@
 pipeline {
     agent none
+    parameters {
+        string(name: 'buildDescription', description: 'Bitte geben Sie den Grund für die Publikation der Daten ein')
+    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         disableConcurrentBuilds()
@@ -9,7 +12,7 @@ pipeline {
             options { timeout(time: 1, unit: 'HOURS') }
             agent { label 'gretl' }
             steps {
-                script { currentBuild.description = "Beschreibung des Builds" }
+                script { currentBuild.description = "${params.buildDescription}" }
                 git url: 'https://github.com/schmandr/oereb-gretljobs.git'
                 sh 'pwd && ls -la'
                 echo 'Executing gradle importStaging (transform data, export data, import data)'
