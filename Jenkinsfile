@@ -6,10 +6,10 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         disableConcurrentBuilds()
+        timeout(time: 3, unit: 'MINUTES')
     }
     stages {
         stage('Import into staging schema') {
-            options { timeout(time: 1, unit: 'HOURS') }
             agent { label 'gretl' }
             steps {
                 script { currentBuild.description = "${params.buildDescription}" }
