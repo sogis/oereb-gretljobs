@@ -33,8 +33,6 @@ services:
     hostname: oereb_db
     ports:
       - "54321:5432"
-    volumes:
-      - /tmp:/pgdata
   edit_db:
     image: sogis/oereb-db
     command: /tmp/override_setupsql.sh /opt/cpm/bin/start.sh
@@ -56,5 +54,4 @@ services:
     ports:
       - "54322:5432"
     volumes:
-      - /tmp:/pgdata
       - ${PWD}/override_setupsql.sh:/tmp/override_setupsql.sh
