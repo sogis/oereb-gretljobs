@@ -2,8 +2,8 @@ version: '3'
 services:
   gretl:
     image: sogis/gretl-runtime
-    entrypoint: /bin/sh
-    command: -c "cd /home/gradle/; gretl"
+    entrypoint: /bin/sh -c
+    command: gretl
     environment:
       ORG_GRADLE_PROJECT_dbUriEdit: $ORG_GRADLE_PROJECT_dbUriEdit
       ORG_GRADLE_PROJECT_dbUserEdit: $ORG_GRADLE_PROJECT_dbUserEdit
