@@ -11,10 +11,12 @@ services:
       ORG_GRADLE_PROJECT_dbUriOereb: "jdbc:postgresql://db/oereb"
       ORG_GRADLE_PROJECT_dbUserOereb: gretl
       ORG_GRADLE_PROJECT_dbPwdOereb: gretl
+    networks:
+      - oerebgretljobs
     depends_on:
-      - oereb_db
-      - edit_db
-  oereb_db:
+      - oereb-db
+      - edit-db
+  oereb-db:
     image: sogis/oereb-db
     environment:
       PG_DATABASE: oereb
@@ -30,10 +32,11 @@ services:
       PG_WRITE_PASSWORD: gretl
       PG_READ_USER: ogc_server
       PG_READ_PASSWORD: ogc_server
-    hostname: oereb_db
     ports:
       - "54321:5432"
-  edit_db:
+    networks:
+      - oerebgretljobs
+  edit-db:
     image: sogis/oereb-db
     command: /tmp/override_setupsql.sh /opt/cpm/bin/start.sh
     environment:
@@ -50,8 +53,12 @@ services:
       PG_WRITE_PASSWORD: gretl
       PG_READ_USER: ogc_server
       PG_READ_PASSWORD: ogc_server
-    hostname: edit_db
     ports:
       - "54322:5432"
+    networks:
+      - oerebgretljobs
     volumes:
       - ${PWD}/override_setupsql.sh:/tmp/override_setupsql.sh
+
+networks:
+  oerebgretljobs:
