@@ -1,6 +1,10 @@
 pipeline {
     agent none
+    environment {
+        TEST = get_envvar()
+    }
     parameters {
+        // TODO: Funktioniert nicht bei der allerersten Ausführung, deshalb durch den gretl-job-generator setzen lassen
         string(name: 'buildDescription', description: 'Bitte geben Sie den Grund für die Publikation der Daten ein')
     }
     options {
@@ -12,6 +16,7 @@ pipeline {
         stage('Import into staging schema') {
             agent { label 'gretl' }
             steps {
+                echo "On agent gretl the environment variable TEST has the value ${TEST}"
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: 'https://github.com/schmandr/oereb-gretljobs.git'
                 sh 'pwd && ls -la'
@@ -46,5 +51,11 @@ pipeline {
         failure {
             echo 'Send E-Mail'
         }
+    }
+}
+
+def get_envvar() {
+    node('master') {
+        return env.GRETL_JOB_REPO_URL
     }
 }
