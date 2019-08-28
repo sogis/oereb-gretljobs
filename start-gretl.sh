@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # use like this:
-# start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network NETWORK --job-directory ~/gretljobs/jobname [taskName...] [--option-name...]
+# ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $(pwd)/jobname [taskName...] [--option-name...]
+# [--docker-network NETWORK] may be used for connecting the container to an already existing docker network
 # [--option-name...] takes any Gradle option, including project properties
 # (e.g. -Pmyprop=myvalue) and system properties (e.g. -Dmyprop=myvalue).
 # See https://docs.gradle.org/current/userguide/command_line_interface.html
@@ -33,6 +34,11 @@ for envvar in $(env | grep ORG_GRADLE_PROJECT_); do
     envvars_string+="--env ${envvar} "
 done
 
+# Build a string containing the --network ... option if the --docker-network option has been set
+if [[ -v docker_network ]]; then
+    declare network_string="--network ${docker_network}"
+fi
+
 # For accessing the "GRETL share", use the gretlShare variable.
 
 declare gretl_cmd="gretl ${gradle_options[@]} -PgretlShare=/tmp/gretl-share"
@@ -62,6 +68,6 @@ docker run -i --rm \
     -v /tmp:/tmp/gretl-share \
      ${envvars_string} \
     --user $UID \
-    --network "$docker_network" \
+    ${network_string} \
     "$docker_image" "-c" \
         "/usr/local/bin/run-jnlp-client > /dev/null 2>&1;cd /home/gradle/project;$gretl_cmd"
