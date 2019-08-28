@@ -1,0 +1,58 @@
+pipeline {
+    agent {
+        kubernetes {
+            label gretl
+            yaml """
+kind: Pod
+metadata:
+  name: gretl
+spec:
+  containers:
+  - name: jnlp
+    image: sogis/gretl-runtime:latest
+    imagePullPolicy: Always
+    tty: false
+    envFrom:
+      - configMapRef:
+          name: agent-env
+    volumeMounts:
+      - name: gretl-jenkins-share
+        mountPath: /opt/gretl-jenkins-share
+  restartPolicy: Never
+  volumes:
+    - name: gretl-jenkins-share
+      persistentVolumeClaim:
+        claimName: jenkins-share
+"""
+// Documentation: https://jenkins.io/doc/book/pipeline/syntax/#agent (section "Parameters" - "kubernetes")
+        }
+    }
+
+    stages {
+        stage('GRETL job') {
+            steps {
+                gitBranch = "${params.BRANCH ?: 'master'}"
+                git url: env.GRETL_JOB_REPO_URL_OEREB, branch: gitBranch, changelog: false
+                dir(env.JOB_BASE_NAME) {
+                    credentials = [
+                        usernamePassword(credentialsId: "${env.PROJECT_NAME}-db-secret-gretl", usernameVariable: 'ORG_GRADLE_PROJECT_dbUserOereb', passwordVariable: 'ORG_GRADLE_PROJECT_dbPwdOereb'),
+                        usernamePassword(credentialsId: "${env.PROJECT_NAME}-db-secret-gretl", usernameVariable: 'ORG_GRADLE_PROJECT_dbUserEdit', passwordVariable: 'ORG_GRADLE_PROJECT_dbPwdEdit')
+                    ]
+                    withCredentials(credentials) {
+                        sh "gradle --init-script /home/gradle/init.gradle"
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            emailext (
+                to: '${DEFAULT_RECIPIENTS}',
+                recipientProviders: [requestor()],
+                subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
+            )
+        }
+    }
+}
