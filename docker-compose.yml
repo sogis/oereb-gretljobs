@@ -1,0 +1,64 @@
+version: '3'
+services:
+  gretl:
+    image: sogis/gretl-runtime
+    entrypoint: /bin/sh -c
+    command: gretl
+    environment:
+      ORG_GRADLE_PROJECT_dbUriEdit: $ORG_GRADLE_PROJECT_dbUriEdit
+      ORG_GRADLE_PROJECT_dbUserEdit: $ORG_GRADLE_PROJECT_dbUserEdit
+      ORG_GRADLE_PROJECT_dbPwdEdit: $ORG_GRADLE_PROJECT_dbPwdEdit
+      ORG_GRADLE_PROJECT_dbUriOereb: "jdbc:postgresql://db/oereb"
+      ORG_GRADLE_PROJECT_dbUserOereb: gretl
+      ORG_GRADLE_PROJECT_dbPwdOereb: gretl
+    networks:
+      - oerebgretljobs
+    depends_on:
+      - oereb-db
+      - edit-db
+  oereb-db:
+    image: sogis/oereb-db
+    environment:
+      PG_DATABASE: oereb
+      PG_LOCALE: de_CH.UTF-8
+      PG_PRIMARY_PORT: 5432
+      PG_MODE: primary
+      PG_USER: admin
+      PG_PASSWORD: admin
+      PG_PRIMARY_USER: repl
+      PG_PRIMARY_PASSWORD: repl
+      PG_ROOT_PASSWORD: secret
+      PG_WRITE_USER: gretl
+      PG_WRITE_PASSWORD: gretl
+      PG_READ_USER: ogc_server
+      PG_READ_PASSWORD: ogc_server
+    ports:
+      - "54321:5432"
+    networks:
+      - oerebgretljobs
+  edit-db:
+    image: sogis/oereb-db
+    command: /tmp/override_setupsql.sh /opt/cpm/bin/start.sh
+    environment:
+      PG_DATABASE: edit
+      PG_LOCALE: de_CH.UTF-8
+      PG_PRIMARY_PORT: 5432
+      PG_MODE: primary
+      PG_USER: admin
+      PG_PASSWORD: admin
+      PG_PRIMARY_USER: repl
+      PG_PRIMARY_PASSWORD: repl
+      PG_ROOT_PASSWORD: secret
+      PG_WRITE_USER: gretl
+      PG_WRITE_PASSWORD: gretl
+      PG_READ_USER: ogc_server
+      PG_READ_PASSWORD: ogc_server
+    ports:
+      - "54322:5432"
+    networks:
+      - oerebgretljobs
+    volumes:
+      - ${PWD}/override_setupsql.sh:/tmp/override_setupsql.sh
+
+networks:
+  oerebgretljobs:
