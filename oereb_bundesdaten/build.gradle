@@ -53,15 +53,14 @@ oerebThemen.each { oerebThema ->
     }
 
     task "oereb_dbImport_$themaName"(type: Ili2pgReplace, dependsOn: "oereb_unzipData_$themaName"){
-        description = "Import Bundesdaten in DB agi_oereb"
+        description = "Import Bundesdaten in DB schema stage"
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-        dbschema = "agi_oereb"
+        dbschema = "stage"
         dataset = themaName
         models = "OeREBKRMtrsfr_V1_1"
-        disableValidation = false
         dataFile = file(Paths.get(pathToUnzipFolder.toString(), themaName + ".xtf"))
         strokeArcs = true
-    }    
+    }
 }
 
 task getAllOerebThemes() {
