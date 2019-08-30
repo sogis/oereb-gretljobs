@@ -7,26 +7,31 @@ apply plugin: "de.undercouch.download"
 apply plugin: "ch.so.agi.gretl"
 
 
-defaultTasks "getAllOerebThemes"
+defaultTasks "oereb_dbImport_Daten"
 
 
+// Download-Verzeichnis
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 
 // Oereb-Themen Bundesdaten
-ext {
-    oerebThemen = []
-    oerebThemen.add(["ch.astra.baulinien-nationalstrassen.oereb"])
-    oerebThemen.add(["ch.astra.projektierungszonen-nationalstrassen.oereb"])
-    oerebThemen.add(["ch.bav.baulinien-eisenbahnanlagen.oereb"])
-    oerebThemen.add(["ch.bav.projektierungszonen-eisenbahnanlagen.oereb"])
-    oerebThemen.add(["ch.bazl.baulinien-flughafenanlagen.oereb"])
-    oerebThemen.add(["ch.bazl.projektierungszonen-flughafenanlagen.oereb"])
-    oerebThemen.add(["ch.bav.kataster-belasteter-standorte-oev.oereb"])
-    oerebThemen.add(["ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.oereb"])
-    oerebThemen.add(["ch.bazl.sicherheitszonenplan.oereb"])
-}
+def oerebThemen = []
+oerebThemen.add(["ch.astra.baulinien-nationalstrassen.oereb"])
+oerebThemen.add(["ch.astra.projektierungszonen-nationalstrassen.oereb"])
+oerebThemen.add(["ch.bav.baulinien-eisenbahnanlagen.oereb"])
+oerebThemen.add(["ch.bav.projektierungszonen-eisenbahnanlagen.oereb"])
+oerebThemen.add(["ch.bazl.baulinien-flughafenanlagen.oereb"])
+oerebThemen.add(["ch.bazl.projektierungszonen-flughafenanlagen.oereb"])
+oerebThemen.add(["ch.bav.kataster-belasteter-standorte-oev.oereb"])
+oerebThemen.add(["ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.oereb"])
+oerebThemen.add(["ch.bazl.sicherheitszonenplan.oereb"])
+
+// Oereb-DB Schemas
+def dbSchemas = []
+dbSchemas.add(["stage"])
+dbSchemas.add(["live"])
+
 
 // Oereb-Themen herunterladen und importieren
 oerebThemen.each { oerebThema ->
@@ -52,21 +57,26 @@ oerebThemen.each { oerebThema ->
         }
     }
 
-    task "oereb_dbImport_$themaName"(type: Ili2pgReplace, dependsOn: "oereb_unzipData_$themaName"){
-        description = "Import Bundesdaten in DB schema stage"
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-        dbschema = "stage"
-        dataset = themaName
-        models = "OeREBKRMtrsfr_V1_1"
-        dataFile = file(Paths.get(pathToUnzipFolder.toString(), themaName + ".xtf"))
-        strokeArcs = true
+    dbSchemas.each { dbSchema ->
+        def schema = dbSchema.getAt(0)
+    
+        task "oereb_Import_$themaName$schema"(type: Ili2pgReplace, dependsOn: "oereb_unzipData_$themaName"){
+            description = "Import Bundesdaten in DB schema stage"
+            database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+            dbschema = schema
+            dataset = themaName
+            models = "OeREBKRMtrsfr_V1_1"
+            dataFile = file(Paths.get(pathToUnzipFolder.toString(), themaName + ".xtf"))
+            strokeArcs = true
+        }
     }
+    
 }
 
-task getAllOerebThemes() {
+task oereb_dbImport_Daten() {
     description = "Import der Oereb-Bundesdaten"
 }
 
-getAllOerebThemes.dependsOn {
-    tasks.findAll { task -> task.name.startsWith('oereb_') }
+oereb_dbImport_Daten.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('oereb_Import_') }
 }
