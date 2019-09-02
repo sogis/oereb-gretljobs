@@ -1,47 +1,30 @@
-def dbUriOereb = ''
-def dbCredentialNameOereb = ''
-def dbUriEdit = ''
-def dbCredentialNameEdit = ''
-def dbUriPub = ''
-def dbCredentialNamePub = ''
-def gretljobsRepo = ''
-
-node("master") {
-    dbUriOereb = "${env.DB_URI_OEREB}"
-    dbCredentialNameOereb = "${DB_CREDENTIAL_GRETL}"
-    dbUriEdit = "${env.DB_URI_EDIT}"
-    dbCredentialNameEdit = "${DB_CREDENTIAL_GRETL}"
-    dbUriPub = "${env.DB_URI_PUB}"
-    dbCredentialNamePub = "${DB_CREDENTIAL_GRETL}"
-    gretljobsRepo = "${env.GRETL_JOB_REPO_URL_OEREB}"
+node('master') { // need a few lines of scripted pipeline before the declarative pipeline...
+    stage('Prepare') {
+        gretlJobsRepoUrlOereb = env.GRETL_JOB_REPO_URL_OEREB
+    }
 }
 
-node ("gretl-ili2pg4") {
-    try {
-        gitBranch = "${params.BRANCH ?: 'master'}"
-        git url: "${gretljobsRepo}", branch: gitBranch, changelog: false
-        dir(env.JOB_BASE_NAME) {
-            credentials = [
-                usernamePassword(credentialsId: "${dbCredentialNameOereb}", usernameVariable: 'dbUserOereb', passwordVariable: 'dbPwdOereb'),
-                usernamePassword(credentialsId: "${dbCredentialNameEdit}", usernameVariable: 'dbUserEdit', passwordVariable: 'dbPwdEdit'),
-                usernamePassword(credentialsId: "${dbCredentialNamePub}", usernameVariable: 'dbUserPub', passwordVariable: 'dbPwdPub')
-            ]
-            withCredentials(credentials) {
-                sh "gradle --init-script /home/gradle/init.gradle \
-                -PdbUriOereb='${dbUriOereb}' -PdbUserOereb='${dbUserOereb}' -PdbPwdOereb='${dbPwdOereb}' \
-                -PdbUriEdit='${dbUriEdit}' -PdbUserEdit='${dbUserEdit}' -PdbPwdEdit='${dbPwdEdit}' \
-                -PdbUriPub='${dbUriPub}' -PdbUserPub='${dbUserPub}' -PdbPwdPub='${dbPwdPub}'"
+pipeline {
+    agent { label 'gretl-ili2pg4' }
+
+    stages {
+        stage('GRETL job') {
+            steps {
+                git url: "${gretlJobsRepoUrlOereb}", branch: "${params.BRANCH ?: 'master'}", changelog: false
+                dir(env.JOB_BASE_NAME) {
+                    sh "gradle --init-script /home/gradle/init.gradle"
+                }
             }
         }
     }
-    catch (e) {
-        echo 'Job failed'
-        emailext (
+    post {
+        unsuccessful {
+            emailext (
                 to: '${DEFAULT_RECIPIENTS}',
                 recipientProviders: [requestor()],
                 subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
-                body: "Der GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war leider nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
-        )
-        throw e
+                body: "Die Ausführung des GRETL-Jobs ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
+            )
+        }
     }
 }
