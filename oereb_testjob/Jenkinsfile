@@ -1,46 +1,18 @@
-pipeline {
-    agent {
-        kubernetes {
-            label gretl
-            yaml """
-kind: Pod
-metadata:
-  name: gretl
-spec:
-  containers:
-  - name: jnlp
-    image: sogis/gretl-runtime:latest
-    imagePullPolicy: Always
-    tty: false
-    envFrom:
-      - configMapRef:
-          name: agent-env
-    volumeMounts:
-      - name: gretl-jenkins-share
-        mountPath: /opt/gretl-jenkins-share
-  restartPolicy: Never
-  volumes:
-    - name: gretl-jenkins-share
-      persistentVolumeClaim:
-        claimName: jenkins-share
-"""
-// Documentation: https://jenkins.io/doc/book/pipeline/syntax/#agent (section "Parameters" - "kubernetes")
-        }
+node('master') { // need a few lines of scripted pipeline before the declarative pipeline...
+    stage('Prepare') {
+        gretlJobsRepoUrlOereb = env.GRETL_JOB_REPO_URL_OEREB
     }
+}
+
+pipeline {
+    agent { label 'gretl-ili2pg4' }
 
     stages {
         stage('GRETL job') {
             steps {
-                gitBranch = "${params.BRANCH ?: 'master'}"
-                git url: env.GRETL_JOB_REPO_URL_OEREB, branch: gitBranch, changelog: false
+                git url: "${gretlJobsRepoUrlOereb}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    credentials = [
-                        usernamePassword(credentialsId: "${env.PROJECT_NAME}-db-secret-gretl", usernameVariable: 'ORG_GRADLE_PROJECT_dbUserOereb', passwordVariable: 'ORG_GRADLE_PROJECT_dbPwdOereb'),
-                        usernamePassword(credentialsId: "${env.PROJECT_NAME}-db-secret-gretl", usernameVariable: 'ORG_GRADLE_PROJECT_dbUserEdit', passwordVariable: 'ORG_GRADLE_PROJECT_dbPwdEdit')
-                    ]
-                    withCredentials(credentials) {
-                        sh "gradle --init-script /home/gradle/init.gradle"
-                    }
+                    sh "gradle --init-script /home/gradle/init.gradle"
                 }
             }
         }
