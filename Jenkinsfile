@@ -1,8 +1,11 @@
+node('master') { // need a few lines of scripted pipeline before the declarative pipeline...
+    stage('Prepare') {
+        gretlJobsRepoUrl = env.GRETL_JOB_REPO_URL
+    }
+}
+
 pipeline {
     agent none
-    environment {
-        TEST = get_envvar()
-    }
     parameters {
         // TODO: Funktioniert nicht bei der allerersten Ausführung, deshalb durch den gretl-job-generator setzen lassen
         string(name: 'buildDescription', description: 'Bitte geben Sie den Grund für die Publikation der Daten ein')
@@ -14,11 +17,10 @@ pipeline {
     }
     stages {
         stage('Import into staging schema') {
-            agent { label 'gretl' }
+            agent { label 'gretl-ili2pg4' }
             steps {
-                echo "On agent gretl the environment variable TEST has the value ${TEST}"
                 script { currentBuild.description = "${params.buildDescription}" }
-                git url: 'https://github.com/schmandr/oereb-gretljobs.git'
+                git url: "${gretlJobsRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 sh 'pwd && ls -la'
                 echo 'Executing gradle importStaging (transform data, export data, import data)'
                 sh 'touch a.xtf && touch b.xtf'
@@ -29,13 +31,13 @@ pipeline {
         stage('Validation') {
             agent { label 'master' }
             steps {
-                input message: 'Sollen die Daten publiziert werden?'
+                input message: 'Möchten Sie die Daten publizieren?'
             }
         }
         stage('Import into live schema') {
-            agent { label 'gretl' }
+            agent { label 'gretl-ili2pg4' }
             steps {
-                git url: 'https://github.com/schmandr/oereb-gretljobs.git'
+                git url: "${gretlJobsRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 // Following command needs authentication, so use rather Copy Artifact plugin
                 //sh 'curl --insecure -L -O ${BUILD_URL}artifact/*zip*/archive.zip'
                 sh 'pwd && ls -la'
@@ -48,14 +50,13 @@ pipeline {
         always {
             echo 'deleteDir()'
         }
-        failure {
-            echo 'Send E-Mail'
+        unsuccessful {
+            emailext (
+                to: '${DEFAULT_RECIPIENTS}',
+                recipientProviders: [requestor()],
+                subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
+            )
         }
-    }
-}
-
-def get_envvar() {
-    node('master') {
-        return env.GRETL_JOB_REPO_URL
     }
 }
