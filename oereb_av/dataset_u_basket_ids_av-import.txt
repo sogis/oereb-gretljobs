@@ -1,0 +1,13 @@
+AV-Import ÖREB-Kataster
+
+Zugewiesene Basket/Dataset IDs:
+Allgemein AV: +999999999
+PLZ Ortschaften: +888888888
+GB-Kreise: +777777777
+
+avimport_gemeindegrenzen: dataset-t_id:999999901, basket_t_id:999999902
+avimport_liegenschaften: dataset-t_id:999999903, basket_t_id:999999904
+avimport_gebaeudeadressen: dataset-t_id:999999905, basket_t_id:999999906
+plzortschaften_ortschaften: dataset-t_id:888888801, basket_t_id:888888802
+plzortschaften_plz6: dataset-t_id:888888802, basket_t_id:888888804
+grundbuchkreise: dataset-t_id:777777701, basket_t_id:777777702
