@@ -15,14 +15,20 @@ def dbSchemas = ["stage"]
 
 //AV import from edit db
 dbSchemas.each { dbSchema ->
-    task transferAV_$dbSchema(type: Db2Db){
+    task "createAvBasket_$dbSchema"(type: SqlExecutor) {
+        description = "Legt einen Basket für die AV-Daten an, falls er nicht existiert"
+        group = GROUP
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        sqlFiles = ['create_basket.sql']
+        sqlParameters = [dbSchema: dbSchema]
+    }
+
+    task "transferAV_$dbSchema"(type: Db2Db, dependsOn: "createAvBasket_$dbSchema") {
         description = "Datenübertrag ins AV-Bundesodell."    
         group = GROUP
         sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
         targetDb = [dbUriOereb, dbUserOereb, dbPwdOereb]
         transferSets = [
-            new TransferSet("select_av_dataset_entries.sql", dbSchema + ".t_ili2db_dataset", false),
-            new TransferSet("select_av_basket_entries.sql", dbSchema + ".t_ili2db_basket", false),
             new TransferSet("select_gemeindegrenzen_gemnachfuehrung.sql", dbSchema + ".dm01vch24lv95dgemeindegrenzen_gemnachfuehrung", true),
             new TransferSet("select_gemeindegrenzen_gemeinde.sql", dbSchema + ".dm01vch24lv95dgemeindegrenzen_gemeinde", true),
             new TransferSet("select_gemeindegrenzen_gemeindegrenze.sql", dbSchema + ".dm01vch24lv95dgemeindegrenzen_gemeindegrenze", true),
