@@ -1,6 +1,6 @@
 node('master') { // need a few lines of scripted pipeline before the declarative pipeline...
     stage('Prepare') {
-        gretlJobsRepoUrl = env.GRETL_JOB_REPO_URL
+        gretlJobRepoUrl = env.GRETL_JOB_REPO_URL_OEREB
     }
 }
 
@@ -20,24 +20,29 @@ pipeline {
             agent { label 'gretl-ili2pg4' }
             steps {
                 script { currentBuild.description = "${params.buildDescription}" }
-                git url: "${gretlJobsRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
+                git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 sh 'pwd && ls -la'
                 echo 'Executing gradle importStaging (transform data, export data, import data)'
                 sh 'touch a.xtf && touch b.xtf'
                 archiveArtifacts artifacts: '*.xtf'
-                echo "Send E-Mails containing link to ${RUN_DISPLAY_URL})"
+                emailext (
+                    to: '${DEFAULT_RECIPIENTS}',
+                    recipientProviders: [requestor()],
+                    subject: "ÖREB-Daten zum Review bereit (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
+                    body: "Mit dem GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden ÖREB-Daten bereitgestellt, die ein Review erfordern. Nach dem Review können Sie unter folgendem Link die Publikation der Daten veranlassen oder abbrechen: ${RUN_DISPLAY_URL}."
+                )
             }
         }
         stage('Validation') {
             agent { label 'master' }
             steps {
-                input message: 'Möchten Sie die Daten publizieren?'
+                input message: "Fortfahren und die Daten publizieren?", ok: "OK"
             }
         }
         stage('Import into live schema') {
             agent { label 'gretl-ili2pg4' }
             steps {
-                git url: "${gretlJobsRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
+                git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 // Following command needs authentication, so use rather Copy Artifact plugin
                 //sh 'curl --insecure -L -O ${BUILD_URL}artifact/*zip*/archive.zip'
                 sh 'pwd && ls -la'
@@ -54,8 +59,8 @@ pipeline {
             emailext (
                 to: '${DEFAULT_RECIPIENTS}',
                 recipientProviders: [requestor()],
-                subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
-                body: "Die Ausführung des GRETL-Jobs ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.RUN_DISPLAY_URL}."
+                subject: "GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
+                body: "Die Ausführung des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${RUN_DISPLAY_URL}."
             )
         }
     }
