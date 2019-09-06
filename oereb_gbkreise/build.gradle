@@ -1,0 +1,51 @@
+import ch.so.agi.gretl.api.*
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "ch.so.agi.gretl"
+apply plugin: "de.undercouch.download"
+
+defaultTasks "importGBKreise"
+
+def GROUP = "gbkreis_import"
+//def dbSchemas = ["stage","live"]
+def dbSchemas = ["stage"]
+
+
+//GBKreis-import from edit db
+dbSchemas.each { dbSchema ->
+    task "createGBKreisBasket_$dbSchema"(type: SqlExecutor) {
+        description = "Legt einen Basket für die GBKreis-Daten an, falls er nicht existiert"
+        group = GROUP
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        sqlFiles = ['create_basket.sql']
+        sqlParameters = [dbSchema: dbSchema]
+    }
+
+    task transferGBKreis_$dbSchema(type: Db2Db, dependsOn: "createGBKreisBasket_$dbSchema"){
+        description = "Datenübertrag ins GBKreis-Modell."    
+        group = GROUP
+        sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
+        targetDb = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        transferSets = [
+            new TransferSet("select_grundbuchkreise.sql", dbSchema + ".so_g_v_0180822grundbuchkreise_grundbuchkreis", true),
+            new TransferSet("select_nachfuehrungskreise_gemeinde.sql", dbSchema + ".so_g_v_0180822nachfuehrngskrise_gemeinde", true)
+
+            ];        
+    }
+}
+
+// this task is the main task to be started
+task importGBKreise() {
+    description = "Aggregationstask."
+    group = GROUP
+    doLast {
+        println "GBKreis data imported."
+    }
+}
+
+// finds all tasks from the each loop and sets them as dependants
+importGBKreise.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('transferGBKreis_') }
+}
