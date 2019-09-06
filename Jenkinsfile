@@ -13,7 +13,7 @@ pipeline {
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         disableConcurrentBuilds()
-        timeout(time: 3, unit: 'MINUTES')
+        timeout(time: 7, unit: 'DAYS')
     }
     stages {
         stage('Import into staging schema') {
@@ -21,9 +21,9 @@ pipeline {
             steps {
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
-                sh 'pwd && ls -la'
-                echo 'Executing gradle importStaging (transform data, export data, import data)'
-                sh 'touch a.xtf && touch b.xtf'
+                dir(env.JOB_BASE_NAME) {
+                    sh "gradle --init-script /home/gradle/init.gradle importDataToStage"
+                }
                 archiveArtifacts artifacts: '*.xtf'
                 emailext (
                     to: '${DEFAULT_RECIPIENTS}',
