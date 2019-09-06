@@ -1,0 +1,63 @@
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+ext {
+    pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+    iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
+    dbSchemaLandUsePlans = "arp_npl"
+
+    iliModelVorschriften = "OeREBKRMvs_V1_1"
+    iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
+
+    //landUsePlansDataSets = ["2502", "2457", "2580"]
+    //landUsePlansDataSets = ["2502"]
+    landUsePlansDataSets = ["2405", "2408", "2457", "2473", "2474", "2476", "2498", "2501", "2502", "2580", "2613", "2614", "2615"]
+    landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.arp.nutzungsplanung/"
+}    
+
+task fubar() {
+    doLast {
+        println "Hallo Welt."
+    }
+}
+
+// Cannot use GRETL for ili2pgImportSchema since not all v4 options
+// are exposed. 
+task createSchemaLandUsePlans(type: SqlExecutor){
+    database = [dbUriEdit, "admin", "admin"]
+    sqlFiles = ['dev/arp_npl.sql', 'dev/grants.sql']
+}
+
+landUsePlansDataSets.each { landUsePlansDataSet ->
+    def dataSet = landUsePlansDataSet.toString()
+    task "downloadLandUsePlansData_$dataSet"(type: Download) {
+        src landUsePlansBaseUrl + dataSet + ".xtf"
+        dest pathToTempFolder
+        overwrite true
+
+        doLast {
+            println "File downloaded to: " + pathToTempFolder
+        }        
+    }
+
+    task "replaceLandUsePlansData_$dataSet"(type: Ili2pgReplace, dependsOn: "downloadLandUsePlansData_$dataSet") {
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        models = iliModelLandUsePlans
+        dbschema = dbSchemaLandUsePlans
+        dataFile = file(Paths.get(pathToTempFolder.toString(), dataSet + ".xtf"))
+        dataset = dataSet
+        disableValidation = true
+    }
+}
+
+task replaceLandUsePlansData() {
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('replaceLandUsePlansData_') }
+    }
+}
