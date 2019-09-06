@@ -86,7 +86,7 @@ task validateData(type: IliValidator, dependsOn: ["exportData", "downloadFederal
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
         file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
-        file(Paths.get(pathToTempFolder.toString(), xtfFileName))]
+        file(Paths.get("$rootDir/" + xtfFileName))]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
 }
@@ -96,7 +96,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "stage"
-    dataFile = file(Paths.get(pathToTempFolder.toString(), landUsePlansDataSet + ".xtf"))
+    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
     dataset = landUsePlansDataSet
     disableValidation = true 
 }
@@ -106,7 +106,7 @@ task importDataToLive(type: Ili2pgReplace) {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "live"
-    dataFile = file(Paths.get(pathToTempFolder.toString(), landUsePlansDataSet + ".xtf"))
+    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
     dataset = landUsePlansDataSet
     disableValidation = true 
 }
