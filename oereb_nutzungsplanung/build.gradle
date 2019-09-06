@@ -69,14 +69,16 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     disableValidation = true
 }
 
-task downloadFederalLegalBasis(type: Download, dependsOn: "updateSymbols") {
+//task downloadFederalLegalBasis(type: Download, dependsOn: "updateSymbols") {
+task downloadFederalLegalBasis(type: Download, dependsOn: "transferData") {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
     src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
     dest pathToTempFolder
     overwrite true      
 }
 
-task downloadCantonalLegalBasis(type: Download, dependsOn: "updateSymbols") {
+//task downloadCantonalLegalBasis(type: Download, dependsOn: "updateSymbols") {
+task downloadCantonalLegalBasis(type: Download, dependsOn: "transferData") {
     description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
     src cantonalLegalBasisBaseUrl + cantonalLegalBaseDataSet + ".xtf"
     dest pathToTempFolder
