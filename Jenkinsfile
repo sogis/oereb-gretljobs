@@ -28,10 +28,15 @@ pipeline {
                 echo "Send E-Mails (containing link to ${BUILD_URL}input/)"
             }
         }
+        stage('Validation') {
+            agent { label 'master' }
+            steps {
+                input message: 'Möchten Sie die Daten publizieren?'
+            }
+        }
         stage('Import into live schema') {
             agent { label 'gretl-ili2pg4' }
             steps {
-                input message: 'Möchten Sie die Daten publizieren?'
                 git url: "${gretlJobsRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 // Following command needs authentication, so use rather Copy Artifact plugin
                 //sh 'curl --insecure -L -O ${BUILD_URL}artifact/*zip*/archive.zip'
