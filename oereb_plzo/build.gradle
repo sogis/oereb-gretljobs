@@ -1,0 +1,54 @@
+import ch.so.agi.gretl.api.*
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+apply plugin: "ch.so.agi.gretl"
+apply plugin: "de.undercouch.download"
+
+defaultTasks "importPLZO"
+
+def GROUP = "plzo_import"
+//def dbSchemas = ["stage","live"]
+def dbSchemas = ["stage"]
+
+
+//PLZO import from edit db
+dbSchemas.each { dbSchema ->
+    task "createPLZOBasket_$dbSchema"(type: SqlExecutor) {
+        description = "Legt einen Basket für die PLZO-Daten an, falls er nicht existiert"
+        group = GROUP
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        sqlFiles = ['create_basket.sql']
+        sqlParameters = [dbSchema: dbSchema]
+    }
+
+    task transferPLZO_$dbSchema(type: Db2Db, dependsOn: "createPLZOBasket_$dbSchema"){
+        description = "Datenübertrag ins PLZO-Bundesodell."    
+        group = GROUP
+        sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        targetDb = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        transferSets = [
+            new TransferSet("select_plzortschaft_osnachfuehrung.sql", dbSchema + ".plzoch1lv95dplzortschaft_osnachfuehrung", true),
+            new TransferSet("select_plzortschaft_ortschaftsverbund.sql", dbSchema + ".plzoch1lv95dplzortschaft_ortschaftsverbund", true),
+            new TransferSet("select_plzortschaft_ortschaft.sql", dbSchema + ".plzoch1lv95dplzortschaft_ortschaft", true),
+            new TransferSet("select_plzortschaft_ortschaftsname.sql", dbSchema + ".plzoch1lv95dplzortschaft_ortschaftsname", true),
+            new TransferSet("select_plzortschaft_plz6nachfuehrung.sql", dbSchema + ".plzoch1lv95dplzortschaft_plz6nachfuehrung", true),
+            new TransferSet("select_plzortschaft_plz6.sql", dbSchema + ".plzoch1lv95dplzortschaft_plz6", true)
+        ];        
+    }
+}
+
+// this task is the main task to be started
+task importPLZO() {
+    description = "Aggregationstask."
+    group = GROUP
+    doLast {
+        println "PLZO data imported."
+    }
+}
+
+// finds all tasks from the each loop and sets them as dependants
+importPLZO.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('transferPLZO_') }
+}
