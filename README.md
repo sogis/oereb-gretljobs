@@ -13,5 +13,5 @@ docker-compose run --rm --user $UID -v $(pwd)/oereb_testjob:/home/gradle/project
 
 ```
 docker-compose up
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oerebgretljobs_oerebgretljobs --job-directory $(pwd)/oereb_testjob/ testSqlEXecutor
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_testjob/ testSqlExecutor
 ```
