@@ -25,7 +25,7 @@ pipeline {
                 echo 'Executing gradle importStaging (transform data, export data, import data)'
                 sh 'touch a.xtf && touch b.xtf'
                 archiveArtifacts artifacts: '*.xtf'
-                echo "Send E-Mails (containing link to ${BUILD_URL}input/)"
+                echo "Send E-Mails containing link to ${RUN_DISPLAY_URL})"
             }
         }
         stage('Validation') {
@@ -55,7 +55,7 @@ pipeline {
                 to: '${DEFAULT_RECIPIENTS}',
                 recipientProviders: [requestor()],
                 subject: "GRETL-Job ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) ist fehlgeschlagen",
-                body: "Die Ausführung des GRETL-Jobs ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.BUILD_URL}."
+                body: "Die Ausführung des GRETL-Jobs ${env.JOB_NAME} (${env.BUILD_DISPLAY_NAME}) war nicht erfolgreich. Details dazu finden Sie in den Log-Meldungen unter ${env.RUN_DISPLAY_URL}."
             )
         }
     }
