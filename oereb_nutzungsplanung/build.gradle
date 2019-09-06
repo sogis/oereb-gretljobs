@@ -12,6 +12,7 @@ ext {
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
     symbolsWmsBaseUrl = "https://geo-t.so.ch"
     xtfFileName = "ch.so.arp.nutzungsplanung.oereb.xtf"
+    landUsePlansDataSet = "ch.so.arp.nutzungsplanung"
 
     federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
     federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
@@ -64,7 +65,7 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     models = iliModelTransferstruktur
     dbschema = "arp_npl_oereb"
     dataFile = "$rootDir/" + xtfFileName
-    dataset = "ch.so.arp.nutzungsplanung"
+    dataset = landUsePlansDataSet
     disableValidation = true
 }
 
