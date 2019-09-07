@@ -12,20 +12,6 @@
  */
 
 /*
- * Zurücksetzen der Staatskanzlei-TID. Siehe Kommentar am Ende des Umbaues.
- * 
- */
-UPDATE 
-    arp_npl_oereb.vorschriften_amt
-SET
-    t_ili_tid = 'ch.so.sk'
-WHERE
-    t_datasetname = 'ch.so.arp.nutzungsplanung'
-AND
-    t_ili_tid LIKE 'ch.so.sk.%'
-;
-
-/*
  * Die Eigentumsbeschränkungen können als erstes persistiert werden. Der Umbau der anderen Objekte erfolgt anschliessend.
  * Verschiedene Herausforderungen / Spezialitäten müssen behandelt werden:
  * 
@@ -1508,12 +1494,16 @@ INSERT INTO
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Punkt%' THEN 'Punkt'
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Erschliessung_Flaechenobjekt%' THEN ''
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Erschliessung_Linienobjekt%' THEN ''
-            END AS geometrietyp
+            END AS geometrietyp,
+            CASE 
+                WHEN subthema != ''::text THEN subthema
+                ELSE 'ch.so.'||thema
+            END AS layername
         FROM
             arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ) AS eigentumsbeschraenkung
     LEFT JOIN transferstruktur_darstellungsdienst
-    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.thema||'.'||eigentumsbeschraenkung.subthema||'.'||eigentumsbeschraenkung.geometrietyp, '.')||'%'
+    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername||'.'||eigentumsbeschraenkung.geometrietyp, '.')||'%'
 ;
 
 UPDATE 
@@ -1663,8 +1653,9 @@ AND
  * jeweils verändert werden. Erst jedoch ganz am Schluss, damit mit beim
  * Datenumbau selber immer nur auf "ch.so.sk" verweisen kann.
  * 
- * Ganz zu Beginn des Umbaues muss aber die nachträglich veränderte TID
- * wieder zurückgestellt werden.
+ * Weil die zuständigen Stellen wie auch die Gesetze bei jedem Umbau
+ * wieder neu importiert werden, muss die t_ili_tid nicht mehr zurück
+ * gesetzt werden.
  */ 
 
 UPDATE 
