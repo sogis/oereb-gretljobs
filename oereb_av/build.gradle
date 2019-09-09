@@ -23,7 +23,15 @@ dbSchemas.each { dbSchema ->
         sqlParameters = [dbSchema: dbSchema]
     }
 
-    task "transferAV_$dbSchema"(type: Db2Db, dependsOn: "createAvBasket_$dbSchema") {
+    task "deletePreviousAVData_$dbSchema"(type: SqlExecutor, dependsOn: "createAvBasket_$dbSchema") {
+        description = "Löscht AV-Daten vor einem neuen Datenübertrag."
+        group = GROUP
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        sqlFiles = ['delete_previous_av_data.sql']
+        sqlParameters = [dbSchema: dbSchema]
+    }
+
+    task "transferAV_$dbSchema"(type: Db2Db, dependsOn: "deletePreviousAVData_$dbSchema") {
         description = "Datenübertrag ins AV-Bundesodell."    
         group = GROUP
         sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
