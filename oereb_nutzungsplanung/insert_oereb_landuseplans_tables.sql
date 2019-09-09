@@ -880,15 +880,6 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
         WHERE
             t_datasetname = 'ch.so.arp.nutzungsplanung'
     )
-    AND hinweis IN 
-    (
-        SELECT
-            t_id
-        FROM
-            arp_npl_oereb.vorschriften_dokument
-        WHERE
-            t_datasetname = 'ch.so.arp.nutzungsplanung'
-    )
 
     UNION ALL
   
@@ -905,15 +896,6 @@ WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS
     WHERE 
         t1.hinweis IS NOT NULL
     AND x.ursprung IN 
-    (
-        SELECT
-            t_id
-        FROM
-            arp_npl_oereb.vorschriften_dokument
-        WHERE
-            t_datasetname = 'ch.so.arp.nutzungsplanung'
-    )
-    AND x.hinweis IN 
     (
         SELECT
             t_id
@@ -1480,7 +1462,7 @@ INSERT INTO
             eigentumsbeschraenkung.t_basket,
             eigentumsbeschraenkung.t_datasetname,
             0::int AS t_seq,        
-            decode('iVBORw0KGgoAAAANSUhEUgAAAEIAAAAjCAYAAAAg/NwXAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAADgQAAA4EBLr/cFwAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAOiSURBVGiB7ZpPSBRRHMc/u6tZgligRcSqQVAI7cmUtCVdUEIiUDPLsksdLFHoUoJil5UKOu2lg4iHUDQEjboFpqAdJGI1CiKkEhQRDxKhKOZ0+M34ZtLZP/1xI+cDw/ze7/1m5jdf3nu/N+y6NNBwwJ3oBP4VHCF0kiyt48fh1KkEpbLNjI7C27cbTasQxcUQCm1zRgmiqckihDM1dBwhdBwhdBwhdBwhdBwhdOyF6OiAvDzr4ffDnTswM6PiwmHV39+v/BMTm/1tbdLOz4cPH6zPa21V8VNT4quulnYgAEtLKlbT4Px56SsqEl9vr7r++XMV++WLPC8vT3K3Q5PbytHYqG3Q1qZZ+szH3r2aNjkpccPDyh8KqetHRjb7a2uVr6JCxb57p2kej+oLh8V/9Kjytber+O5u5U9OFt/srNigaWfOqNhgUMUODip/Y6PlnWKbGrduwb17cO6ctBcXZUPyOwwMwKtXYjc3w/fvkeMfPICFBVhZgZaWzf0HD0JlpdgvXsDcnNiPH8s5OxvOnrW9fZJtj5nr1yE3V+yCAhgfly3q2lpMl9ty+za0t8OzZ9Fjv36FYBCysuDz561jGhqgr09E7emRzwVjCt64AR6P7e1jE8KMzydCrK1Jcr+K2w1jY3DhgrRdLhmkdrHr6/DoEaSm2sf7/ZLf5KSMhE+fxL97N1y7FjmduF8ggqpxYSQ2Pw/JyVBXZx+bmwsnT8LqqkxLrxdKS7eOvXlTzuEwdHaKffEiZGRETCdx5fPuXUhLE7u+Ho4csY91uWSNMAgGYc+erWPr6mDfPrGXl+Xc0BA1ncQJkZkpa4TXK6UzGn4/VFVBYSFcuWIfl5oKV6+qdkGBlM4oJHZD1doK09Owf39s8f39sq64o6RdUaFso5JEIX4hzBsbt1vmt4G5BJoryq5dcT/mtzDnZLYjEJ8Q8/NSo0Hmd3q61GeD4WG1kr98qfw5OXE9JhHEVj6rqyElBT5+hG/fxHf5sixihw7JFnhoCJ4+le1serq0QdaAQOAvpf/niE2I9++t7fJyePhQtbu6oKxMNi+vXyt/ZiY8eRLz8Ewk9kKUlMh21sDjgQMHpJ6fOGGNzcqCN2/kpcfHpd77fHDpkohhUFkpIyQpSQ4zxcXyUWSMMpA9weys3P9namrg2DHZLP3M4cNw/77Yp0/bv70Z24+u/51f+ujaAThC6DhC6DhC6DhC6LgsfwvYwb99WoXYwThTQ8cRQucHQTGF/rvy36kAAAAASUVORK5CYII=', 'base64') AS symbol,
+            decode('iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAYAAAApF3xtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAD8AAAA/AB2OVKxAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAOoSURBVGiB7ZpfaM1hGMc/PzvGjFLDzGwixVD+xOnsQmOrlcTGldquFq2RzJ+yG5KUpYw0t65WxtXcUGwXXJhIys1xQZSNkWSOzUp6XDzO3vM6e4/fjB3yfuvtfd7v+zzv+zvfnvfP+Z0TCAgeaZiS7Qf4W+GFcSBitYqKIBbL0qNkGffuwevXpi0go6WmRv5b1NRIqhZ+KTnghXHAC+OAF8YBL4wDXhgH3MK8fAnr19tlwwbYtg3a2+HzZ+P76JHxOXvWHqe2VvnNmw0XiylXWQmJhO1//rwZ6+pV5To6DHfxou3/4QNs2qR9Gzcqd+uW8T9xwvY/dsz0dXe7lXHeY+Jx61xPK2VlIm/fqm9Pj+H37bPvB4sWKZ+fb7ggMP4tLYZ//lwkL8/0tbUp39pquPx8kb4+E9PcbPqmTVNuaEikoEC5mTNFEgnlBwc1HkTmzhUZHp7gPWbFCmhthePHYdky5eJxaGkJFZ4R587Bs2dqHzliZ+JYGBoy88bj6RkEMGMGNDaq/ekTXLmidmenxgM0NUFennueUBmzc6fhX70SiUSULymZeMaASG2tPUamjAGN7+0Vqa62+WTGiIj094vk5ipfXq5cNKrt6dNF3ryxn3PCN9+iIi0A79+PO9xCEGjd1QV1dTaXKUYEduyAmzfdMQsWwK5davf2wuXLcP++tuvrYd68jNP82qk05TcdZsuX6wYMMDCg4yaXgAtNTSrEwIC2q6thyZKxfQ8eNPbu3VoHgc07kP3juq0NcnLUbmiAdesy+0ejJrsikfRTMBVr1hjhh4e13rJF98yfIPvCrF4Ne/dCaSmcOhUu5vRpKC6Gw4dh1arMvj9mx6FDoaaI/NxlEnDhgpawWLgQ+vrC+W7dCrNm6X1pzhyoqgoV9msZkzzykntNbq7p+/LF9k22U30mE0GgSw5g6tTQYeMX5to1ePdO7dJSrRcvNifDnTswMqL248fmrdjSpeOeKpsIt5R6evQKnUjA06eGT+70xcW6qV2/Dk+eQFkZrFwJt2/r0QqwZ89vfvQ/i3DCDA7Cw4emnZOjG9+BA4a7dEm/Rz14AC9eaAHNpP37jYj/CNzCzJ+vXwNSEQTKV1VplqSisBDu3oUbNzRTPn5Un+3bYe1a2/fMGfj6dexLVixm5q2o0Lqy0nDRaHrM0aN62XTtYydP6r44e7bz46bBvwz/Dv8yPBy8MA54YRzwwjjghXEgsP4G4n+7Hm3awniMwi8lB7wwDnwD/bFRBvNxDWsAAAAASUVORK5CYII=', 'base64') AS symbol,
             eigentumsbeschraenkung.aussage_de AS legendetext_de,
             eigentumsbeschraenkung.artcode,
             eigentumsbeschraenkung.artcodeliste,
