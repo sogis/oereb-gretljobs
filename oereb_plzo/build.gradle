@@ -23,7 +23,15 @@ dbSchemas.each { dbSchema ->
         sqlParameters = [dbSchema: dbSchema]
     }
 
-    task transferPLZO_$dbSchema(type: Db2Db, dependsOn: "createPLZOBasket_$dbSchema"){
+    task "deletePreviousPLZOData_$dbSchema"(type: SqlExecutor, dependsOn: "createPLZOBasket_$dbSchema") {
+        description = "Löscht PLZO-Daten vor einem neuen Datenübertrag."
+        group = GROUP
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        sqlFiles = ['delete_previous_plzo_data.sql']
+        sqlParameters = [dbSchema: dbSchema]
+    }
+
+    task transferPLZO_$dbSchema(type: Db2Db, dependsOn: "deletePreviousPLZOData_$dbSchema"){
         description = "Datenübertrag ins PLZO-Bundesodell."    
         group = GROUP
         sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
