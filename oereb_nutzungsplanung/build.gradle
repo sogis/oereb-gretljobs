@@ -162,6 +162,13 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true 
 }
 
+task refreshMaterializedViewsStage(type: SqlExecutor) {
+    description = "Aktualisiert materialisierte Views."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["refresh_oereb_landuseplans_materialized_views.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
+
 /*
 task uploadToS3(type: AmazonS3FileUploadTask) {
     description = "Hochladen der exportierten Datei auf S3."
@@ -183,4 +190,11 @@ task importDataToLive(type: Ili2pgReplace) {
     dataFile = file(Paths.get("$rootDir/" + xtfFileName))
     dataset = landUsePlansDataSet
     disableValidation = true 
+}
+
+task refreshMaterializedViewsLive(type: SqlExecutor) {
+    description = "Aktualisiert materialisierte Views."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["refresh_oereb_landuseplans_materialized_views.sql"]
+    sqlParameters = [dbSchema: 'live']
 }
