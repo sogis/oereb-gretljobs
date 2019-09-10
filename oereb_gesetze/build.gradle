@@ -7,8 +7,10 @@ apply plugin: "de.undercouch.download"
 apply plugin: "ch.so.agi.gretl"
 
 
-defaultTasks "importCantonalLegalBasisToOereb"
+defaultTasks "importCantonalLegalBasis"
 
+
+def dbSchemas = ["stage","live"]
 
 def iliModelVorschriften = "OeREBKRMvs_V1_1"
 
@@ -25,12 +27,24 @@ task downloadCantonalLegalBasis(type: Download) {
     overwrite true    
 }
 
-task importCantonalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadCantonalLegalBasis') {
-    description = "Import kantonale Gesetze ($cantonalLegalBaseDataSet) in das stage Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    models = iliModelVorschriften
-    dbschema = "stage"
-    dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
-    dataset = cantonalLegalBaseDataSet 
-    disableValidation = true
+dbSchemas.each { dbSchema ->
+    task "importCantonalLegalBasis_$dbSchema"(type: Ili2pgReplace, dependsOn: 'downloadCantonalLegalBasis') {
+        description = "Import kantonale Gesetze ($cantonalLegalBaseDataSet)."
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        models = iliModelVorschriften
+        dbschema = "$dbSchema"
+        dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
+        dataset = cantonalLegalBaseDataSet 
+        disableValidation = true
+    }
+}
+
+task importCantonalLegalBasis() {
+    doLast {
+        println "Cantonal legal basis data is imported."
+    }
+}
+
+importCantonalLegalBasis.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('importCantonalLegalBasis_') }
 }
