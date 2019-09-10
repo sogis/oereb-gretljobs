@@ -30,7 +30,7 @@ dbSchemas.each { dbSchema ->
         sqlParameters = [dbSchema: dbSchema]
     }
 
-    task transferGBKreis_$dbSchema(type: Db2Db, dependsOn: "deletePreviousGBKreisData_$dbSchema"){
+    task "transferGBKreis_$dbSchema"(type: Db2Db, dependsOn: "deletePreviousGBKreisData_$dbSchema"){
         description = "Datenübertrag ins GBKreis-Modell."    
         group = GROUP
         sourceDb = [dbUriPub, dbUserPub, dbPwdPub]

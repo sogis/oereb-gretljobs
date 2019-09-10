@@ -30,7 +30,7 @@ dbSchemas.each { dbSchema ->
         sqlParameters = [dbSchema: dbSchema]
     }
 
-    task transferPLZO_$dbSchema(type: Db2Db, dependsOn: "deletePreviousPLZOData_$dbSchema"){
+    task "transferPLZO_$dbSchema"(type: Db2Db, dependsOn: "deletePreviousPLZOData_$dbSchema"){
         description = "Datenübertrag ins PLZO-Bundesodell."    
         group = GROUP
         sourceDb = [dbUriEdit, dbUserEdit, dbPwdEdit]
