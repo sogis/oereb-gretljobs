@@ -17,7 +17,7 @@ dbSchemas.each { dbSchema ->
     task "downloadAnnexAktiveGemeinden_$dbSchema"(type: Download){
         description = "Download Annex Data Aktive Gemeinden"
         group = GROUP
-        src "https://raw.githubusercontent.com/sogis/oerebdaten/master/oereb_annex/ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf"
+        src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf"
         dest pathToTempFolder
         overwrite true
     }
@@ -36,7 +36,7 @@ dbSchemas.each { dbSchema ->
     task "downloadAnnexKatasterAmt_$dbSchema"(type: Download, dependsOn: "importAnnexAktiveGemeinden_$dbSchema"){
         description = "Download Annex Data Katasteramt"
         group = GROUP
-        src "https://raw.githubusercontent.com/sogis/oerebdaten/master/oereb_annex/ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf"
+        src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf"
         dest pathToTempFolder
         overwrite true
     }
@@ -55,7 +55,7 @@ dbSchemas.each { dbSchema ->
     task "downloadAnnexStammdaten_$dbSchema"(type: Download, dependsOn: "importAnnexKatasteramt_$dbSchema"){
         description = "Download Annex Stammdaten"
         group = GROUP
-        src "https://raw.githubusercontent.com/sogis/oerebdaten/master/oereb_annex/ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf"
+        src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf"
         dest pathToTempFolder
         overwrite true
     }
