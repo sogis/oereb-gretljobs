@@ -9,8 +9,7 @@ apply plugin: "de.undercouch.download"
 defaultTasks "importPLZO"
 
 def GROUP = "plzo_import"
-//def dbSchemas = ["stage","live"]
-def dbSchemas = ["stage"]
+def dbSchemas = ["stage","live"]
 
 
 //PLZO import from edit db

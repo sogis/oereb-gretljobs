@@ -9,8 +9,7 @@ apply plugin: "de.undercouch.download"
 defaultTasks "importAV"
 
 def GROUP = "avimport"
-//def dbSchemas = ["stage","live"]
-def dbSchemas = ["stage"]
+def dbSchemas = ["stage","live"]
 
 
 //AV import from edit db
