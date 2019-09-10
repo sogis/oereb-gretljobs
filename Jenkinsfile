@@ -22,8 +22,8 @@ pipeline {
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    sh "gradle --init-script /home/gradle/init.gradle importDataToStage"
-                    sh "gradle --init-script /home/gradle/init.gradle importDataToLive"
+                    sh "gradle --init-script /home/gradle/init.gradle importDataToStage refreshMaterializedViewsStage"
+                    sh "gradle --init-script /home/gradle/init.gradle importDataToLive refreshMaterializedViewsLive"
                 }
                 archiveArtifacts artifacts: '**/*.xtf'
                 emailext (

@@ -164,7 +164,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 
 task refreshMaterializedViewsStage(type: SqlExecutor) {
     description = "Aktualisiert materialisierte Views."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ["refresh_oereb_landuseplans_materialized_views.sql"]
     sqlParameters = [dbSchema: 'stage']
 }
@@ -194,7 +194,7 @@ task importDataToLive(type: Ili2pgReplace) {
 
 task refreshMaterializedViewsLive(type: SqlExecutor) {
     description = "Aktualisiert materialisierte Views."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ["refresh_oereb_landuseplans_materialized_views.sql"]
     sqlParameters = [dbSchema: 'live']
 }
