@@ -149,7 +149,6 @@ task validateData(type: IliValidator, dependsOn: "exportData") {
         file(Paths.get("$rootDir/" + xtfFileName))]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
-    // Caution: Validation is currently completely turned off
     configFile = "validateData.toml"
 }
 

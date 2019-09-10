@@ -1,2 +1,2 @@
 ["PARAMETER"]
-validation="off"
+defaultGeometryTypeValidation="warning"
