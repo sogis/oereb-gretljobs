@@ -24,7 +24,7 @@ pipeline {
                 dir(env.JOB_BASE_NAME) {
                     sh "gradle --init-script /home/gradle/init.gradle importDataToStage"
                 }
-                archiveArtifacts artifacts: '*.xtf'
+                archiveArtifacts artifacts: '**/*.xtf'
                 emailext (
                     to: '${DEFAULT_RECIPIENTS}',
                     recipientProviders: [requestor()],
