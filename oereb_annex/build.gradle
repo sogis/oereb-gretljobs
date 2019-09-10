@@ -9,8 +9,7 @@ apply plugin: "de.undercouch.download"
 defaultTasks "importOEREBAnnex"
 
 def GROUP = "oereb-annex_import"
-//def dbSchemas = ["stage","live"]
-def dbSchemas = ["stage"]
+def dbSchemas = ["stage","live"]
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 //OEREB-Annex-import

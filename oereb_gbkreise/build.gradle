@@ -9,8 +9,7 @@ apply plugin: "de.undercouch.download"
 defaultTasks "importGBKreise"
 
 def GROUP = "gbkreis_import"
-//def dbSchemas = ["stage","live"]
-def dbSchemas = ["stage"]
+def dbSchemas = ["stage","live"]
 
 
 //GBKreis-import from edit db
