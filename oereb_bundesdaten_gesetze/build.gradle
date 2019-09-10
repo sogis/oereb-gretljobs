@@ -15,9 +15,13 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 
- 
-// Bundesgesetze importieren (nur bei Bedarf)
+// Oereb-DB Schemas
+def dbSchemas = []
+dbSchemas.add(["stage"])
+dbSchemas.add(["live"])
 
+
+// Bundesgesetze importieren (nur bei Bedarf)
 task "oereb_DownloadGesetze"(type: Download){
     description = "Download Bundesdaten"
     doLast {
@@ -27,16 +31,27 @@ task "oereb_DownloadGesetze"(type: Download){
     dest pathToTempFolder
     overwrite true
 }
-    
-task "oereb_dbImport_Gesetze"(type: Ili2pgReplace, dependsOn: "oereb_DownloadGesetze"){
-    description = "Import Bundesdaten Gesetze in DB agi_oereb"
-    doLast {
-        println "Gesetze in OEREB-DB importiert"
+
+dbSchemas.each { dbSchema ->
+    def schema = dbSchema.getAt(0)
+    task "oereb_Import_Gesetze_$schema"(type: Ili2pgReplace, dependsOn: "oereb_DownloadGesetze"){
+        description = "Import Bundesdaten Gesetze in DB agi_oereb"
+        doLast {
+            println "Gesetze in OEREB-DB importiert"
+        }
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        dbschema = schema
+        dataset = "OeREBKRM_V1_1_Gesetze"
+        models = "OeREBKRMvs_V1_1"
+        disableValidation = false
+        dataFile = file(Paths.get(pathToTempFolder.toString(), "OeREBKRM_V1_1_Gesetze_20180501.xml"))
     }
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    dbschema = "stage"
-    dataset = "OeREBKRM_V1_1_Gesetze"
-    models = "OeREBKRMvs_V1_1"
-    disableValidation = false
-    dataFile = file(Paths.get(pathToTempFolder.toString(), "OeREBKRM_V1_1_Gesetze_20180501.xml"))
+}
+
+task oereb_dbImport_Gesetze(){
+    description = "Import der Oereb-Bundesdaten Gesetze"
+}
+
+oereb_dbImport_Gesetze.finalizedBy {
+    tasks.findAll { task -> task.name.startsWith("oereb_Import_Gesetze") }
 }
