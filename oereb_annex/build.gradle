@@ -12,17 +12,34 @@ def GROUP = "oereb-annex_import"
 def dbSchemas = ["stage","live"]
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
+task "downloadAnnexAktiveGemeinden"(type: Download){
+    description = "Download Annex Data Aktive Gemeinden"
+    group = GROUP
+    src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task "downloadAnnexKatasterAmt"(type: Download, dependsOn: "downloadAnnexAktiveGemeinden"){
+    description = "Download Annex Data Katasteramt"
+    group = GROUP
+    src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task "downloadAnnexStammdaten"(type: Download, dependsOn: "downloadAnnexKatasterAmt"){
+    description = "Download Annex Stammdaten"
+    group = GROUP
+    src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
 //OEREB-Annex-import
 dbSchemas.each { dbSchema ->
-    task "downloadAnnexAktiveGemeinden_$dbSchema"(type: Download){
-        description = "Download Annex Data Aktive Gemeinden"
-        group = GROUP
-        src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf"
-        dest pathToTempFolder
-        overwrite true
-    }
 
-    task "importAnnexAktiveGemeinden_$dbSchema"(type: Ili2pgReplace, dependsOn: "downloadAnnexAktiveGemeinden_$dbSchema"){
+    task "importAnnexAktiveGemeinden_$dbSchema"(type: Ili2pgReplace, dependsOn: "downloadAnnexStammdaten"){
         description = "Import Annex Data Aktive Gemeinden"
         group = GROUP
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
@@ -33,15 +50,8 @@ dbSchemas.each { dbSchema ->
         disableValidation = true
     }
 
-    task "downloadAnnexKatasterAmt_$dbSchema"(type: Download, dependsOn: "importAnnexAktiveGemeinden_$dbSchema"){
-        description = "Download Annex Data Katasteramt"
-        group = GROUP
-        src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf"
-        dest pathToTempFolder
-        overwrite true
-    }
 
-    task "importAnnexKatasteramt_$dbSchema"(type: Ili2pgReplace, dependsOn: "downloadAnnexKatasterAmt_$dbSchema"){
+    task "importAnnexKatasteramt_$dbSchema"(type: Ili2pgReplace, dependsOn: "importAnnexAktiveGemeinden_$dbSchema"){
         description = "Import Annex Data Katasteramt"
         group = GROUP
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
@@ -52,15 +62,7 @@ dbSchemas.each { dbSchema ->
         disableValidation = true
     }
 
-    task "downloadAnnexStammdaten_$dbSchema"(type: Download, dependsOn: "importAnnexKatasteramt_$dbSchema"){
-        description = "Download Annex Stammdaten"
-        group = GROUP
-        src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf"
-        dest pathToTempFolder
-        overwrite true
-    }
-
-    task "importAnnexStammdaten_$dbSchema"(type: Ili2pgReplace, dependsOn: "downloadAnnexStammdaten_$dbSchema"){
+    task "importAnnexStammdaten_$dbSchema"(type: Ili2pgReplace, dependsOn: "importAnnexKatasteramt_$dbSchema"){
         description = "Import Annex Stammdaten"
         group = GROUP
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
