@@ -85,7 +85,7 @@ INSERT INTO
         basket_dataset.datasetname,
         typ_grundnutzung.bezeichnung AS aussage_de,
         'Nutzungsplanung' AS thema,
-        'ch.so.Nutzungsplanung.NutzungsplanungGrundnutzung' AS subthema,
+        'ch.SO.NutzungsplanungGrundnutzung' AS subthema,
         typ_grundnutzung.code_kommunal AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Grundnutzung.'||typ_grundnutzung.t_datasetname AS artcodeliste,
         grundnutzung.rechtsstatus,
@@ -156,7 +156,7 @@ INSERT INTO
         basket_dataset.datasetname,
         typ_ueberlagernd_flaeche.bezeichnung AS aussage_de,
         'Nutzungsplanung' AS thema,
-        'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd' AS subthema,
+        'ch.SO.NutzungsplanungUeberlagernd' AS subthema,
         typ_ueberlagernd_flaeche.code_kommunal AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.'||typ_ueberlagernd_flaeche.t_datasetname AS artcodeliste,
         ueberlagernd_flaeche.rechtsstatus,
@@ -234,7 +234,7 @@ INSERT INTO
         basket_dataset.datasetname,
         typ_ueberlagernd_linie.bezeichnung AS aussage_de,
         'Nutzungsplanung' AS thema,
-        'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd' AS subthema,
+        'ch.SO.NutzungsplanungUeberlagernd' AS subthema,
         typ_ueberlagernd_linie.code_kommunal AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie.'||typ_ueberlagernd_linie.t_datasetname AS artcodeliste,
         ueberlagernd_linie.rechtsstatus,
@@ -289,7 +289,7 @@ INSERT INTO
         basket_dataset.datasetname,
         typ_ueberlagernd_punkt.bezeichnung AS aussage_de,
         'Nutzungsplanung' AS thema,
-        'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd' AS subthema,
+        'ch.SO.NutzungsplanungUeberlagernd' AS subthema,
         typ_ueberlagernd_punkt.code_kommunal AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt.'||typ_ueberlagernd_punkt.t_datasetname AS artcodeliste,
         ueberlagernd_punkt.rechtsstatus,
@@ -355,7 +355,7 @@ INSERT INTO
         basket_dataset.datasetname,
         typ_ueberlagernd_flaeche.bezeichnung AS aussage_de,
         'Nutzungsplanung' AS thema,
-        'ch.so.Nutzungsplanung.NutzungsplanungSondernutzungsplaene' AS subthema,
+        'ch.SO.NutzungsplanungSondernutzungsplaene' AS subthema,
         typ_ueberlagernd_flaeche.code_kommunal AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.'||typ_ueberlagernd_flaeche.t_datasetname AS artcodeliste,
         ueberlagernd_flaeche.rechtsstatus,
@@ -420,7 +420,7 @@ INSERT INTO
         CASE
             WHEN typ_kt = 'E725_Waldabstandslinie'
                 THEN ''::text
-            ELSE 'ch.so.Nutzungsplanung.Baulinien'
+            ELSE 'ch.SO.Baulinien'
         END AS subthema,
         typ_erschliessung_linienobjekt.code_kommunal AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt.'||typ_erschliessung_linienobjekt.t_datasetname AS artcodeliste,
@@ -1402,8 +1402,8 @@ WITH transferstruktur_darstellungsdienst AS
                 subthema,
                 CASE 
                     WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Grundnutzung%' THEN ''
-                    WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd') THEN 'Flaeche'
-                    WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.so.Nutzungsplanung.NutzungsplanungSondernutzungsplaene') THEN ''
+                    WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.SO.NutzungsplanungUeberlagernd') THEN 'Flaeche'
+                    WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.SO.NutzungsplanungSondernutzungsplaene') THEN ''
                     WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Linie%' THEN 'Linie'
                     WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Punkt%' THEN 'Punkt'
                     WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Erschliessung_Flaechenobjekt%' THEN ''
@@ -1411,7 +1411,7 @@ WITH transferstruktur_darstellungsdienst AS
                 END AS geometrietyp,
                 CASE 
                     WHEN subthema != ''::text THEN subthema
-                    ELSE 'ch.so.'||thema
+                    ELSE 'ch.SO.'||thema
                 END AS layername
             FROM
                 arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
@@ -1470,8 +1470,8 @@ INSERT INTO
             eigentumsbeschraenkung.subthema,
             CASE 
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Grundnutzung%' THEN ''
-                WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd') THEN 'Flaeche'
-                WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.so.Nutzungsplanung.NutzungsplanungSondernutzungsplaene') THEN ''
+                WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.SO.NutzungsplanungUeberlagernd') THEN 'Flaeche'
+                WHEN (artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%' AND subthema = 'ch.SO.NutzungsplanungSondernutzungsplaene') THEN ''
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Linie%' THEN 'Linie'
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Punkt%' THEN 'Punkt'
                 WHEN artcodeliste ILIKE '%NP_Typ_Kanton_Erschliessung_Flaechenobjekt%' THEN ''
@@ -1479,7 +1479,7 @@ INSERT INTO
             END AS geometrietyp,
             CASE 
                 WHEN subthema != ''::text THEN subthema
-                ELSE 'ch.so.'||thema
+                ELSE 'ch.SO.'||thema
             END AS layername
         FROM
             arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
@@ -1493,7 +1493,7 @@ UPDATE
 SET 
     darstellungsdienst = (SELECT t_id FROM arp_npl_oereb.transferstruktur_darstellungsdienst WHERE verweiswms ILIKE '%NutzungsplanungGrundnutzung%')
 WHERE
-    subthema = 'ch.so.Nutzungsplanung.NutzungsplanungGrundnutzung'
+    subthema = 'ch.SO.NutzungsplanungGrundnutzung'
 ;
 
 UPDATE 
@@ -1509,7 +1509,7 @@ WHERE
         FROM
             arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         WHERE
-            eigentumsbeschraenkung.subthema = 'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd'
+            eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungUeberlagernd'
         AND
             artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Flaeche%'
     )
@@ -1528,7 +1528,7 @@ WHERE
         FROM
             arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         WHERE
-            eigentumsbeschraenkung.subthema = 'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd'
+            eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungUeberlagernd'
         AND
             artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Linie%'
     )
@@ -1547,7 +1547,7 @@ WHERE
         FROM
             arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         WHERE
-            eigentumsbeschraenkung.subthema = 'ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd'
+            eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungUeberlagernd'
         AND
             artcodeliste ILIKE '%NP_Typ_Kanton_Ueberlagernd_Punkt%'
     )
@@ -1558,7 +1558,7 @@ UPDATE
 SET 
     darstellungsdienst = (SELECT t_id FROM arp_npl_oereb.transferstruktur_darstellungsdienst WHERE verweiswms ILIKE '%NutzungsplanungSondernutzungsplaene%')
 WHERE
-    subthema = 'ch.so.Nutzungsplanung.NutzungsplanungSondernutzungsplaene'
+    subthema = 'ch.SO.NutzungsplanungSondernutzungsplaene'
 ;
 
 UPDATE 
@@ -1566,7 +1566,7 @@ UPDATE
 SET 
     darstellungsdienst = (SELECT t_id FROM arp_npl_oereb.transferstruktur_darstellungsdienst WHERE verweiswms ILIKE '%Baulinien%')
 WHERE
-    subthema = 'ch.so.Nutzungsplanung.Baulinien'
+    subthema = 'ch.SO.Baulinien'
 ;
 
 UPDATE 
