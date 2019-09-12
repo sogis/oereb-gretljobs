@@ -33,14 +33,14 @@ ext {
     responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
 
     wmsLayerList = [
-        "ch.so.Laermemfindlichkeitsstufen",
-        "ch.so.Nutzungsplanung.NutzungsplanungGrundnutzung",
-        "ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Flaeche",
-        "ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Linie",
-        "ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Punkt",
-        "ch.so.Nutzungsplanung.Baulinien",
-        "ch.so.Nutzungsplanung.Sondernutzungsplaene",
-        "ch.so.Waldabstandslinien"
+        ["ch.so.Laermemfindlichkeitsstufen", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Flaechenobjekt"],
+        ["ch.so.Nutzungsplanung.NutzungsplanungGrundnutzung", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Grundnutzung"],
+        ["ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Flaeche", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"],
+        ["ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Linie", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie"], 
+        ["ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Punkt", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt"],
+        ["ch.so.Nutzungsplanung.Baulinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"],
+        ["ch.so.Nutzungsplanung.Sondernutzungsplaene", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"],
+        ["ch.so.Waldabstandslinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"]
     ]    
 }
 
@@ -115,13 +115,17 @@ task transferData(type: SqlExecutor, dependsOn: ["importFederalLegalBasisToOereb
 }
 
 wmsLayerList.each { wmsLayer ->
-    task "updateSymbols_$wmsLayer"(type: OerebIconizerQgis3) {
-        description = "Erzeugt die Symbole für die einzelnen Legendeneinträge für $wmsLayer."
-        sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayer&SLD_VERSION=1.1.0"
-        legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayer&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
+    def wmsLayerName = wmsLayer.getAt(0)
+    def typeCodeList = wmsLayer.getAt(1)
+    task "updateSymbols_$wmsLayerName"(type: OerebIconizerQgis3) {
+        description = "Erzeugt die Symbole für die einzelnen Legendeneinträge für $wmsLayerName."
+        sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayerName&SLD_VERSION=1.1.0"
+        legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayerName&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
         dbQTable = "arp_npl_oereb.transferstruktur_legendeeintrag"
         typeCodeAttrName = "artcode"
+        typeCodeListAttrName = "artcodeliste"
+        typeCodeListValue = typeCodeList
         symbolAttrName = "symbol"
         useCommunalTypeCodes = true
     }
