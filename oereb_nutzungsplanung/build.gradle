@@ -33,12 +33,14 @@ ext {
     responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
 
     wmsLayerList = [
+        "ch.so.Laermemfindlichkeitsstufen",
         "ch.so.Nutzungsplanung.NutzungsplanungGrundnutzung",
         "ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Flaeche",
         "ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Linie",
         "ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Punkt",
         "ch.so.Nutzungsplanung.Baulinien",
-        "ch.so.Nutzungsplanung.Sondernutzungsplaene"
+        "ch.so.Nutzungsplanung.Sondernutzungsplaene",
+        "ch.so.Waldabstandslinien"
     ]    
 }
 
