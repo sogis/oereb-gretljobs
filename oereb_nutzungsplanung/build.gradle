@@ -33,14 +33,14 @@ ext {
     responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
 
     wmsLayerList = [
-        ["ch.so.Laermemfindlichkeitsstufen", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Flaechenobjekt"],
-        ["ch.so.Nutzungsplanung.NutzungsplanungGrundnutzung", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Grundnutzung"],
-        ["ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Flaeche", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"],
-        ["ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Linie", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie"], 
-        ["ch.so.Nutzungsplanung.NutzungsplanungUeberlagernd.Punkt", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt"],
-        ["ch.so.Nutzungsplanung.Baulinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"],
-        ["ch.so.Nutzungsplanung.Sondernutzungsplaene", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"],
-        ["ch.so.Waldabstandslinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"]
+        ["ch.SO.Laermemfindlichkeitsstufen", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Flaechenobjekt"],
+        ["ch.SO.NutzungsplanungGrundnutzung", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Grundnutzung"],
+        ["ch.SO.NutzungsplanungUeberlagernd.Flaeche", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"],
+        ["ch.SO.NutzungsplanungUeberlagernd.Linie", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie"], 
+        ["ch.SO.NutzungsplanungUeberlagernd.Punkt", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt"],
+        ["ch.SO.Baulinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"],
+        ["ch.SO.NutzungsplanungSondernutzungsplaene", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"],
+        ["ch.SO.Waldabstandslinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"]
     ]    
 }
 
