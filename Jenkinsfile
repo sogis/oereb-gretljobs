@@ -23,9 +23,9 @@ pipeline {
                 git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
                     sh "gradle --init-script /home/gradle/init.gradle importDataToStage refreshMaterializedViewsStage"
-                    sh "gradle --init-script /home/gradle/init.gradle importDataToLive refreshMaterializedViewsLive"
+                    archiveArtifacts artifacts: '*.xtf'
                 }
-                archiveArtifacts artifacts: '**/*.xtf'
+                stash name: "gretljob"
                 emailext (
                     to: '${DEFAULT_RECIPIENTS}',
                     recipientProviders: [requestor()],
@@ -43,12 +43,10 @@ pipeline {
         stage('Import into live schema') {
             agent { label 'gretl-ili2pg4' }
             steps {
-                sh 'pwd && ls -la'
-                git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
-                // Following command needs authentication, so use rather Copy Artifact plugin
-                //sh 'curl --insecure -L -O ${BUILD_URL}artifact/*zip*/archive.zip'
-                sh 'pwd && ls -la'
-                echo 'Executing gradle importLive (import data, uploda data)'
+                unstash name: "gretljob"
+                dir(env.JOB_BASE_NAME) {
+                    sh "gradle --init-script /home/gradle/init.gradle importDataToLive refreshMaterializedViewsLive"
+                }
             }
         }
        
