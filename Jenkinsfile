@@ -52,9 +52,6 @@ pipeline {
        
     }
     post {
-        always {
-            echo 'deleteDir()'
-        }
         unsuccessful {
             emailext (
                 to: '${DEFAULT_RECIPIENTS}',
