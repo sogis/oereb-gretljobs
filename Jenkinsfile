@@ -6,10 +6,6 @@ node('master') { // need a few lines of scripted pipeline before the declarative
 
 pipeline {
     agent none
-    parameters {
-        // TODO: Funktioniert nicht bei der allerersten Ausführung, deshalb durch den gretl-job-generator setzen lassen
-        string(name: 'buildDescription', description: 'Bitte geben Sie den Grund für die Publikation der Daten ein')
-    }
     options {
         buildDiscarder(logRotator(numToKeepStr: '25'))
         disableConcurrentBuilds()
