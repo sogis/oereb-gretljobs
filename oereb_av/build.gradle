@@ -39,6 +39,7 @@ dbSchemas.each { dbSchema ->
             new TransferSet("select_liegenschaften_lsnachfuehrung.sql", dbSchema + ".dm01vch24lv95dliegenschaften_lsnachfuehrung", true),
             new TransferSet("select_liegenschaften_grundstueck.sql", dbSchema + ".dm01vch24lv95dliegenschaften_grundstueck", true),
             new TransferSet("select_liegenschaften_liegenschaft.sql", dbSchema + ".dm01vch24lv95dliegenschaften_liegenschaft", true),
+            new TransferSet("select_liegenschaften_selbstrecht.sql", dbSchema + ".dm01vch24lv95dliegenschaften_selbstrecht", true),
             new TransferSet("select_gebaeudeadressen_gebnachfuehrung.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_gebnachfuehrung", true),
             new TransferSet("select_gebaeudeadressen_lokalisation.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_lokalisation", true),
             new TransferSet("select_gebaeudeadressen_lokalisationsname.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_lokalisationsname", true),
