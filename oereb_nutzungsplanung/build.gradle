@@ -148,7 +148,17 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     disableValidation = true
 }
 
-task validateData(type: IliValidator, dependsOn: "exportData") {
+task replaceWmsServer(dependsOn: "exportData") {
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
+    doLast {
+        ant.replace(
+        file: "$rootDir/" + xtfFileName,
+        token: '${wmsHost}',
+        value: 'https://geo-t.so.ch')
+    }
+}
+
+task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
         file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
