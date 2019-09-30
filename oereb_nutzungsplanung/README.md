@@ -31,9 +31,9 @@ Bundesgesetze und kantonale Gesetze in die ÖREB-DB importieren:
 ./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_nutzungsplanung/dev/ -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb
 ```
 
-Daten umbauen:
+Daten umbauen und exportieren:
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_nutzungsplanung/ -b build.gradle transferData
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_nutzungsplanung/ -b build.gradle validateData
 ```
 
 Daten umbauen und in der ÖREB-DB in das Stage-Schema importieren:

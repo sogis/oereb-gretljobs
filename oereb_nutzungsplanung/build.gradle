@@ -151,10 +151,12 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
 task replaceWmsServer(dependsOn: "exportData") {
     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
     doLast {
+
         ant.replace(
         file: "$rootDir/" + xtfFileName,
         token: '${wmsHost}',
-        value: 'https://geo-t.so.ch')
+        value: 'https://geo-t.so.ch',
+        encoding: 'UTF-8')
     }
 }
 
