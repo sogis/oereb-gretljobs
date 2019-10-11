@@ -19,7 +19,7 @@ pipeline {
                 git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
                     sh "gradle --init-script /home/gradle/init.gradle importDataToStage refreshMaterializedViewsStage"
-                    archiveArtifacts artifacts: '*.xtf'
+                    zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
                 }
                 stash name: "gretljob"
                 emailext (
