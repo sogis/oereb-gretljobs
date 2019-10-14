@@ -29,7 +29,7 @@ task downloadFederalLegalBasis(type: Download) {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
     src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
     dest pathToTempFolder
-    overwrite true      
+    overwrite true
 }
 /******************************************************************************************************/
 
@@ -37,7 +37,7 @@ task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegal
     description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
     src cantonalLegalBasisBaseUrl + cantonalLegalBaseDataSet + ".xtf"
     dest pathToTempFolder
-    overwrite true    
+    overwrite true
 }
 
 task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
@@ -80,7 +80,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dbschema = "stage"
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf"))
     dataset = "BelasteteStandorte"
-    disableValidation = true 
+    disableValidation = true
 }
 
 task importDataToLive(type: Ili2pgReplace) {
