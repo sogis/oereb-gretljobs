@@ -1,0 +1,108 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
+def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
+
+def federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
+def federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
+
+def cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
+def cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
+
+
+
+/***************************** später ersetzen durch Belastete Standorte Kanton ***********************/
+def kbsDataSet = "ch.bav.kataster-belasteter-standorte-oev.oereb"
+/******************************************************************************************************/
+
+
+/***************************************** später löschen ********************************************/
+task downloadFederalLegalBasis(type: Download) {
+    description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
+    src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
+    dest pathToTempFolder
+    overwrite true
+}
+/******************************************************************************************************/
+
+task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegalBasis") {
+    description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
+    src cantonalLegalBasisBaseUrl + cantonalLegalBaseDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
+    description = "Download Belastete Standorte"
+    src "https://data.geo.admin.ch/" + kbsDataSet + "/data.zip"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task unzipData(type: Copy, dependsOn: "downloadKbs"){
+    description = "Unzip Data.zip"
+    from zipTree(pathToDataZip)
+    into file(pathToUnzipFolder)
+    include "**/*.xtf"
+    rename { String fileName ->
+        if (fileName.contains(kbsDataSet)) {
+            return kbsDataSet + ".xtf"
+        }
+        ln kbsDataSet + ".xtf"
+        return fileName
+    }
+}
+
+task validateData(type: IliValidator, dependsOn: "unzipData") {
+    description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
+    dataFiles = [
+                 file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf")),
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),           //***** Zeile löschen, wenn kantonale Kbs validiert werden
+                 file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
+                ]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = true
+    configFile = "validateData.toml"
+}
+
+task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+    description = "Import Belastete Standorte in das Stage-Schema."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    models = "OeREBKRMtrsfr_V1_1"
+    dbschema = "stage"
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf"))
+    dataset = "BelasteteStandorte"
+    disableValidation = true
+}
+
+task refreshMaterializedViewsStage(type: SqlExecutor) {
+    description = "Aktualisiert materialisierte Views."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["refresh_oereb_belastete_standorte_materialized_views.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
+
+task importDataToLive(type: Ili2pgReplace) {
+    description = "Import Belastete Standorte in das Live-Schema."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    models = "OeREBKRMtrsfr_V1_1"
+    dbschema = "live"
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf"))
+    dataset = "BelasteteStandorte"
+    disableValidation = true
+}
+
+task refreshMaterializedViewsLive(type: SqlExecutor) {
+    description = "Aktualisiert materialisierte Views."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["refresh_oereb_belastete_standorte_materialized_views.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
