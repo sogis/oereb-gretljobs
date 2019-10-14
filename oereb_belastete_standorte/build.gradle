@@ -83,6 +83,13 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true
 }
 
+task refreshMaterializedViewsStage(type: SqlExecutor) {
+    description = "Aktualisiert materialisierte Views."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["refresh_oereb_belastete_standorte_materialized_views.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
+
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import Belastete Standorte in das Live-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
@@ -91,4 +98,11 @@ task importDataToLive(type: Ili2pgReplace) {
     dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf"))
     dataset = "BelasteteStandorte"
     disableValidation = true
+}
+
+task refreshMaterializedViewsLive(type: SqlExecutor) {
+    description = "Aktualisiert materialisierte Views."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["refresh_oereb_belastete_standorte_materialized_views.sql"]
+    sqlParameters = [dbSchema: 'live']
 }
