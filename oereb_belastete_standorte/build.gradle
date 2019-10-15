@@ -50,7 +50,7 @@ task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
 task unzipData(type: Copy, dependsOn: "downloadKbs"){
     description = "Unzip Data.zip"
     from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
+    into file("$rootDir/")
     include "**/*.xtf"
     rename { String fileName ->
         if (fileName.contains(kbsDataSet)) {
@@ -64,7 +64,7 @@ task unzipData(type: Copy, dependsOn: "downloadKbs"){
 task validateData(type: IliValidator, dependsOn: "unzipData") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [
-                 file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf")),
+                 file(Paths.get("$rootDir/" + kbsDataSet + ".xtf")),
                  file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),           //***** Zeile löschen, wenn kantonale Kbs validiert werden
                  file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
                 ]
@@ -78,7 +78,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = "OeREBKRMtrsfr_V1_1"
     dbschema = "stage"
-    dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf"))
+    dataFile = file(Paths.get("$rootDir/" + kbsDataSet + ".xtf"))
     dataset = "BelasteteStandorte"
     disableValidation = true
 }
@@ -95,7 +95,7 @@ task importDataToLive(type: Ili2pgReplace) {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = "OeREBKRMtrsfr_V1_1"
     dbschema = "live"
-    dataFile = file(Paths.get(pathToUnzipFolder.toString(), kbsDataSet + ".xtf"))
+    dataFile = file(Paths.get("$rootDir/" + kbsDataSet + ".xtf"))
     dataset = "BelasteteStandorte"
     disableValidation = true
 }
