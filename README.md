@@ -22,7 +22,9 @@ export ORG_GRADLE_PROJECT_dbUserOereb="gretl"
 export ORG_GRADLE_PROJECT_dbPwdOereb="gretl"
 ```
 
-Start the GRETL job (use the --job-directory option to point to the desired GRETL job):
+Start the GRETL job
+(use the --job-directory option to point to the desired GRETL job;
+find out the names of your Docker networks by running `docker network ls`):
 ```
 ./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_nutzungsplanung/ importDataToStage
 ```
