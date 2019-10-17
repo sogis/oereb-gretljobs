@@ -7,7 +7,12 @@ For running a GRETL job using the GRETL wrapper script, see the `start-gretl.sh`
 
 If you want to set up a development environment for developing new GRETL jobs, use the following `docker-compose` command before running your GRETL job in order to prepare the necessary DBs.
 
-Start two DBs ("oereb" and "edit"), import data required for the data transformation into the "oereb" DB, and import demo data into the "edit" DB:
+Start two DBs ("oereb" and "edit"),
+import data required for the data transformation into the "oereb" DB,
+and import demo data into the "edit" DB
+(when working on other OEREB topics, replace
+`createSchemaLandUsePlans replaceLandUsePlansData`
+with the Gradle task names that handle your current OEREB topic):
 ```
 docker-compose run --rm --user $UID -v $(pwd)/development_environment:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
 ```
