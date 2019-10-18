@@ -1680,8 +1680,8 @@ CREATE INDEX in_oerebwms_nutzungsplanung_grundnutzung_flaeche_artcode
   
 -- -----------------------------------------------------------------------------
 -- table 'weiteres_thema_einzelschutz_flaeche' with thema 'WeiteresThema', subthema 'ch.SO.Einzelschutz' and geometry 'flaeche'
-DROP TABLE IF EXISTS ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche;
-CREATE TABLE IF NOT EXISTS ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche AS 
+DELETE FROM ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche;
+INSERT INTO ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -1867,8 +1867,8 @@ CREATE INDEX in_oerebwms_weiteres_thema_einzelschutz_flaeche_artcode
       
 -- -----------------------------------------------------------------------------
 -- table 'weiteres_thema_einzelschutz_punkt' with thema 'WeiteresThema', subthema 'ch.SO.Einzelschutz' and geometry 'punkt'
-DROP TABLE IF EXISTS ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt;
-CREATE TABLE IF NOT EXISTS ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt AS 
+DELETE FROM ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt;
+INSERT INTO ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
