@@ -1,17 +1,35 @@
 # oereb-gretljobs
 Contains GRETL jobs for publishing data to OEREB-Kataster
 
-## Running a GRETL job locally
+## Running a GRETL job locally using the GRETL wrapper script
 
-## Using docker-compose only
+For running a GRETL job using the GRETL wrapper script, see the `start-gretl.sh` command example below. Set any DB connection parameter environment variables before running the command.
 
+If you want to set up development databases for developing new GRETL jobs, use the following `docker-compose` command before running your GRETL job in order to prepare the necessary DBs.
+
+Start two DBs ("oereb" and "edit"),
+import data required for the data transformation into the "oereb" DB,
+and import demo data into the "edit" DB
+(when working on other OEREB topics, replace
+`createSchemaLandUsePlans replaceLandUsePlansData`
+with the Gradle task names that handle your current OEREB topic):
 ```
-docker-compose run --rm --user $UID -v $(pwd)/oereb_testjob:/home/gradle/project gretl "cd /home/gradle/project && gretl"
+docker-compose run --rm --user $UID -v $(pwd)/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
 ```
 
-## Using the GRETL wrapper script
-
+Set environment variables containing the DB connection parameters:
 ```
-docker-compose up
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_testjob/ testSqlExecutor
+export ORG_GRADLE_PROJECT_dbUriEdit="jdbc:postgresql://edit-db/edit"
+export ORG_GRADLE_PROJECT_dbUserEdit="gretl"
+export ORG_GRADLE_PROJECT_dbPwdEdit="gretl"
+export ORG_GRADLE_PROJECT_dbUriOereb="jdbc:postgresql://oereb-db/oereb"
+export ORG_GRADLE_PROJECT_dbUserOereb="gretl"
+export ORG_GRADLE_PROJECT_dbPwdOereb="gretl"
+```
+
+Start the GRETL job
+(use the --job-directory option to point to the desired GRETL job;
+find out the names of your Docker networks by running `docker network ls`):
+```
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_nutzungsplanung/ importDataToStage
 ```
