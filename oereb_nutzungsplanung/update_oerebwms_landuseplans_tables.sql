@@ -1,7 +1,7 @@
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_ueberlagernd_linie' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungUeberlagernd' and geometry 'linie'
 DELETE FROM ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_linie;
-INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_linie AS 
+INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_linie
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -188,7 +188,7 @@ CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_linie_artcode
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_baulinien_linie' with thema 'Nutzungsplanung', subthema 'ch.SO.Baulinien' and geometry 'linie'
 DELETE FROM ${dbSchema}.oerebwms_nutzungsplanung_baulinien_linie;
-INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_baulinien_linie AS 
+INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_baulinien_linie
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -375,7 +375,7 @@ CREATE INDEX in_oerebwms_nutzungsplanung_baulinien_linie_artcode
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_sondernutzungsplaene_flaeche' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungSondernutzungsplaene' and geometry 'flaeche'
 DELETE FROM ${dbSchema}.oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche;
-INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche AS 
+INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -562,7 +562,7 @@ CREATE INDEX in_oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche_artcode
 -- -----------------------------------------------------------------------------
 -- table 'laermempfindlichkeitsstufen_flaeche' with thema 'Laermemfindlichkeitsstufen', subthema '-' and geometry 'flaeche'
 DELETE FROM ${dbSchema}.oerebwms_laermempfindlichkeitsstufen_flaeche;
-INSERT INTO ${dbSchema}.oerebwms_laermempfindlichkeitsstufen_flaeche AS 
+INSERT INTO ${dbSchema}.oerebwms_laermempfindlichkeitsstufen_flaeche
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -748,7 +748,7 @@ CREATE INDEX in_oerebwms_laermempfindlichkeitsstufen_flaeche_artcode
 -- -----------------------------------------------------------------------------
 -- table 'waldabstandslinien_linie' with thema 'Waldabstandslinien', subthema '-' and geometry 'linie'
 DELETE FROM ${dbSchema}.oerebwms_waldabstandslinien_linie;
-INSERT INTO ${dbSchema}.oerebwms_waldabstandslinien_linie AS 
+INSERT INTO ${dbSchema}.oerebwms_waldabstandslinien_linie
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -934,7 +934,7 @@ CREATE INDEX in_oerebwms_waldabstandslinien_linie_artcode
 -- -----------------------------------------------------------------------------
 -- table 'waldgrenzen_linie' with thema 'Waldgrenzen', subthema '-' and geometry 'linie'
 DELETE FROM ${dbSchema}.oerebwms_waldgrenzen_linie;
-INSERT INTO ${dbSchema}.oerebwms_waldgrenzen_linie AS 
+INSERT INTO ${dbSchema}.oerebwms_waldgrenzen_linie
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -1120,7 +1120,7 @@ CREATE INDEX in_oerebwms_waldgrenzen_linie_artcode
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_ueberlagernd_flaeche' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungUeberlagernd' and geometry 'flaeche'
 DELETE FROM ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_flaeche;
-INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_flaeche AS 
+INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_flaeche
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -1307,7 +1307,7 @@ CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_flaeche_artcode
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_ueberlagernd_punkt' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungUeberlagernd' and geometry 'punkt'
 DELETE FROM ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_punkt;
-INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_punkt AS 
+INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_punkt
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
@@ -1494,7 +1494,7 @@ CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_punkt_artcode
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_grundnutzung_flaeche' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungGrundnutzung' and geometry 'flaeche'
 DELETE FROM ${dbSchema}.oerebwms_nutzungsplanung_grundnutzung_flaeche;
-INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_grundnutzung_flaeche AS 
+INSERT INTO ${dbSchema}.oerebwms_nutzungsplanung_grundnutzung_flaeche
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
     SELECT 
