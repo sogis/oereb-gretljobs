@@ -5,7 +5,7 @@ Contains GRETL jobs for publishing data to OEREB-Kataster
 
 For running a GRETL job using the GRETL wrapper script, see the `start-gretl.sh` command example below. Set any DB connection parameter environment variables before running the command.
 
-If you want to set up a development environment for developing new GRETL jobs, use the following `docker-compose` command before running your GRETL job in order to prepare the necessary DBs.
+If you want to set up development databases for developing new GRETL jobs, use the following `docker-compose` command before running your GRETL job in order to prepare the necessary DBs.
 
 Start two DBs ("oereb" and "edit"),
 import data required for the data transformation into the "oereb" DB,
@@ -14,7 +14,7 @@ and import demo data into the "edit" DB
 `createSchemaLandUsePlans replaceLandUsePlansData`
 with the Gradle task names that handle your current OEREB topic):
 ```
-docker-compose run --rm --user $UID -v $(pwd)/development_environment:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
+docker-compose run --rm --user $UID -v $(pwd)/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
 ```
 
 Set environment variables containing the DB connection parameters:
