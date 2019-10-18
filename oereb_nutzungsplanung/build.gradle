@@ -180,10 +180,10 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true 
 }
 
-task refreshMaterializedViewsStage(type: SqlExecutor) {
-    description = "Aktualisiert materialisierte Views."
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["refresh_oereb_landuseplans_materialized_views.sql"]
+    sqlFiles = ["update_oerebwms_landuseplans_tables.sql"]
     sqlParameters = [dbSchema: 'stage']
 }
 
@@ -210,9 +210,9 @@ task importDataToLive(type: Ili2pgReplace) {
     disableValidation = true 
 }
 
-task refreshMaterializedViewsLive(type: SqlExecutor) {
-    description = "Aktualisiert materialisierte Views."
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["refresh_oereb_landuseplans_materialized_views.sql"]
+    sqlFiles = ["update_oerebwms_landuseplans_tables.sql"]
     sqlParameters = [dbSchema: 'live']
 }
