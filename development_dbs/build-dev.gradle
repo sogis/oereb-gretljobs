@@ -23,7 +23,7 @@ ext {
 
     //landUsePlansDataSets = ["2502", "2457", "2580"]
     //landUsePlansDataSets = ["2614"]
-    landUsePlansDataSets = ["2405", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2498", "2501", "2502", "2580", "2613", "2614", "2615"]
+    landUsePlansDataSets = ["2405", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2498", "2501", "2502", "2514", "2573", "2580", "2613", "2614", "2615"]
     landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.arp.nutzungsplanung/"
 }    
 
@@ -31,7 +31,7 @@ ext {
 // are exposed. 
 task createSchemaLandUsePlans(type: SqlExecutor){
     database = [dbUriEdit, "admin", "admin"]
-    sqlFiles = ['arp_npl.sql', 'grants.sql']
+    sqlFiles = ['arp_npl.sql', 'arp_npl_grants.sql']
 }
 
 landUsePlansDataSets.each { landUsePlansDataSet ->
