@@ -176,14 +176,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungUeberlagernd' AND
     geometrie.linie_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_linie_geom
-  ON ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_linie
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_linie_artcode
-  ON ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_linie
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_baulinien_linie' with thema 'Nutzungsplanung', subthema 'ch.SO.Baulinien' and geometry 'linie'
@@ -363,14 +355,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.Baulinien' AND
     geometrie.linie_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_nutzungsplanung_baulinien_linie_geom
-  ON ${dbSchema}.oerebwms_nutzungsplanung_baulinien_linie
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_nutzungsplanung_baulinien_linie_artcode
-  ON ${dbSchema}.oerebwms_nutzungsplanung_baulinien_linie
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_sondernutzungsplaene_flaeche' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungSondernutzungsplaene' and geometry 'flaeche'
@@ -550,14 +534,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungSondernutzungsplaene' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche_geom
-  ON ${dbSchema}.oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche_artcode
-  ON ${dbSchema}.oerebwms_nutzungsplanung_sondernutzungsplaene_flaeche
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'laermempfindlichkeitsstufen_flaeche' with thema 'Laermemfindlichkeitsstufen', subthema '-' and geometry 'flaeche'
@@ -736,14 +712,6 @@ WHERE
     eigentumsbeschraenkung.thema = 'Laermemfindlichkeitsstufen' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_laermempfindlichkeitsstufen_flaeche_geom
-  ON ${dbSchema}.oerebwms_laermempfindlichkeitsstufen_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_laermempfindlichkeitsstufen_flaeche_artcode
-  ON ${dbSchema}.oerebwms_laermempfindlichkeitsstufen_flaeche
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'waldabstandslinien_linie' with thema 'Waldabstandslinien', subthema '-' and geometry 'linie'
@@ -922,14 +890,6 @@ WHERE
     eigentumsbeschraenkung.thema = 'Waldabstandslinien' AND
     geometrie.linie_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_waldabstandslinien_linie_geom
-  ON ${dbSchema}.oerebwms_waldabstandslinien_linie
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_waldabstandslinien_linie_artcode
-  ON ${dbSchema}.oerebwms_waldabstandslinien_linie
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'waldgrenzen_linie' with thema 'Waldgrenzen', subthema '-' and geometry 'linie'
@@ -1108,14 +1068,6 @@ WHERE
     eigentumsbeschraenkung.thema = 'Waldgrenzen' AND
     geometrie.linie_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_waldgrenzen_linie_geom
-  ON ${dbSchema}.oerebwms_waldgrenzen_linie
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_waldgrenzen_linie_artcode
-  ON ${dbSchema}.oerebwms_waldgrenzen_linie
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_ueberlagernd_flaeche' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungUeberlagernd' and geometry 'flaeche'
@@ -1295,14 +1247,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungUeberlagernd' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_flaeche_geom
-  ON ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_flaeche_artcode
-  ON ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_flaeche
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_ueberlagernd_punkt' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungUeberlagernd' and geometry 'punkt'
@@ -1482,14 +1426,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungUeberlagernd' AND
     geometrie.punkt_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_punkt_geom
-  ON ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_punkt
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_nutzungsplanung_ueberlagernd_punkt_artcode
-  ON ${dbSchema}.oerebwms_nutzungsplanung_ueberlagernd_punkt
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'nutzungsplanung_grundnutzung_flaeche' with thema 'Nutzungsplanung', subthema 'ch.SO.NutzungsplanungGrundnutzung' and geometry 'flaeche'
@@ -1669,14 +1605,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.NutzungsplanungGrundnutzung' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_nutzungsplanung_grundnutzung_flaeche_geom
-  ON ${dbSchema}.oerebwms_nutzungsplanung_grundnutzung_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_nutzungsplanung_grundnutzung_flaeche_artcode
-  ON ${dbSchema}.oerebwms_nutzungsplanung_grundnutzung_flaeche
-  USING btree ( artcode );
   
 -- -----------------------------------------------------------------------------
 -- table 'weiteres_thema_einzelschutz_flaeche' with thema 'WeiteresThema', subthema 'ch.SO.Einzelschutz' and geometry 'flaeche'
@@ -1856,14 +1784,6 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.Einzelschutz' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_weiteres_thema_einzelschutz_flaeche_geom
-  ON ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_weiteres_thema_einzelschutz_flaeche_artcode
-  ON ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche
-  USING btree ( artcode );
       
 -- -----------------------------------------------------------------------------
 -- table 'weiteres_thema_einzelschutz_punkt' with thema 'WeiteresThema', subthema 'ch.SO.Einzelschutz' and geometry 'punkt'
@@ -2043,11 +1963,3 @@ WHERE
     eigentumsbeschraenkung.subthema = 'ch.SO.Einzelschutz' AND
     geometrie.punkt_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_weiteres_thema_einzelschutz_punkt_geom
-  ON ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_weiteres_thema_einzelschutz_punkt_artcode
-  ON ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt
-  USING btree ( artcode );
