@@ -23,7 +23,6 @@ pipeline {
                 }
                 stash name: "gretljob"
                 emailext (
-                    to: '${DEFAULT_RECIPIENTS}',
                     recipientProviders: [requestor()],
                     subject: "ÖREB-Daten zum Review bereit (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
                     body: "Mit dem GRETL-Job ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden ÖREB-Daten bereitgestellt, die ein Review erfordern. Nach dem Review können Sie unter folgendem Link die Publikation der Daten veranlassen oder abbrechen: ${RUN_DISPLAY_URL}."
@@ -50,7 +49,6 @@ pipeline {
     post {
         success {
             emailext (
-                to: '${DEFAULT_RECIPIENTS}',
                 recipientProviders: [requestor()],
                 subject: "ÖREB-Daten sind publiziert (GRETL-Job ${JOB_NAME} ${BUILD_DISPLAY_NAME})",
                 body: "Die ÖREB-Daten des GRETL-Jobs ${JOB_NAME} (${BUILD_DISPLAY_NAME}) wurden erfolgreich publiziert. Die Log-Meldungen dazu finden Sie unter ${RUN_DISPLAY_URL}."
