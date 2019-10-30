@@ -6,7 +6,6 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
@@ -17,21 +16,20 @@ def federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
 def cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
 def cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
 
+/************************************************************/
+def dbUriOereb = "jdbc:postgresql://10.36.43.197:54321/oereb"
+def dbUserOereb = "admin"
+def dbPwdOereb = "admin"
+/************************************************************/
 
+def kbsDataSet = "ch.so.kataster-belasteter-standorte.oereb"
 
-/***************************** später ersetzen durch Belastete Standorte Kanton ***********************/
-def kbsDataSet = "ch.bav.kataster-belasteter-standorte-oev.oereb"
-/******************************************************************************************************/
-
-
-/***************************************** später löschen ********************************************/
 task downloadFederalLegalBasis(type: Download) {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
     src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
     dest pathToTempFolder
     overwrite true
 }
-/******************************************************************************************************/
 
 task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegalBasis") {
     description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
@@ -42,7 +40,8 @@ task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegal
 
 task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
     description = "Download Belastete Standorte"
-    src "https://data.geo.admin.ch/" + kbsDataSet + "/data.zip"
+    //src "https://data.geo.admin.ch/" + kbsDataSet + "/data.zip"
+    src "http://altlast4web-t.verw.rootso.org/interlis_exports/oereb/data.zip"
     dest pathToTempFolder
     overwrite true
 }
@@ -60,20 +59,26 @@ task unzipData(type: Copy, dependsOn: "downloadKbs"){
         return fileName
     }
 }
-
+/***************************** wenn Kbs-Daten fehlerfrei auskommentieren ***********************/
+/*
 task validateData(type: IliValidator, dependsOn: "unzipData") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [
                  file(Paths.get("$rootDir/" + kbsDataSet + ".xtf")),
-                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),           //***** Zeile löschen, wenn kantonale Kbs validiert werden
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),
                  file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
                 ]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
     configFile = "validateData.toml"
 }
+*/
+/***********************************************************************************************/
 
-task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+/***************************** wenn Kbs-Daten fehlerfrei auskommentieren ***********************/
+//task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+task importDataToStage(type: Ili2pgReplace, dependsOn: "unzipData") {
+/***********************************************************************************************/
     description = "Import Belastete Standorte in das Stage-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = "OeREBKRMtrsfr_V1_1"
