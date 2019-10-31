@@ -17,7 +17,8 @@ with the Gradle task names that handle your current OEREB topic):
 docker-compose run --rm --user $UID -v $(pwd)/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
 ```
 
-Set environment variables containing the DB connection parameters:
+Set environment variables containing the DB connection parameters
+and names of other resources:
 ```
 export ORG_GRADLE_PROJECT_dbUriEdit="jdbc:postgresql://edit-db/edit"
 export ORG_GRADLE_PROJECT_dbUserEdit="gretl"
@@ -25,6 +26,7 @@ export ORG_GRADLE_PROJECT_dbPwdEdit="gretl"
 export ORG_GRADLE_PROJECT_dbUriOereb="jdbc:postgresql://oereb-db/oereb"
 export ORG_GRADLE_PROJECT_dbUserOereb="gretl"
 export ORG_GRADLE_PROJECT_dbPwdOereb="gretl"
+export ORG_GRADLE_PROJECT_geoservicesHostName="geo-t.so.ch"
 ```
 
 Start the GRETL job
