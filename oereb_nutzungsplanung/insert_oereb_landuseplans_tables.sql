@@ -317,7 +317,6 @@ INSERT INTO
             typ_kt IN 
             (
                 'N811_erhaltenswerter_Einzelbaum',
-                'N820_kantonal_geschuetztes_Kulturobjekt',
                 'N822_schuetzenswertes_Kulturobjekt',
                 'N823_erhaltenswertes_Kulturobjekt'
             )
