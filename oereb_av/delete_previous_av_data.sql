@@ -3,6 +3,7 @@ DELETE FROM ${dbSchema}.dm01vch24lv95dgemeindegrenzen_gemeindegrenze;
 DELETE FROM ${dbSchema}.dm01vch24lv95dgemeindegrenzen_gemeinde;
 DELETE FROM ${dbSchema}.dm01vch24lv95dgemeindegrenzen_gemnachfuehrung;
 -- Liegenschaften
+DELETE FROM ${dbSchema}.dm01vch24lv95dliegenschaften_selbstrecht;
 DELETE FROM ${dbSchema}.dm01vch24lv95dliegenschaften_liegenschaft;
 DELETE FROM ${dbSchema}.dm01vch24lv95dliegenschaften_grundstueck;
 DELETE FROM ${dbSchema}.dm01vch24lv95dliegenschaften_lsnachfuehrung;
