@@ -15,7 +15,7 @@ and import demo data into the "edit" DB
 with the Gradle task names that handle your current OEREB topic):
 ```
 # docker-compose down # (optional; for cleaning up any already existing DB containers)
-docker-compose run --rm --user $UID -v $(pwd)/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
+docker-compose run --rm --user $UID -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
 ```
 
 Set environment variables containing the DB connection parameters
@@ -34,5 +34,5 @@ Start the GRETL job
 (use the --job-directory option to point to the desired GRETL job;
 find out the names of your Docker networks by running `docker network ls`):
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $(pwd)/oereb_nutzungsplanung/ importDataToStage
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $PWD/oereb_nutzungsplanung/ importDataToStage
 ```
