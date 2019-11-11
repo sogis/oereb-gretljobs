@@ -14,6 +14,7 @@ and import demo data into the "edit" DB
 `createSchemaLandUsePlans replaceLandUsePlansData`
 with the Gradle task names that handle your current OEREB topic):
 ```
+# docker-compose down # (optional; for cleaning up any already existing DB containers)
 docker-compose run --rm --user $UID -v $(pwd)/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
 ```
 
