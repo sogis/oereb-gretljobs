@@ -55,9 +55,12 @@ echo "======================================================="
 # special run configuration for jenkins-slave based image:
 # 1. use a shell as entry point
 # 2. mount job directory as volume
-# 3. run as current user to avoid permission problems on generated .gradle directory
-# 4. gretl-runtime image with tag latest
-# 5. executed commands seperated by semicolon:
+# 3. mount /tmp directory as GRETL share
+# 4. Pass all environment variables starting with ORG_GRADLE_PROJECT_ to the container
+# 5. run as current user to avoid permission problems on generated .gradle directory
+# 6. connect container to a specific docker network if specified by the user
+# 7. run gretl-runtime image passed by the user
+# 8. executed commands seperated by semicolon:
 #    a. jenkins jnlp client
 #    b. change to project directory
 #    c. run gradle with given task and parameter using init script from image
