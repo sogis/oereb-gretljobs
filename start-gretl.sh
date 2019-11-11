@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # use like this:
-# ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $(pwd)/jobname [taskName...] [--option-name...]
+# ./start-gretl.sh --docker-image sogis/gretl-runtime:latest [--docker-network NETWORK] --job-directory $PWD/jobname [taskName...] [--option-name...]
 # [--docker-network NETWORK] may be used for connecting the container to an already existing docker network
 # [--option-name...] takes any Gradle option, including project properties
 # (e.g. -Pmyprop=myvalue) and system properties (e.g. -Dmyprop=myvalue).
