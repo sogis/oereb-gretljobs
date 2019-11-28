@@ -36,7 +36,6 @@ task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegal
 
 task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
     description = "Download Belastete Standorte"
-    //src "https://data.geo.admin.ch/" + kbsDataSet + "/data.zip"
     src "http://altlast4web-t.verw.rootso.org/interlis_exports/oereb/data.zip"
     dest pathToTempFolder
     overwrite true
@@ -55,8 +54,7 @@ task unzipData(type: Copy, dependsOn: "downloadKbs"){
         return fileName
     }
 }
-/***************************** wenn Kbs-Daten fehlerfrei auskommentieren ***********************/
-/*
+
 task validateData(type: IliValidator, dependsOn: "unzipData") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [
@@ -68,13 +66,8 @@ task validateData(type: IliValidator, dependsOn: "unzipData") {
     allObjectsAccessible = true
     configFile = "validateData.toml"
 }
-*/
-/***********************************************************************************************/
 
-/***************************** wenn Kbs-Daten fehlerfrei auskommentieren ***********************/
-//task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-task importDataToStage(type: Ili2pgReplace, dependsOn: "unzipData") {
-/***********************************************************************************************/
+task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import Belastete Standorte in das Stage-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = "OeREBKRMtrsfr_V1_1"
