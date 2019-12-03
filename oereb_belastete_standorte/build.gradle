@@ -17,21 +17,15 @@ def federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
 def cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
 def cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
 
+def kbsDataSet = "ch.so.kataster-belasteter-standorte.oereb"
 
 
-/***************************** später ersetzen durch Belastete Standorte Kanton ***********************/
-def kbsDataSet = "ch.bav.kataster-belasteter-standorte-oev.oereb"
-/******************************************************************************************************/
-
-
-/***************************************** später löschen ********************************************/
 task downloadFederalLegalBasis(type: Download) {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
     src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
     dest pathToTempFolder
     overwrite true
 }
-/******************************************************************************************************/
 
 task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegalBasis") {
     description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
@@ -42,7 +36,7 @@ task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegal
 
 task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
     description = "Download Belastete Standorte"
-    src "https://data.geo.admin.ch/" + kbsDataSet + "/data.zip"
+    src "http://altlast4web-t.verw.rootso.org/interlis_exports/oereb/data.zip"
     dest pathToTempFolder
     overwrite true
 }
@@ -65,7 +59,7 @@ task validateData(type: IliValidator, dependsOn: "unzipData") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [
                  file(Paths.get("$rootDir/" + kbsDataSet + ".xtf")),
-                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),           //***** Zeile löschen, wenn kantonale Kbs validiert werden
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),
                  file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
                 ]
     logFile = "ilivalidator.log"
