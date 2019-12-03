@@ -36,7 +36,7 @@ task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegal
 
 task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
     description = "Download Belastete Standorte"
-    src "https://altlast4web.verw.rootso.org/interlis_exports/oereb/data.zip"
+    src "https://altlast4web-t.verw.rootso.org/interlis_exports/oereb/data.zip"
     dest pathToTempFolder
     overwrite true
 }
