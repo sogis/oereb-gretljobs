@@ -11,6 +11,9 @@ ext {
 
     iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
     dbSchemaLandUsePlans = "arp_npl"
+    
+    iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
+    dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
 
     iliModelVorschriften = "OeREBKRMvs_V1_1"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
@@ -25,6 +28,9 @@ ext {
     //landUsePlansDataSets = ["2614"]
     landUsePlansDataSets = ["2405", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2498", "2501", "2502", "2514", "2573", "2580", "2613", "2614", "2615"]
     landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.arp.nutzungsplanung/"
+    
+    GroundwaterProtectionDataSet = "afu_gewaesserschutz"
+    GroundwaterProtectionBaseUrl = "??????????????????????????"
 }    
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options
@@ -74,6 +80,35 @@ task uploadToS3(type: AmazonS3FileUploadTask) {
 	objectMetadata = m
 }
 */
+
+task createSchemaGroundwaterProtection(type: SqlExecutor){
+    database = [dbUriEdit, "admin", "admin"]
+    sqlFiles = ['afu_gewaesserschutz.sql', 'afu_gewaesserschutz_grants.sql']
+}
+
+task downloadGroundwaterProtectionData(type: Download) {
+    src GroundwaterProtectionBaseUrl + GroundwaterProtectionDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }        
+}
+
+task replaceGroundwaterProtectionData(type: Ili2pgReplace, dependsOn: "downloadGroundwaterProtectionData") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelGroundwaterProtection
+    dbschema = dbSchemaGroundwaterProtection
+    dataFile = file(Paths.get(pathToTempFolder.toString(), GroundwaterProtectionDataSet + ".xtf"))
+    dataset = GroundwaterProtectionDataSet
+    disableValidation = true
+}
+
+task replaceGroundwaterProtectionData() {
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('replaceGroundwaterProtectionData_') }
+    }
+}
 
 task downloadFederalLegalBasis(type: Download) {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
