@@ -8,7 +8,8 @@ For running a GRETL job using the GRETL wrapper script, see the `start-gretl.sh`
 If you want to set up development databases for developing new GRETL jobs, use the following `docker-compose` command before running your GRETL job in order to prepare the necessary DBs.
 
 Start two DBs ("oereb" and "edit"),
-import data required for the data transformation into the "oereb" DB,
+import data required for the data transformation
+(the so called legal basis data) into the "oereb" DB,
 and import demo data into the "edit" DB
 (when working on other OEREB topics, replace
 `createSchemaLandUsePlans replaceLandUsePlansData`
