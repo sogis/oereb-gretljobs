@@ -9,12 +9,6 @@ apply plugin: "ch.so.agi.gretl"
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-    iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
-    dbSchemaLandUsePlans = "arp_npl"
-    
-    iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
-    dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
-
     iliModelVorschriften = "OeREBKRMvs_V1_1"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
 
@@ -24,11 +18,13 @@ ext {
     cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
     cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
 
-    //landUsePlansDataSets = ["2502", "2457", "2580"]
-    //landUsePlansDataSets = ["2614"]
+    iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
+    dbSchemaLandUsePlans = "arp_npl"
     landUsePlansDataSets = ["2405", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2498", "2501", "2502", "2514", "2573", "2580", "2613", "2614", "2615"]
     landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.arp.nutzungsplanung/"
     
+    iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
+    dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
     GroundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
     GroundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/oereb_gewaesserschutz/development_dbs/"
 }    
