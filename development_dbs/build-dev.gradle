@@ -26,7 +26,7 @@ ext {
     iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
     dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
     GroundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
-    GroundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/oereb_gewaesserschutz/development_dbs/"
+    GroundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 }    
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options
