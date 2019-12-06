@@ -29,8 +29,8 @@ ext {
     landUsePlansDataSets = ["2405", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2498", "2501", "2502", "2514", "2573", "2580", "2613", "2614", "2615"]
     landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.arp.nutzungsplanung/"
     
-    GroundwaterProtectionDataSet = "afu_gewaesserschutz"
-    GroundwaterProtectionBaseUrl = "??????????????????????????"
+    GroundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
+    GroundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/oereb_gewaesserschutz/development_dbs/"
 }    
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options
@@ -87,7 +87,7 @@ task createSchemaGroundwaterProtection(type: SqlExecutor){
 }
 
 task downloadGroundwaterProtectionData(type: Download) {
-    src GroundwaterProtectionBaseUrl + GroundwaterProtectionDataSet + ".xtf"
+    src GroundwaterProtectionBaseUrl + GroundwaterProtectionDataFile
     dest pathToTempFolder
     overwrite true
     doLast {
@@ -95,20 +95,15 @@ task downloadGroundwaterProtectionData(type: Download) {
     }        
 }
 
-task replaceGroundwaterProtectionData(type: Ili2pgReplace, dependsOn: "downloadGroundwaterProtectionData") {
+task replaceGroundwaterProtectionData(type: Ili2pgImport, dependsOn: "downloadGroundwaterProtectionData") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelGroundwaterProtection
     dbschema = dbSchemaGroundwaterProtection
-    dataFile = file(Paths.get(pathToTempFolder.toString(), GroundwaterProtectionDataSet + ".xtf"))
-    dataset = GroundwaterProtectionDataSet
+    dataFile = file(Paths.get(pathToTempFolder.toString(), GroundwaterProtectionDataFile))
+    deleteData = true
     disableValidation = true
 }
 
-task replaceGroundwaterProtectionData() {
-    dependsOn {
-        tasks.findAll { task -> task.name.startsWith('replaceGroundwaterProtectionData_') }
-    }
-}
 
 task downloadFederalLegalBasis(type: Download) {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
