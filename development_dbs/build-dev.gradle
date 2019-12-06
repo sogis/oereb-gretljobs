@@ -38,7 +38,7 @@ task createSchemaLandUsePlans(type: SqlExecutor){
 
 landUsePlansDataSets.each { landUsePlansDataSet ->
     def dataSet = landUsePlansDataSet.toString()
-    task "downloadLandUsePlansData_$dataSet"(type: Download) {
+    task "downloadDataLandUsePlans_$dataSet"(type: Download) {
         src landUsePlansBaseUrl + dataSet + ".xtf"
         dest pathToTempFolder
         overwrite true
@@ -48,7 +48,7 @@ landUsePlansDataSets.each { landUsePlansDataSet ->
         }        
     }
 
-    task "replaceLandUsePlansData_$dataSet"(type: Ili2pgReplace, dependsOn: "downloadLandUsePlansData_$dataSet") {
+    task "replaceDataLandUsePlans_$dataSet"(type: Ili2pgReplace, dependsOn: "downloadDataLandUsePlans_$dataSet") {
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
         models = iliModelLandUsePlans
         dbschema = dbSchemaLandUsePlans
@@ -58,9 +58,9 @@ landUsePlansDataSets.each { landUsePlansDataSet ->
     }
 }
 
-task replaceLandUsePlansData() {
+task replaceDataLandUsePlans() {
     dependsOn {
-        tasks.findAll { task -> task.name.startsWith('replaceLandUsePlansData_') }
+        tasks.findAll { task -> task.name.startsWith('replaceDataLandUsePlans_') }
     }
 }
 
@@ -82,7 +82,7 @@ task createSchemaGroundwaterProtection(type: SqlExecutor){
     sqlFiles = ['afu_gewaesserschutz.sql', 'afu_gewaesserschutz_grants.sql']
 }
 
-task downloadGroundwaterProtectionData(type: Download) {
+task downloadDataGroundwaterProtection(type: Download) {
     src groundwaterProtectionBaseUrl + groundwaterProtectionDataFile
     dest pathToTempFolder
     overwrite true
@@ -91,7 +91,7 @@ task downloadGroundwaterProtectionData(type: Download) {
     }        
 }
 
-task replaceGroundwaterProtectionData(type: Ili2pgImport, dependsOn: "downloadGroundwaterProtectionData") {
+task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDataGroundwaterProtection") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelGroundwaterProtection
     dbschema = dbSchemaGroundwaterProtection
