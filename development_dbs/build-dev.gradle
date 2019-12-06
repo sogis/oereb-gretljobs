@@ -25,8 +25,8 @@ ext {
     
     iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
     dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
-    GroundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
-    GroundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+    groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
+    groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 }    
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options
@@ -83,7 +83,7 @@ task createSchemaGroundwaterProtection(type: SqlExecutor){
 }
 
 task downloadGroundwaterProtectionData(type: Download) {
-    src GroundwaterProtectionBaseUrl + GroundwaterProtectionDataFile
+    src groundwaterProtectionBaseUrl + groundwaterProtectionDataFile
     dest pathToTempFolder
     overwrite true
     doLast {
@@ -95,7 +95,7 @@ task replaceGroundwaterProtectionData(type: Ili2pgImport, dependsOn: "downloadGr
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelGroundwaterProtection
     dbschema = dbSchemaGroundwaterProtection
-    dataFile = file(Paths.get(pathToTempFolder.toString(), GroundwaterProtectionDataFile))
+    dataFile = file(Paths.get(pathToTempFolder.toString(), groundwaterProtectionDataFile))
     deleteData = true
     disableValidation = true
 }
