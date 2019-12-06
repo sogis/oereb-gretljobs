@@ -12,11 +12,11 @@ import data required for the data transformation
 (the so called legal basis data) into the "oereb" DB,
 and import demo data into the "edit" DB
 (when working on other OEREB topics, replace
-`createSchemaLandUsePlans replaceLandUsePlansData`
+`createSchemaLandUsePlans replaceDataLandUsePlans`
 with the Gradle task names that handle your current OEREB topic):
 ```
 # docker-compose down # (optional; for cleaning up any already existing DB containers)
-docker-compose run --rm --user $UID -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceLandUsePlansData"
+docker-compose run --rm --user $UID -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceDataLandUsePlans"
 ```
 
 Set environment variables containing the DB connection parameters
