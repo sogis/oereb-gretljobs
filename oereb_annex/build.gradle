@@ -6,84 +6,55 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: "ch.so.agi.gretl"
 apply plugin: "de.undercouch.download"
 
-defaultTasks "importOEREBAnnex"
+defaultTasks "transferStageToLive"
 
-def GROUP = "oereb-annex_import"
-def dbSchemas = ["stage","live"]
+def GROUP = "oereb-annex_data-transfer"
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def annexModel = "OeREB_ExtractAnnex_V1_0"
+def xtfFile = "ch.so.agi.OeREB_extractAnnex.xtf"
 
-task "downloadAnnexAktiveGemeinden"(type: Download){
-    description = "Download Annex Data Aktive Gemeinden"
+task "updateAVImportDate"(type: SqlExecutor){
+    description = "Update des AV-Import Datums per Gemeinde"
     group = GROUP
-    src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf"
-    dest pathToTempFolder
-    overwrite true
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["update_avimportdate_in_annex_model.sql"]
 }
 
-task "downloadAnnexKatasterAmt"(type: Download, dependsOn: "downloadAnnexAktiveGemeinden"){
-    description = "Download Annex Data Katasteramt"
+//OEREB-Annex-Export
+task "exportAnnexData"(type: Ili2pgExport, dependsOn: "updateAVImportDate") {
+    description = "Export of the OEREB Annex Data from editdb into INTERLIS-File $xtfFile"
     group = GROUP
-    src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf"
-    dest pathToTempFolder
-    overwrite true
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = annexModel
+    dbschema = "agi_oereb_annex"
+    dataFile = "$rootDir/" + "$xtfFile"
+    disableValidation = false
 }
 
-task "downloadAnnexStammdaten"(type: Download, dependsOn: "downloadAnnexKatasterAmt"){
-    description = "Download Annex Stammdaten"
+task "importAnnexDataStage"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
+    description = "Import Annex Data into Schema stage with dataset $xtfFile"
     group = GROUP
-    src "https://geo.so.ch/geodata/ch.so.agi.extractannex.oereb/ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf"
-    dest pathToTempFolder
-    overwrite true
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    dataset = "ch.so.agi.OeREB_extractAnnex_stage"
+    models = annexModel
+    dbschema = "stage"
+    dataFile = "$rootDir/" + "$xtfFile"
+    disableValidation = false
 }
 
-//OEREB-Annex-import
-dbSchemas.each { dbSchema ->
-
-    task "importAnnexAktiveGemeinden_$dbSchema"(type: Ili2pgReplace, dependsOn: "downloadAnnexStammdaten"){
-        description = "Import Annex Data Aktive Gemeinden"
-        group = GROUP
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-        models = "OeREB_ExtractAnnex_V1_0"
-        dbschema = "$dbSchema"
-        dataFile = file(Paths.get(pathToTempFolder.toString(), "ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf"))
-        dataset = "ch.so.agi.oereb_extract_annex.aktive_gemeinden"
-        disableValidation = true
-    }
-
-
-    task "importAnnexKatasteramt_$dbSchema"(type: Ili2pgReplace, dependsOn: "importAnnexAktiveGemeinden_$dbSchema"){
-        description = "Import Annex Data Katasteramt"
-        group = GROUP
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-        models = "OeREB_ExtractAnnex_V1_0"
-        dbschema = "$dbSchema"
-        dataFile = file(Paths.get(pathToTempFolder.toString(), "ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf"))
-        dataset = "ch.so.agi.oereb_extract_annex.katasteramt"
-        disableValidation = true
-    }
-
-    task "importAnnexStammdaten_$dbSchema"(type: Ili2pgReplace, dependsOn: "importAnnexKatasteramt_$dbSchema"){
-        description = "Import Annex Stammdaten"
-        group = GROUP
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-        models = "OeREB_ExtractAnnex_V1_0"
-        dbschema = "$dbSchema"
-        dataFile = file(Paths.get(pathToTempFolder.toString(), "ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf"))
-        dataset = "ch.so.agi.oereb_extract_annex.stammdaten"
-        disableValidation = true
-    }
-}
-
-// this task is the main task to be started
-task importOEREBAnnex() {
-    description = "Aggregationstask."
+task "syncDatasetsAndBaskets"(type: SqlExecutor, dependsOn: "importAnnexDataStage"){
+    description = "Synchronization of dataset and basket tables"
     group = GROUP
-    doLast {
-        println "ÖREB annex data imported."
-    }
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["synchronize_dataset_and_baskets_stage-live.sql"]
 }
 
-// finds all tasks from the each loop and sets them as dependants
-importOEREBAnnex.dependsOn {
-    tasks.findAll { task -> task.name.startsWith('importAnnexStammdaten_') }
+task "transferStageToLive"(type: SqlExecutor, dependsOn: "syncDatasetsAndBaskets"){
+    description = "Transfer of OEREB annex tables stage to live schema without theme codelist"
+    group = GROUP
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["transferStageToLive.sql"]
 }
+
+
+
