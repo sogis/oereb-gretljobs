@@ -8,7 +8,7 @@ DELETE FROM stage.t_ili2db_dataset WHERE datasetname = 'ch.so.agi.oereb_extract_
 DELETE FROM stage.t_ili2db_basket WHERE attachmentkey LIKE 'ch.so.agi.OeREB_extractAnnex-AktiveGemeinden.xtf-%';
 DELETE FROM stage.t_ili2db_basket WHERE attachmentkey LIKE 'ch.so.agi.OeREB_extractAnnex-KatatasterAmt.xtf-%';
 DELETE FROM stage.t_ili2db_basket WHERE attachmentkey LIKE 'ch.so.agi.OeREB_extractAnnex-Stammdaten.xtf-%';
-DELETE FROM stage.t_ili2db_basket WHERE attachmentkey LIKE 'ch.so.agi.OeREB_extractAnnex.xtf-%'
+--DELETE FROM stage.t_ili2db_basket WHERE attachmentkey LIKE 'ch.so.agi.OeREB_extractAnnex.xtf-%'
 --delete everything from stage in the right order
 DELETE FROM stage.oerb_xtnx_v1_0annex_logo;
 DELETE FROM stage.oerb_xtnx_v1_0annex_glossary;
