@@ -31,10 +31,22 @@ task "exportAnnexData"(type: Ili2pgExport, dependsOn: "updateAVImportDate") {
     disableValidation = false
 }
 
-task "importAnnexDataStage"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
-    description = "Import Annex Data into Schema stage with dataset $xtfFile"
+task "importAnnexDataLive"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
+    description = "Import Annex live Data into Schema stage with dataset $xtfFile"
     group = GROUP
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    dataset = "ch.so.agi.OeREB_extractAnnex_live"
+    models = annexModel
+    dbschema = "stage"
+    dataFile = "$rootDir/" + "$xtfFile"
+    disableValidation = false
+}
+
+task "importAnnexDataStage"(type: Ili2pgReplace, dependsOn: "importAnnexDataLive"){
+    description = "Import Annex stage Data into Schema stage with dataset $xtfFile"
+    group = GROUP
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    dataset = "ch.so.agi.OeREB_extractAnnex_stage"
     models = annexModel
     dbschema = "stage"
     dataFile = "$rootDir/" + "$xtfFile"
