@@ -2,7 +2,7 @@
  * Die korrekte Reihenfolge der Queries ist zwingend. 
  * 
  * Allg. Überlegungen/Bemerkungen zum Datenumbau finden sich im SQL-Skript
- * sogis/oereb-gretljobs/oereb_nutzungsplanung/insert_oereb_landuseplans_tables.sql. 
+ * sogis/oereb-gretljobs/oereb_grundwasserschutz/insert_oereb_groundwaterprotection_tables.sql. 
  * Das Thema Gewässerschutz kann gemäss Filterfunktion im Dokument
  * "Planerischer_Gewaesserschutz_ID130,131,132_20171023_V1.1_d.pdf" in die
  * Transferstruktur des Rahmenmodells für den ÖREB-Kataster transformiert werden.
@@ -32,7 +32,7 @@ INSERT INTO
         gwszone.typ AS aussage_de,
         'Grundwasserschutzzonen' AS thema,
         gwszone.typ AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen' AS artcodeliste,           --?????????
+        'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen' AS artcodeliste,           -- ist die Bezeichnung richtig?
         status.rechtsstatus,
         status.rechtskraftdatum AS publiziertab, 
         amt.t_id AS zustaendigestelle
@@ -69,7 +69,7 @@ INSERT INTO
          gwsareal.typ AS aussage_de,
          'Grundwasserschutzareale' AS thema,
          gwsareal.typ AS artcode,
-         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale' AS artcodeliste,           --?????????
+         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale' AS artcodeliste,           -- ist die Bezeichnung richtig?
          status.rechtsstatus,
          status.rechtskraftdatum AS publiziertab, 
          amt.t_id AS zustaendigestelle
@@ -94,7 +94,6 @@ INSERT INTO
          status.rechtskraftdatum IS NOT NULL
      AND
          status.rechtsstatus = 'inKraft'
-    
 ;
 
 /*
@@ -203,23 +202,11 @@ INSERT INTO
 
 /*
  * Umbau der Geometrien, die Inhalt des ÖREB-Katasters sind.
- * 
- * (1) Es werde nicht alle Geometrien der jeweiligen
- * Nutzungsebene kopiert, sondern nur diejenigen, die Inhalt 
- * des ÖREB-Katasters sind. Dieser Filter wird bei Umbau 
- * des NPL-Typs gesetzt.
- * 
- * (2) Die zuständige Stelle ist identisch mit der zuständigen
- * Stelle der Eigentumsbeschränkung.
- * 
- * (3) Die Geometrien werden mit ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid()))
- * bereinigt. 
  */
 
 INSERT INTO
     afu_grundwasserschutz_oereb.transferstruktur_geometrie
-    (
---        t_id,       -- stimmt das so, die Geometrien und Eigentumsbeschränungen kommen aus derselben Tabelle? 
+    ( 
         t_basket,
         t_datasetname,
         flaeche_lv95,
@@ -229,7 +216,6 @@ INSERT INTO
         zustaendigestelle
     )
     SELECT 
---        schutzzone.t_id,
         basket_dataset.basket_t_id AS t_basket,
         basket_dataset.datasetname AS t_datasetname,
         ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(schutzzone.geometrie, 0.001))) AS flaeche_lv95,
@@ -313,8 +299,6 @@ WITH transferstruktur_darstellungsdienst AS
         SELECT
             basket_dataset.basket_t_id AS t_basket,
             basket_dataset.datasetname AS t_datasetname,
---            'https://geo-t.so.ch/wms/oereb?ch.SO.'||thema AS verweiswms,
---            'http://wms:80/wms/oereb?' AS legendeimweb
             '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
             '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.') AS legendeimweb
         FROM

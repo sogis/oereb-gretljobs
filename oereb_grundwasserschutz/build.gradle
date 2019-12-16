@@ -13,7 +13,7 @@ ext {
     iliModelVorschriften = "OeREBKRMvs_V1_1"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
 
-    symbolsWmsBaseUrl = "https://geo-t.so.ch"
+    symbolsWmsBaseUrl = "https://" + geoservicesHostName
     xtfFileName = "ch.so.afu.grundwasserschutz.oereb.xtf"
 
     dbSchemaGroundwaterProtectionOereb = "afu_grundwasserschutz_oereb"
@@ -96,7 +96,7 @@ task deleteFromOereb(type: SqlExecutor) {
 task transferData(type: SqlExecutor, dependsOn: ["importFederalLegalBasisToOereb", "importCantonalLegalBasisToOereb", "importResponsibleOfficesToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["insert_oereb_groundwaterprotection_zone_tables.sql"]
+    sqlFiles = ["insert_oereb_groundwaterprotection_tables.sql"]
 }
 
 wmsLayerList.each { wmsLayer ->
