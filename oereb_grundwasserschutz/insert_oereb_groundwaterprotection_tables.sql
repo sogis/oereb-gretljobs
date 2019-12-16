@@ -2,7 +2,7 @@
  * Die korrekte Reihenfolge der Queries ist zwingend. 
  * 
  * Allg. Überlegungen/Bemerkungen zum Datenumbau finden sich im SQL-Skript
- * sogis/oereb-gretljobs/oereb_grundwasserschutz/insert_oereb_groundwaterprotection_tables.sql. 
+ * sogis/oereb-gretljobs/oereb_nutzungsplanung/insert_oereb_landuseplans_tables.sql.
  * Das Thema Gewässerschutz kann gemäss Filterfunktion im Dokument
  * "Planerischer_Gewaesserschutz_ID130,131,132_20171023_V1.1_d.pdf" in die
  * Transferstruktur des Rahmenmodells für den ÖREB-Kataster transformiert werden.
