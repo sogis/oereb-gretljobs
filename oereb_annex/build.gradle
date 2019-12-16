@@ -48,7 +48,7 @@ task "importAnnexData"(type: Ili2pgReplace, dependsOn: "deleteOldStageData"){
     disableValidation = false
 }
 
-task "syncDatasetsAndBaskets"(type: SqlExecutor, dependsOn: "importAnnexDataStage"){
+task "syncDatasetsAndBaskets"(type: SqlExecutor, dependsOn: "importAnnexData"){
     description = "Synchronization of dataset and basket tables"
     group = GROUP
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
