@@ -32,24 +32,8 @@ task "exportAnnexData"(type: Ili2pgExport, dependsOn: "updateAVImportDate") {
     disableValidation = false
 }
 
-//
-task "deleteOldStageData"(type: SqlExecutor, dependsOn: "exportAnnexData"){
-    description = "delete old annex data from stage schema"
-    group = GROUP
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["deleteOldStageSchema.sql"]
-}
-
-//
-task "deleteOldLiveData"(type: SqlExecutor, dependsOn: "deleteOldStageData"){
-    description = "delete old annex data from live schema"
-    group = GROUP
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["deleteOldLiveSchema.sql"]
-}
-
 dbSchemas.each { dbSchema ->
-    task "importAnnexData_$dbSchema"(type: Ili2pgReplace, dependsOn: "deleteOldLiveData"){
+    task "importAnnexData_$dbSchema"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
         description = "Import Annex live Data into Schema $dbSchema with dataset $xtfFile"
         group = GROUP
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
