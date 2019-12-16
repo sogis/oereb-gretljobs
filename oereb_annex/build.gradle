@@ -35,7 +35,6 @@ task "importAnnexDataStage"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
     description = "Import Annex Data into Schema stage with dataset $xtfFile"
     group = GROUP
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    dataset = "ch.so.agi.OeREB_extractAnnex_stage"
     models = annexModel
     dbschema = "stage"
     dataFile = "$rootDir/" + "$xtfFile"
