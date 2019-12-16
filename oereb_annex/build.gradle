@@ -38,7 +38,7 @@ task "deleteOldStageData"(type: SqlExecutor, dependsOn: "exportAnnexData"){
     sqlFiles = ["deleteOldStageSchema.sql"]
 }
 
-task "importAnnexData"(type: Ili2pgReplace, dependsOn: "deleteOldStageData"){
+task "importAnnexData"(type: Ili2pgImport, dependsOn: "deleteOldStageData"){
     description = "Import Annex live Data into Schema stage with dataset $xtfFile"
     group = GROUP
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
