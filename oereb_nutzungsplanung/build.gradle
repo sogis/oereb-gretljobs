@@ -17,7 +17,7 @@ ext {
     iliModelVorschriften = "OeREBKRMvs_V1_1"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
 
-    symbolsWmsBaseUrl = "https://geo-t.so.ch"
+    symbolsWmsBaseUrl = "https://" + geoservicesHostName
     xtfFileName = "ch.so.arp.nutzungsplanung.oereb.xtf"
 
     dbSchemaLandUsePlansOereb = "arp_npl_oereb"
@@ -155,7 +155,7 @@ task replaceWmsServer(dependsOn: "exportData") {
         ant.replace(
         file: "$rootDir/" + xtfFileName,
         token: '${wmsHost}',
-        value: 'https://geo-t.so.ch',
+        value: 'https://' + geoservicesHostName,
         encoding: 'UTF-8')
     }
 }

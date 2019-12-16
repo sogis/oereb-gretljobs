@@ -140,7 +140,7 @@ task replaceWmsServer(dependsOn: "exportData") {
         ant.replace(
         file: "$rootDir/" + xtfFileName,
         token: '${wmsHost}',
-        value: 'https://geo-t.so.ch',
+        value: 'https://' + geoservicesHostName,
         encoding: 'UTF-8')
     }
 }
