@@ -6,12 +6,13 @@ import de.undercouch.gradle.tasks.download.Download
 apply plugin: "ch.so.agi.gretl"
 apply plugin: "de.undercouch.download"
 
-defaultTasks "transferStageToLive"
+defaultTasks "importOEREBAnnex"
 
 def GROUP = "oereb-annex_data-transfer"
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def annexModel = "OeREB_ExtractAnnex_V1_0"
 def xtfFile = "ch.so.agi.OeREB_extractAnnex.xtf"
+def dbSchemas = ["stage","live"]
 
 task "updateAVImportDate"(type: SqlExecutor){
     description = "Update des AV-Import Datums per Gemeinde"
@@ -31,30 +32,29 @@ task "exportAnnexData"(type: Ili2pgExport, dependsOn: "updateAVImportDate") {
     disableValidation = false
 }
 
-task "importAnnexDataStage"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
-    description = "Import Annex Data into Schema stage with dataset $xtfFile"
-    group = GROUP
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    dataset = "ch.so.agi.OeREB_extractAnnex_stage"
-    models = annexModel
-    dbschema = "stage"
-    dataFile = "$rootDir/" + "$xtfFile"
-    disableValidation = false
+dbSchemas.each { dbSchema ->
+    task "importAnnexData_$dbSchema"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
+        description = "Import Annex live Data into Schema $dbSchema with dataset $xtfFile"
+        group = GROUP
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        models = annexModel
+        dataset = "ch.so.agi.OeREB_extractAnnex"
+        dbschema = "$dbSchema"
+        dataFile = "$rootDir/" + "$xtfFile"
+        disableValidation = false
+    }
 }
 
-task "syncDatasetsAndBaskets"(type: SqlExecutor, dependsOn: "importAnnexDataStage"){
-    description = "Synchronization of dataset and basket tables"
+// this task is the main task to be started
+task importOEREBAnnex() {
+    description = "Aggregationstask."
     group = GROUP
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["synchronize_dataset_and_baskets_stage-live.sql"]
+    doLast {
+        println "ÖREB annex data imported."
+    }
 }
 
-task "transferStageToLive"(type: SqlExecutor, dependsOn: "syncDatasetsAndBaskets"){
-    description = "Transfer of OEREB annex tables stage to live schema without theme codelist"
-    group = GROUP
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["transferStageToLive.sql"]
+// finds all tasks from the each loop and sets them as dependants
+importOEREBAnnex.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('importAnnexData_') }
 }
-
-
-
