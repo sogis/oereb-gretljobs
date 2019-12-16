@@ -24,7 +24,7 @@ INSERT INTO live.oerb_xtnx_v1_0annex_municipalitywithplrc
   SELECT * FROM stage.oerb_xtnx_v1_0annex_municipalitywithplrc;
 -- code list for active themes in muncipalities
 INSERT INTO live.oereb_extractannex_v1_0_code_
-  SELECT code.* FROM stage.oereb_extractannex_v1_0_code_ code
+  SELECT code.* FROM stage.oereb_extractannex_v1_0_code_ code;
  --     LEFT JOIN stage.t_ili2db_basket basket ON code.t_basket = basket.t_id
  --     LEFT JOIN stage.t_ili2db_dataset dataset ON basket.dataset = dataset.t_id
  --   WHERE dataset.datasetname = 'ch.so.agi.OeREB_extractAnnex_live';
