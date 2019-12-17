@@ -175,14 +175,6 @@ WHERE
     eigentumsbeschraenkung.thema = 'Grundwasserschutzzonen' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_grundwasserschutzzonen_flaeche_geom
-  ON ${dbSchema}.oerebwms_grundwasserschutzzonen_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_grundwasserschutzzonen_flaeche_artcode
-  ON ${dbSchema}.oerebwms_grundwasserschutzzonen_flaeche
-  USING btree ( artcode );
 
 -- -----------------------------------------------------------------------------
 -- table 'grundwasserschutzareale_flaeche' with thema 'Grundwasserschutzareale', subthema '-' and geometry 'flaeche'
@@ -361,12 +353,3 @@ WHERE
     eigentumsbeschraenkung.thema = 'Grundwasserschutzareale' AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
--- spatial index
-CREATE INDEX in_oerebwms_grundwasserschutzareale_flaeche_geom
-  ON ${dbSchema}.oerebwms_grundwasserschutzareale_flaeche
-  USING GIST ( geom );
--- attribute index on artcode
-CREATE INDEX in_oerebwms_grundwasserschutzareale_flaeche_artcode
-  ON ${dbSchema}.oerebwms_grundwasserschutzareale_flaeche
-  USING btree ( artcode );
-      
