@@ -28,10 +28,10 @@ ext {
     groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
     groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
-    iliModelStaticForestBoundaries = "SO_AWJF_Statische_Waldgrenzen_20191119"
-    dbSchemaStaticForestBoundaries = "awjf_statische_waldgrenze"
-    staticForestBoundariesDataFile = "awjf_statische_waldgrenze.xtf"
-    staticForestBoundariesBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+    iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
+    dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
+    staticForestPerimetersDataFile = "awjf_statische_waldgrenze.xtf"
+    staticForestPerimetersBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
 }    
 
@@ -107,13 +107,13 @@ task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDa
 }
 
 
-task createSchemaStaticForestBoundaries(type: SqlExecutor){
+task createSchemaStaticForestPerimeters(type: SqlExecutor){
     database = [dbUriEdit, "admin", "admin"]
     sqlFiles = ['awjf_statische_waldgrenze.sql', 'awjf_statische_waldgrenze_grants.sql']
 }
 
-task downloadDataStaticForestBoundaries(type: Download) {
-    src staticForestBoundariesBaseUrl + staticForestBoundariesDataFile
+task downloadDataStaticForestPerimeters(type: Download) {
+    src staticForestPerimetersBaseUrl + staticForestPerimetersDataFile
     dest pathToTempFolder
     overwrite true
     doLast {
@@ -121,11 +121,11 @@ task downloadDataStaticForestBoundaries(type: Download) {
     }
 }
 
-task replaceDataStaticForestBoundaries(type: Ili2pgImport, dependsOn: "downloadDataStaticForestBoundaries") {
+task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadDataStaticForestPerimeters") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = iliModelStaticForestBoundaries
-    dbschema = dbSchemaStaticForestBoundaries
-    dataFile = file(Paths.get(pathToTempFolder.toString(), staticForestBoundariesDataFile))
+    models = iliModelStaticForestPerimeters
+    dbschema = dbSchemaStaticForestPerimeters
+    dataFile = file(Paths.get(pathToTempFolder.toString(), staticForestPerimetersDataFile))
     deleteData = true
     disableValidation = true
 }
