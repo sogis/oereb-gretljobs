@@ -27,6 +27,12 @@ ext {
     dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
     groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
     groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+
+    iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
+    dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
+    staticForestPerimetersDataFile = "awjf_statische_waldgrenze.xtf"
+    staticForestPerimetersBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+
 }    
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options
@@ -96,6 +102,30 @@ task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDa
     models = iliModelGroundwaterProtection
     dbschema = dbSchemaGroundwaterProtection
     dataFile = file(Paths.get(pathToTempFolder.toString(), groundwaterProtectionDataFile))
+    deleteData = true
+    disableValidation = true
+}
+
+
+task createSchemaStaticForestPerimeters(type: SqlExecutor){
+    database = [dbUriEdit, "admin", "admin"]
+    sqlFiles = ['awjf_statische_waldgrenze.sql', 'awjf_statische_waldgrenze_grants.sql']
+}
+
+task downloadDataStaticForestPerimeters(type: Download) {
+    src staticForestPerimetersBaseUrl + staticForestPerimetersDataFile
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+}
+
+task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadDataStaticForestPerimeters") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelStaticForestPerimeters
+    dbschema = dbSchemaStaticForestPerimeters
+    dataFile = file(Paths.get(pathToTempFolder.toString(), staticForestPerimetersDataFile))
     deleteData = true
     disableValidation = true
 }
