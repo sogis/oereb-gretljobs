@@ -160,6 +160,7 @@ task replaceWmsServer(dependsOn: "exportData") {
     }
 }
 
+/*
 task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
@@ -169,8 +170,10 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     allObjectsAccessible = true
     configFile = "validateData.toml"
 }
+*/
 
-task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+//task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+task importDataToStage(type: Ili2pgReplace, dependsOn: "replaceWmsServer") {
     description = "Import des NPL-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
