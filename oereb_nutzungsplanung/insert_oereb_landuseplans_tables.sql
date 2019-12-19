@@ -1194,7 +1194,8 @@ INSERT INTO
         nutzung.t_id,
         basket_dataset.basket_t_id AS t_basket,
         basket_dataset.datasetname AS t_datasetname,
-        ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(nutzung.geometrie, 0.001))) AS flaeche_lv95,
+        --ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(nutzung.geometrie, 0.001))) AS flaeche_lv95,
+        ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(nutzung.geometrie, 0.001))), 3), 1) AS flaeche_lv95,
         nutzung.rechtsstatus AS rechtsstatus,
         nutzung.publiziertab AS publiziertab,
         eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
@@ -1226,6 +1227,8 @@ INSERT INTO
             arp_npl.nutzungsplanung_ueberlagernd_flaeche
         WHERE
             rechtsstatus = 'inKraft'
+        AND
+            ST_IsEmpty(geometrie) IS FALSE
     ) AS nutzung
     INNER JOIN arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
     ON nutzung.typ_nutzung = eigentumsbeschraenkung.t_id,
