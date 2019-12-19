@@ -118,7 +118,6 @@ wmsLayerList.each { wmsLayer ->
 
 task updateSymbols(dependsOn: "transferData") {
     description = "Aggregationstask für das Updaten der Symbole."
-    println "jetzt wird updatesymobols ausgeführt"
     dependsOn {
         tasks.findAll { task -> task.name.startsWith('updateSymbols_') }
     }
