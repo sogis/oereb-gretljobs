@@ -388,8 +388,8 @@ WITH transferstruktur_darstellungsdienst AS
         SELECT
             basket_dataset.basket_t_id AS t_basket,
             basket_dataset.datasetname AS t_datasetname,
-            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
-            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.') AS legendeimweb
+            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM(layername), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
+            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM(layername), '.') AS legendeimweb
         FROM
         (
             SELECT 
@@ -459,7 +459,7 @@ INSERT INTO
             afu_grundwasserschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ) AS eigentumsbeschraenkung
     LEFT JOIN transferstruktur_darstellungsdienst
-    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername||'.'||eigentumsbeschraenkung.geometrietyp, '.')||'%'
+    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername, '.')||'%'
 ;
 
 UPDATE 
@@ -493,7 +493,7 @@ WITH vorschriften_dokument_gesetze AS (
   FROM
     afu_grundwasserschutz_oereb.vorschriften_dokument
   WHERE
-    t_ili_tid IN ('ch.admin.bk.sr.700', 'ch.so.sk.bgs.711.1', 'ch.so.sk.bgs.711.61') 
+    t_ili_tid IN ('ch.admin.bk.sr.814.20', 'ch.admin.bk.sr.814.201', 'ch.so.sk.bgs.712.15', 'ch.so.sk.bgs.712.16') 
 )
 INSERT INTO afu_grundwasserschutz_oereb.vorschriften_hinweisweiteredokumente (
   t_basket,
