@@ -1229,6 +1229,9 @@ INSERT INTO
             rechtsstatus = 'inKraft'
         AND
             ST_IsEmpty(ST_Buffer(geometrie, 0)) IS FALSE
+        AND
+            ST_Area(geometrie) > 0.0001
+
     ) AS nutzung
     INNER JOIN arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
     ON nutzung.typ_nutzung = eigentumsbeschraenkung.t_id,
