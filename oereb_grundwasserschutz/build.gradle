@@ -151,7 +151,6 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
         file(Paths.get("$rootDir/" + xtfFileName))]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
-    configFile = "validateData.toml"
 }
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
