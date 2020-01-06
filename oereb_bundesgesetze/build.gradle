@@ -16,9 +16,10 @@ def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 
 // Oereb-DB Schemas
-def dbSchemas = []
-dbSchemas.add(["stage"])
-dbSchemas.add(["live"])
+def dbSchemas = [
+                 "stage",
+                 "live"
+                 ]
 
 
 // Bundesgesetze importieren (nur bei Bedarf)
@@ -33,7 +34,7 @@ task "oereb_DownloadGesetze"(type: Download){
 }
 
 dbSchemas.each { dbSchema ->
-    def schema = dbSchema.getAt(0)
+    def schema = dbSchema.toString()
     task "oereb_Import_Gesetze_$schema"(type: Ili2pgReplace, dependsOn: "oereb_DownloadGesetze"){
         description = "Import Bundesdaten Gesetze in DB agi_oereb"
         doLast {
