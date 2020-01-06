@@ -36,9 +36,10 @@ task downloadCantonalLegalBasis(type: Download, dependsOn: "downloadFederalLegal
 
 task downloadKbs(type: Download, dependsOn: "downloadCantonalLegalBasis"){
     description = "Download Belastete Standorte"
-    src "http://altlast4web-t.verw.rootso.org/interlis_exports/oereb/data.zip"
+    src "https://altlast4web.verw.rootso.org/interlis_exports/oereb/data.zip"
     dest pathToTempFolder
     overwrite true
+    acceptAnyCertificate true            //**** ev. später löschen
 }
 
 task unzipData(type: Copy, dependsOn: "downloadKbs"){
@@ -64,7 +65,6 @@ task validateData(type: IliValidator, dependsOn: "unzipData") {
                 ]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
-    configFile = "validateData.toml"
 }
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
@@ -74,7 +74,6 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir/" + kbsDataSet + ".xtf"))
     dataset = "BelasteteStandorte"
-    disableValidation = true
 }
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
@@ -91,7 +90,6 @@ task importDataToLive(type: Ili2pgReplace) {
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir/" + kbsDataSet + ".xtf"))
     dataset = "BelasteteStandorte"
-    disableValidation = true
 }
 
 task refreshOerebWMSTablesLive(type: SqlExecutor) {
