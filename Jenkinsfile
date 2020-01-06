@@ -18,7 +18,7 @@ pipeline {
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 dir(env.JOB_BASE_NAME) {
-                    sh "gradle --init-script /home/gradle/init.gradle importDataToStage refreshOerebWMSTablesStage"
+                    sh 'gretl importDataToStage refreshOerebWMSTablesStage'
                     zip zipFile: 'xtfdata.zip', glob: '*.xtf', archive: true
                 }
                 stash name: "gretljob"
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 unstash name: "gretljob"
                 dir(env.JOB_BASE_NAME) {
-                    sh "gradle --init-script /home/gradle/init.gradle importDataToLive refreshOerebWMSTablesLive"
+                    sh 'gretl importDataToLive refreshOerebWMSTablesLive'
                 }
             }
         }
