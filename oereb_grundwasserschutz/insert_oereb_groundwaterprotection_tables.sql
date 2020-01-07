@@ -32,7 +32,7 @@ INSERT INTO
         gwszone.typ AS aussage_de,
         'Grundwasserschutzzonen' AS thema,
         gwszone.typ AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen' AS artcodeliste,           -- ist die Bezeichnung richtig?
+        'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen' AS artcodeliste,
         status.rechtsstatus,
         status.rechtskraftdatum AS publiziertab, 
         amt.t_id AS zustaendigestelle
@@ -69,7 +69,7 @@ INSERT INTO
          gwsareal.typ AS aussage_de,
          'Grundwasserschutzareale' AS thema,
          gwsareal.typ AS artcode,
-         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale' AS artcodeliste,           -- ist die Bezeichnung richtig?
+         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale' AS artcodeliste,
          status.rechtsstatus,
          status.rechtskraftdatum AS publiziertab, 
          amt.t_id AS zustaendigestelle
@@ -100,51 +100,6 @@ INSERT INTO
  * Dokumente
  */
 
-INSERT INTO
-    afu_grundwasserschutz_oereb.transferstruktur_hinweisvorschrift
-    (
-        t_id,
-        t_basket,
-        t_datasetname,
-        eigentumsbeschraenkung,
-        vorschrift_vorschriften_dokument  
-    )
-    SELECT 
-        t_id, 
-        basket_t_id,
-        datasetname,
-        eigentumsbeschraenkung,
-        vorschrift_vorschriften_dokument
-    FROM
-    (
-        SELECT
-            t_id, 
-            gwszone AS eigentumsbeschraenkung,
-            rechtsvorschrift AS vorschrift_vorschriften_dokument
-        FROM
-            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwszone
-
-        UNION ALL
-
-        SELECT
-            t_id, 
-            gwsareal AS eigentumsbeschraenkung,
-            rechtsvorschrift AS vorschrift_vorschriften_dokument
-        FROM
-            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwsareal            
-    ) AS hinweisvorschrift,  
-    (
-        SELECT
-            basket.t_id AS basket_t_id,
-            dataset.datasetname AS datasetname               
-        FROM
-            afu_grundwasserschutz_oereb.t_ili2db_dataset AS dataset
-            LEFT JOIN afu_grundwasserschutz_oereb.t_ili2db_basket AS basket
-            ON basket.dataset = dataset.t_id
-        WHERE
-           dataset.datasetname = 'ch.so.afu.grundwasserschutz' 
-    ) AS basket_dataset
-;    
 INSERT INTO 
     afu_grundwasserschutz_oereb.vorschriften_dokument
     (
@@ -198,8 +153,58 @@ INSERT INTO
             ) AS basket_dataset
             LEFT JOIN afu_grundwasserschutz_oereb.vorschriften_amt AS amt
             ON amt.t_ili_tid = 'ch.so.afu'
+    WHERE
+        art = 'Rechtsvorschrift'
+    AND
+        rechtsstatus = 'inKraft'
 ;
+INSERT INTO
+    afu_grundwasserschutz_oereb.transferstruktur_hinweisvorschrift
+    (
+        t_id,
+        t_basket,
+        t_datasetname,
+        eigentumsbeschraenkung,
+        vorschrift_vorschriften_dokument  
+    )
+    SELECT 
+        hinweisvorschrift.t_id, 
+        basket_dataset.basket_t_id,
+        basket_dataset.datasetname,
+        hinweisvorschrift.eigentumsbeschraenkung,
+        hinweisvorschrift.vorschrift_vorschriften_dokument
+    FROM
+    (
+        SELECT
+            t_id, 
+            gwszone AS eigentumsbeschraenkung,
+            rechtsvorschrift AS vorschrift_vorschriften_dokument
+        FROM
+            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwszone
 
+        UNION ALL
+
+        SELECT
+            t_id, 
+            gwsareal AS eigentumsbeschraenkung,
+            rechtsvorschrift AS vorschrift_vorschriften_dokument
+        FROM
+            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwsareal            
+    ) AS hinweisvorschrift
+    INNER JOIN afu_grundwasserschutz_oereb.vorschriften_dokument AS vorschriften_dokument
+        ON vorschriften_dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument,  
+    (
+        SELECT
+            basket.t_id AS basket_t_id,
+            dataset.datasetname AS datasetname               
+        FROM
+            afu_grundwasserschutz_oereb.t_ili2db_dataset AS dataset
+            LEFT JOIN afu_grundwasserschutz_oereb.t_ili2db_basket AS basket
+            ON basket.dataset = dataset.t_id
+        WHERE
+           dataset.datasetname = 'ch.so.afu.grundwasserschutz' 
+    ) AS basket_dataset
+;
 /*
  * Datenumbau der Links auf die Dokumente, die im Rahmenmodell 'multilingual' sind und daher eher
  * mühsam normalisert sind.
@@ -265,6 +270,10 @@ localiseduri AS
             WHERE
                 dataset.datasetname = 'ch.so.afu.grundwasserschutz'                 
         ) AS basket_dataset
+    WHERE
+        art = 'Rechtsvorschrift'
+    AND
+        rechtsstatus = 'inKraft'
 )
 INSERT INTO
     afu_grundwasserschutz_oereb.localiseduri
