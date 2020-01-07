@@ -16,10 +16,7 @@ def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 
 // Oereb-DB Schemas
-def dbSchemas = [
-                 "stage",
-                 "live"
-                 ]
+def dbSchemas = ["stage","live"]
 
 
 // Bundesgesetze importieren (nur bei Bedarf)
