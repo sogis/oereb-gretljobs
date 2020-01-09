@@ -255,7 +255,7 @@ localiseduri AS
         'de' AS alanguage,
         CASE
             WHEN rechtsvorschrften_dokument.textimweb IS NULL
-                THEN 'https://geoweb.so.ch/zonenplaene/Zonenplaene_pdf/404.pdf'
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/404.pdf'
             ELSE rechtsvorschrften_dokument.textimweb
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
