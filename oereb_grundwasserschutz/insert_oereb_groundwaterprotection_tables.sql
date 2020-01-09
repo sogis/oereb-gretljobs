@@ -132,7 +132,11 @@ INSERT INTO
         dokument.titel AS titel_de,
         dokument.offiziellertitel AS offizellertitel_de,
         dokument.abkuerzung AS abkuerzung_de,
-        dokument.offiziellenr AS offiziellenr,
+        CASE
+            WHEN dokument.titel = 'Regierungsratsbeschluss' AND dokument.offiziellenr IS NOT NULL
+                THEN date_part('YEAR', publiziertab)||'/'||offiziellenr
+            ELSE dokument.offiziellenr
+        END AS offiziellenr,
         dokument.kanton AS kanton,
         dokument.gemeinde AS gemeinde,
         dokument.rechtsstatus AS rechtsstatus,
