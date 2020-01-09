@@ -253,7 +253,11 @@ localiseduri AS
         basket_dataset.datasetname,
         0 AS t_seq,
         'de' AS alanguage,
-        rechtsvorschrften_dokument.textimweb AS atext,
+        CASE
+            WHEN rechtsvorschrften_dokument.textimweb IS NULL
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/404.pdf'
+            ELSE rechtsvorschrften_dokument.textimweb
+        END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
         afu_gewaesserschutz.gwszonen_dokument AS rechtsvorschrften_dokument
