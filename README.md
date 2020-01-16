@@ -35,5 +35,5 @@ Start the GRETL job
 (use the --job-directory option to point to the desired GRETL job;
 find out the names of your Docker networks by running `docker network ls`):
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $PWD/oereb_nutzungsplanung/ importDataToStage
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_oerebgretljobs --job-directory $PWD/oereb_nutzungsplanung/ importDataToStage refreshOerebWMSTablesStage
 ```
