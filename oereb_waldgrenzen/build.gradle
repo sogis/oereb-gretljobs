@@ -126,6 +126,7 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     dbschema = dbSchemaStaticForestPerimeterOereb
     dataFile = "$rootDir/" + xtfFileName
     dataset = staticForestPerimeterDataSet
+    disableValidation = true
 }
 
 task replaceWmsServer(dependsOn: "exportData") {
