@@ -3,28 +3,8 @@
  * 
  * Allg. Überlegungen/Bemerkungen zum Datenumbau finden sich im SQL-Skript
  * sogis/oereb-gretljobs/oereb_nutzungsplanung/insert_oereb_landuseplans_tables.sql.
- * Das Thema Gewässerschutz kann gemäss Filterfunktion im Dokument
- * "Planerischer_Gewaesserschutz_ID130,131,132_20171023_V1.1_d.pdf" in die
- * Transferstruktur des Rahmenmodells für den ÖREB-Kataster transformiert werden.
  */
 
- 
- 
- 
-/* wegen Datenfehler */
- 
--- insert into awjf_statische_waldgrenze.geobasisdaten_typ_dokument
--- (t_id, dokumente, festlegung)
--- VALUES
--- (216,27,31)
--- ; 
- 
-
-/* Test */
--- update awjf_statische_waldgrenze.dokumente_dokument
--- set rechtsstatus = 'inKraft'
--- where t_id < 14
- 
 WITH dokumente AS 
 (
     SELECT
@@ -34,7 +14,7 @@ WITH dokumente AS
       LEFT JOIN awjf_statische_waldgrenze.dokumente_dokument AS dokument
           ON typ_dokument.dokumente = dokument.t_id
     WHERE
-        typ <> 'Bericht'                                                                     --???????????????
+        typ <> 'Bericht'
     AND
         rechtsstatus = 'inKraft'
     AND
@@ -60,11 +40,11 @@ SELECT
         waldgrenze.t_id,
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
-        --geobasisdaten_typ.bezeichnung AS aussage_de,                                                           --stimmt das
+        --geobasisdaten_typ.bezeichnung AS aussage_de,
         'Waldgrenzen' AS aussage_de,
         'Waldgrenzen' AS thema,
         'Waldgrenzen' AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen' AS artcodeliste,                            -- ist die Bezeichnung richtig?
+        'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen' AS artcodeliste,
         waldgrenze.rechtsstatus,
         waldgrenze.publiziert_ab AS publiziertab, 
         amt.t_id AS zustaendigestelle
@@ -132,7 +112,7 @@ INSERT INTO
             dataset.datasetname = 'ch.so.awjf.waldgrenzen' 
      ) AS basket_dataset
      WHERE
-        typ <> 'Bericht'                                                                     --???????????????
+        typ <> 'Bericht'
     AND
         dokument.rechtsstatus = 'inKraft'
     AND
@@ -163,7 +143,7 @@ INSERT INTO
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
         CASE
-            WHEN typ = 'RRB'                                                                                    --stimmt das
+            WHEN typ = 'RRB'
                 THEN 'vorschriften_rechtsvorschrift'
             ELSE 'vorschriften_dokument'
         END AS t_type,
@@ -194,7 +174,7 @@ INSERT INTO
         ON amt.t_ili_tid = 'ch.so.awjf'
             
      WHERE
-        typ <> 'Bericht'                                                                     --???????????????
+        typ <> 'Bericht'
     AND
         rechtsstatus = 'inKraft'
     AND
@@ -512,5 +492,3 @@ AND
     t_ili_tid = 'ch.so.sk'
 ;
 
-        
-        
