@@ -11,8 +11,6 @@ services:
       ORG_GRADLE_PROJECT_dbUriOereb: "jdbc:postgresql://oereb-db/oereb"
       ORG_GRADLE_PROJECT_dbUserOereb: gretl
       ORG_GRADLE_PROJECT_dbPwdOereb: gretl
-    networks:
-      - oerebgretljobs
     depends_on:
       - oereb-db
       - edit-db
@@ -35,8 +33,6 @@ services:
       PG_READ_PASSWORD: ogc_server
     ports:
       - "54321:5432"
-    networks:
-      - oerebgretljobs
     volumes:
       - ${PWD}/development_dbs/override_setupsql.sh:/tmp/override_setupsql.sh
   oereb-db:
@@ -57,8 +53,3 @@ services:
       PG_READ_PASSWORD: ogc_server
     ports:
       - "54322:5432"
-    networks:
-      - oerebgretljobs
-
-networks:
-  oerebgretljobs:
