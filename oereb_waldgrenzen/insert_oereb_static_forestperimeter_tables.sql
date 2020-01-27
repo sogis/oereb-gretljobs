@@ -441,7 +441,7 @@ WITH vorschriften_dokument_gesetze AS (
   FROM
     awjf_statische_waldgrenzen_oereb.vorschriften_dokument
   WHERE
-    t_ili_tid IN ('ch.admin.bk.sr.921.0', 'ch.admin.bk.sr.921.01', 'ch.so.sk.bgs.931.11', 'ch.so.sk.bgs.931.12', 'ch.so.sk.bgs.931.72') 
+    t_ili_tid IN ('ch.admin.bk.sr.921.0', 'ch.admin.bk.sr.921.01', 'ch.so.sk.931.11', 'ch.so.sk.931.12', 'ch.so.sk.931.72') 
 )
 INSERT INTO awjf_statische_waldgrenzen_oereb.vorschriften_hinweisweiteredokumente (
   t_basket,
