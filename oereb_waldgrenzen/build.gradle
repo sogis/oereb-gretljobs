@@ -103,7 +103,7 @@ wmsLayerList.each { wmsLayer ->
         sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayerName&SLD_VERSION=1.1.0"
         legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayerName&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-        dbQTable = "awjf_statische_waldgrenze_oereb.transferstruktur_legendeeintrag"
+        dbQTable = "awjf_statische_waldgrenzen_oereb.transferstruktur_legendeeintrag"
         typeCodeAttrName = "artcode"
         typeCodeListAttrName = "artcodeliste"
         typeCodeListValue = typeCodeList
