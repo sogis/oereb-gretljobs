@@ -143,7 +143,7 @@ INSERT INTO
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
         CASE
-            WHEN typ = 'RRB'
+            WHEN typ IN ('RRB', 'Verfuegung', 'Waldfeststellungsplan')
                 THEN 'vorschriften_rechtsvorschrift'
             ELSE 'vorschriften_dokument'
         END AS t_type,
