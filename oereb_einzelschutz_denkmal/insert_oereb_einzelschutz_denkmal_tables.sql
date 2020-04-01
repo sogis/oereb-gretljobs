@@ -291,9 +291,8 @@ INSERT INTO
         END AS punkt_lv95, 
         CASE
             WHEN gis_geometrie.apolygon IS NOT NULL
-                THEN ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(gis_geometrie.apolygon, 0.001)))
---                 THEN ST_MakeValid(ST_RemoveRepeatedPoints(gis_geometrie.apolygon))
---                THEN ST_RemoveRepeatedPoints(gis_geometrie.apolygon)
+--                 THEN ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(gis_geometrie.apolygon, 0.001)))
+                THEN ST_GeometryN(ST_CollectionExtract(ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(gis_geometrie.apolygon, 0.001))), 3), 1) AS flaeche_lv95
             ELSE NULL
         END AS flaeche_lv95,
         'inKraft' AS rechtsstatus,
