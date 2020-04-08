@@ -1589,6 +1589,23 @@ SET
 WHERE
     thema = 'Laermemfindlichkeitsstufen'
 ;
+
+/*
+ * Für die Erstellung des PDF muss jeweils der die WMS-Layergruppe angesprochen werden. Dieser Wert ist entscheidend
+ * für die Gruppierungsfunktion in pdf4oereb.
+ * Ich denke, dass das früher schon mal so war, aber mit einer anderen Änderung (Subthemen-Namen zum wiederholten Mal angepasst?)
+ * wieder rausgeflogen ist.
+ */
+
+UPDATE
+    arp_npl_oereb.transferstruktur_darstellungsdienst
+SET 
+    verweiswms = '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS=ch.SO.NutzungsplanungUeberlagernd&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700',
+    legendeimweb = '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER=ch.SO.NutzungsplanungUeberlagernd'
+WHERE 
+    verweiswms LIKE '%ch.SO.NutzungsplanungUeberlagernd%'
+;
+
 /*
  * Hinweise auf die gesetzlichen Grundlagen.
  * 

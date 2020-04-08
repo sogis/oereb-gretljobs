@@ -32,6 +32,7 @@ ext {
     responsibleOfficesBaseUrl = "https://geo.so.ch/geodata/ch.so.agi.zustaendigestellen.oereb/"
     responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
 
+    // Hier müssen korrekterweise die Einzellayer der WMS-Layergroup stehen.
     wmsLayerList = [
         ["ch.SO.Laermemfindlichkeitsstufen", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Flaechenobjekt"],
         ["ch.SO.NutzungsplanungGrundnutzung", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Grundnutzung"],
