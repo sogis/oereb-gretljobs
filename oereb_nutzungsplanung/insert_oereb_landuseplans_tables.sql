@@ -1609,10 +1609,9 @@ WHERE
 /*
  * Hinweise auf die gesetzlichen Grundlagen.
  * 
- * (1) Momentan nur auf die kantonalen Gesetze und Verordnungen, da
- * die Bundesgesetze und -verordnungen nicht importiert wurden.
- * 
- * (2) Ebenfalls gut prüfen.
+ * (1) In einem ersten Schritt werden sämtlichen Dokumente die folgenden
+ * Gesetze zugewiesen. Gewissen Themen und Subthemen müssen anschliessend
+ * brutal nachbehandelt werden. Danke!
  */
 
 WITH vorschriften_dokument_gesetze AS (
@@ -1642,6 +1641,939 @@ WHERE
   t_type = 'vorschriften_rechtsvorschrift'
 AND
   vorschriften_dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+;
+
+/*
+ * Das geht nur so einfach (ohne Rekursion), weil ich alles flachgewalzt habe. D.h. es gibt
+ * nur noch direkte Beziehungen zwischen Eigentumsbeschränkung und Dokument 
+ * und keine Kaskade bei den Dokumenten (erst wieder durch die gesetzlichen 
+ * Grundlagen).
+ * 
+ * Vorgehen: 
+ *  - Die Dokumente für ch.SO.Baulinien werden verdoppelt.
+ *  - Dann muss die Zwischentabelle abgefüllt werden.
+ *  - Die Verbindung (hinweisvorschrift) zwischen den alten Dokumenten und der Eigentumsbeschränkung löschen.
+ *  - Gesetzliche Grundlagen hinzufügen.
+ * 
+ * 
+ * ACHTUNG: Falls ein Dokument nur einer ch.SO.Baulinien zugewiesen ist
+ * und keiner Grundnutzung oder überlagernden Nutzung gibt es ein 
+ * "dangling document" in der Tabelle vorschriften_dokument. 
+ * Diese könnte man dann noch nachträglich entfernen (Bedingung = dangling).
+ * Tricky: Man muss auch den Eintrag auf das Gesetz löschen.
+ * Interessant: Gibt es anscheinend doch noch relativ häufig. In Wisen (mein Pilot/Test)
+ * ist diese Konstellation vorhanden.
+ */
+
+/*
+ * Achtung: Falls wir mehrere Sprache hätten (für unsere Dokumente), würde die Query
+ * nicht funktionieren. Die Join würden zu viele Resultate liefern.
+ */
+
+WITH dokumente_baulinien AS 
+(
+    SELECT
+        nextval('arp_npl_oereb.t_ili2db_seq'::regclass) AS dokument_t_id_neu,
+        dokument.t_id AS dokument_t_id_alt,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.t_type,
+        dokument.t_ili_tid,
+        dokument.titel_de,
+        dokument.offiziellertitel_de,
+        dokument.abkuerzung_de,
+        dokument.offiziellenr,
+        dokument.kanton,
+        dokument.gemeinde,
+        dokument.zustaendigestelle,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        multilingualuri.vorschriften_dokument_textimweb AS vorschriften_dokument_textimweb,
+        nextval('arp_npl_oereb.t_ili2db_seq'::regclass) AS multilingualuri_t_id,
+        multilingualuri.t_seq AS multilingualuri_t_seq,
+        localiseduri.t_seq AS localiseduri_t_seq,
+        localiseduri.atext,
+        localiseduri.alanguage,
+        localiseduri.multilingualuri_localisedtext
+    FROM 
+    ( 
+        SELECT
+            DISTINCT ON (hinweisvorschrift.vorschrift_vorschriften_dokument)
+            eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung_t_id,
+            hinweisvorschrift.t_id AS hinweisvorschrift_t_id,
+            vorschrift_vorschriften_dokument
+        FROM 
+            arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+            LEFT JOIN arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+            ON hinweisvorschrift.eigentumsbeschraenkung = eigentumsbeschraenkung.t_id              
+        WHERE 
+            eigentumsbeschraenkung.subthema IN ('ch.SO.Baulinien')
+    ) AS foo
+    LEFT JOIN arp_npl_oereb.vorschriften_dokument AS dokument
+    ON dokument.t_id = foo.vorschrift_vorschriften_dokument
+    LEFT JOIN arp_npl_oereb.multilingualuri AS multilingualuri 
+    ON multilingualuri.vorschriften_dokument_textimweb = dokument.t_id 
+    LEFT JOIN arp_npl_oereb.localiseduri AS localiseduri
+    ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
+)
+,
+dokumente_baulinien_insert AS 
+(
+    INSERT INTO
+        arp_npl_oereb.vorschriften_dokument 
+        (
+            t_id,
+            t_basket,
+            t_datasetname,
+            t_type,
+            t_ili_tid,
+            titel_de,
+            offiziellertitel_de,
+            abkuerzung_de,
+            offiziellenr,
+            kanton,
+            gemeinde,
+            zustaendigestelle,
+            rechtsstatus,
+            publiziertab
+        )
+    SELECT
+        dokument_t_id_neu,
+        t_basket,
+        t_datasetname,
+        t_type,
+        t_ili_tid || '_Baulinien',
+        titel_de,
+        offiziellertitel_de,
+        abkuerzung_de,
+        offiziellenr,
+        kanton,
+        gemeinde,
+        zustaendigestelle,
+        rechtsstatus,
+        publiziertab 
+   FROM 
+        dokumente_baulinien
+)
+,
+multilingualuri_baulinien AS 
+(
+    INSERT INTO
+        arp_npl_oereb.multilingualuri
+        (
+            t_id,
+            t_basket,
+            t_datasetname,
+            t_seq,
+            vorschriften_dokument_textimweb
+        )
+    SELECT
+        multilingualuri_t_id,
+        t_basket,
+        t_datasetname,
+        multilingualuri_t_seq,
+        dokument_t_id_neu AS vorschriften_dokument_textimweb
+    FROM
+        dokumente_baulinien
+    RETURNING *        
+)
+,
+localiseduri_baulinien AS 
+(
+    INSERT INTO
+        arp_npl_oereb.localiseduri 
+        (
+            t_basket,
+            t_datasetname,
+            t_seq,
+            atext,
+            alanguage,
+            multilingualuri_localisedtext 
+        )
+    SELECT 
+        t_basket,
+        t_datasetname,
+        localiseduri_t_seq,
+        atext,
+        alanguage,
+        multilingualuri_t_id
+    FROM 
+        dokumente_baulinien
+)
+,
+hinweisvorschrift_baulinien AS 
+(
+    SELECT DISTINCT ON (hinweisvorschrift.t_id)
+        hinweisvorschrift.t_basket,
+        hinweisvorschrift.t_datasetname,
+        eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung_t_id,
+        dokumente_baulinien.dokument_t_id_neu,
+        dokumente_baulinien.dokument_t_id_alt
+    FROM
+        arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+        LEFT JOIN arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+        ON eigentumsbeschraenkung.t_id = hinweisvorschrift.eigentumsbeschraenkung 
+        LEFT JOIN dokumente_baulinien
+        ON dokumente_baulinien.dokument_t_id_alt = hinweisvorschrift.vorschrift_vorschriften_dokument 
+    WHERE 
+        eigentumsbeschraenkung.subthema IN ('ch.SO.Baulinien')
+)
+,
+hinweisvorschrift_baulinien_insert AS 
+(
+    INSERT INTO
+        arp_npl_oereb.transferstruktur_hinweisvorschrift 
+        (
+            t_basket, 
+            t_datasetname,
+            eigentumsbeschraenkung,
+            vorschrift_vorschriften_dokument
+        )
+        SELECT  
+            t_basket,
+            t_datasetname,
+            eigentumsbeschraenkung_t_id,
+            dokument_t_id_neu
+        FROM
+            hinweisvorschrift_baulinien
+)
+DELETE FROM 
+    arp_npl_oereb.transferstruktur_hinweisvorschrift 
+WHERE EXISTS 
+(
+    SELECT 
+        1
+    FROM 
+        hinweisvorschrift_baulinien
+    WHERE
+        arp_npl_oereb.transferstruktur_hinweisvorschrift.eigentumsbeschraenkung = hinweisvorschrift_baulinien.eigentumsbeschraenkung_t_id
+    AND 
+        arp_npl_oereb.transferstruktur_hinweisvorschrift.vorschrift_vorschriften_dokument = hinweisvorschrift_baulinien.dokument_t_id_alt
+)
+;
+
+WITH gesetze_baulinien AS 
+(
+    SELECT
+        t_id AS hinweis
+    FROM
+        arp_npl_oereb.vorschriften_dokument
+    WHERE
+        t_ili_tid IN ('ch.so.sk.bgs.711.1', 'ch.so.sk.bgs.711.61') 
+)
+INSERT INTO arp_npl_oereb.vorschriften_hinweisweiteredokumente (
+    t_basket,
+    t_datasetname,
+    ursprung,
+    hinweis
+)
+SELECT 
+    dokument.t_basket,
+    dokument.t_datasetname,
+    dokument.t_id,
+    gesetze_baulinien.hinweis
+FROM 
+    arp_npl_oereb.vorschriften_dokument AS dokument
+    LEFT JOIN arp_npl_oereb.vorschriften_hinweisweiteredokumente AS hinweisweitere
+    ON dokument.t_id = hinweisweitere.ursprung 
+    LEFT JOIN gesetze_baulinien 
+    ON 1=1
+WHERE
+    t_type = 'vorschriften_rechtsvorschrift'
+AND
+    dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+AND 
+    hinweisweitere.t_id IS NULL
+;
+
+WITH dangling_documents_baulinien AS 
+(
+    SELECT 
+        dokument.t_id 
+    FROM    
+        arp_npl_oereb.vorschriften_dokument AS dokument
+        LEFT JOIN arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+        ON dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument 
+    WHERE 
+        dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+    AND hinweisvorschrift.t_id IS NULL
+)
+,
+dangling_documents_baulinien_multilingualuri AS 
+(
+    SELECT 
+        t_id 
+    FROM 
+        arp_npl_oereb.multilingualuri 
+    WHERE
+        vorschriften_dokument_textimweb IN 
+        (
+            SELECT
+                t_id
+            FROM 
+                dangling_documents_baulinien
+        )
+)
+,
+dangling_documents_baulinien_localiseduri AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.localiseduri
+    WHERE
+        multilingualuri_localisedtext IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_baulinien_multilingualuri
+        )
+)
+,
+dangling_documents_baulinien_multilingualuri_delete AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.multilingualuri 
+    WHERE
+        t_id IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_baulinien_multilingualuri
+        )
+)
+,
+dangling_documents_baulinien_hinweisweitere AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.vorschriften_hinweisweiteredokumente 
+    WHERE 
+        ursprung IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_baulinien
+        )
+)
+DELETE FROM 
+    arp_npl_oereb.vorschriften_dokument
+WHERE
+    t_id IN 
+    (
+        SELECT
+            t_id
+        FROM 
+            dangling_documents_baulinien
+    )
+;
+
+/*
+ * Das ganze Theater nun für die Waldabstandslinien. Es gelten die identischen Bemerkungen
+ * wie bei ch.SO.Baulinien. Achtung: Waldabstandslinien sind ein Thema (keine Subthema).
+ * 
+ */
+
+WITH dokumente_waldabstandslinien AS 
+(
+    SELECT
+        nextval('arp_npl_oereb.t_ili2db_seq'::regclass) AS dokument_t_id_neu,
+        dokument.t_id AS dokument_t_id_alt,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.t_type,
+        dokument.t_ili_tid,
+        dokument.titel_de,
+        dokument.offiziellertitel_de,
+        dokument.abkuerzung_de,
+        dokument.offiziellenr,
+        dokument.kanton,
+        dokument.gemeinde,
+        dokument.zustaendigestelle,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        multilingualuri.vorschriften_dokument_textimweb AS vorschriften_dokument_textimweb,
+        nextval('arp_npl_oereb.t_ili2db_seq'::regclass) AS multilingualuri_t_id,
+        multilingualuri.t_seq AS multilingualuri_t_seq,
+        localiseduri.t_seq AS localiseduri_t_seq,
+        localiseduri.atext,
+        localiseduri.alanguage,
+        localiseduri.multilingualuri_localisedtext
+    FROM 
+    ( 
+        SELECT
+            DISTINCT ON (hinweisvorschrift.vorschrift_vorschriften_dokument)
+            eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung_t_id,
+            hinweisvorschrift.t_id AS hinweisvorschrift_t_id,
+            vorschrift_vorschriften_dokument
+        FROM 
+            arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+            LEFT JOIN arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+            ON hinweisvorschrift.eigentumsbeschraenkung = eigentumsbeschraenkung.t_id              
+        WHERE 
+            eigentumsbeschraenkung.thema IN ('Waldabstandslinien')
+    ) AS foo
+    LEFT JOIN arp_npl_oereb.vorschriften_dokument AS dokument
+    ON dokument.t_id = foo.vorschrift_vorschriften_dokument
+    LEFT JOIN arp_npl_oereb.multilingualuri AS multilingualuri 
+    ON multilingualuri.vorschriften_dokument_textimweb = dokument.t_id 
+    LEFT JOIN arp_npl_oereb.localiseduri AS localiseduri
+    ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
+)
+,
+dokumente_waldabstandslinien_insert AS 
+(
+    INSERT INTO
+        arp_npl_oereb.vorschriften_dokument 
+        (
+            t_id,
+            t_basket,
+            t_datasetname,
+            t_type,
+            t_ili_tid,
+            titel_de,
+            offiziellertitel_de,
+            abkuerzung_de,
+            offiziellenr,
+            kanton,
+            gemeinde,
+            zustaendigestelle,
+            rechtsstatus,
+            publiziertab
+        )
+    SELECT
+        dokument_t_id_neu,
+        t_basket,
+        t_datasetname,
+        t_type,
+        t_ili_tid || '_Waldabstandslinien',
+        titel_de,
+        offiziellertitel_de,
+        abkuerzung_de,
+        offiziellenr,
+        kanton,
+        gemeinde,
+        zustaendigestelle,
+        rechtsstatus,
+        publiziertab 
+   FROM 
+        dokumente_waldabstandslinien
+)
+,
+multilingualuri_waldabstandslinien AS 
+(
+    INSERT INTO
+        arp_npl_oereb.multilingualuri
+        (
+            t_id,
+            t_basket,
+            t_datasetname,
+            t_seq,
+            vorschriften_dokument_textimweb
+        )
+    SELECT
+        multilingualuri_t_id,
+        t_basket,
+        t_datasetname,
+        multilingualuri_t_seq,
+        dokument_t_id_neu AS vorschriften_dokument_textimweb
+    FROM
+        dokumente_waldabstandslinien
+    RETURNING *        
+)
+,
+localiseduri_waldabstandslinien AS 
+(
+    INSERT INTO
+        arp_npl_oereb.localiseduri 
+        (
+            t_basket,
+            t_datasetname,
+            t_seq,
+            atext,
+            alanguage,
+            multilingualuri_localisedtext 
+        )
+    SELECT 
+        t_basket,
+        t_datasetname,
+        localiseduri_t_seq,
+        atext,
+        alanguage,
+        multilingualuri_t_id
+    FROM 
+        dokumente_waldabstandslinien
+)
+,
+hinweisvorschrift_waldabstandslinien AS 
+(
+    SELECT DISTINCT ON (hinweisvorschrift.t_id)
+        hinweisvorschrift.t_basket,
+        hinweisvorschrift.t_datasetname,
+        eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung_t_id,
+        dokumente_waldabstandslinien.dokument_t_id_neu,
+        dokumente_waldabstandslinien.dokument_t_id_alt
+    FROM
+        arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+        LEFT JOIN arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+        ON eigentumsbeschraenkung.t_id = hinweisvorschrift.eigentumsbeschraenkung 
+        LEFT JOIN dokumente_waldabstandslinien
+        ON dokumente_waldabstandslinien.dokument_t_id_alt = hinweisvorschrift.vorschrift_vorschriften_dokument 
+    WHERE 
+        eigentumsbeschraenkung.thema IN ('Waldabstandslinien')
+)
+,
+hinweisvorschrift_waldabstandslinien_insert AS 
+(
+    INSERT INTO
+        arp_npl_oereb.transferstruktur_hinweisvorschrift 
+        (
+            t_basket, 
+            t_datasetname,
+            eigentumsbeschraenkung,
+            vorschrift_vorschriften_dokument
+        )
+        SELECT  
+            t_basket,
+            t_datasetname,
+            eigentumsbeschraenkung_t_id,
+            dokument_t_id_neu
+        FROM
+            hinweisvorschrift_waldabstandslinien
+)
+DELETE FROM 
+    arp_npl_oereb.transferstruktur_hinweisvorschrift 
+WHERE EXISTS 
+(
+    SELECT 
+        1
+    FROM 
+        hinweisvorschrift_waldabstandslinien
+    WHERE
+        arp_npl_oereb.transferstruktur_hinweisvorschrift.eigentumsbeschraenkung = hinweisvorschrift_waldabstandslinien.eigentumsbeschraenkung_t_id
+    AND 
+        arp_npl_oereb.transferstruktur_hinweisvorschrift.vorschrift_vorschriften_dokument = hinweisvorschrift_waldabstandslinien.dokument_t_id_alt
+)
+;
+
+WITH gesetze_waldabstandslinien AS 
+(
+    SELECT
+        t_id AS hinweis
+    FROM
+        arp_npl_oereb.vorschriften_dokument
+    WHERE
+        t_ili_tid IN ('ch.admin.bk.sr.921.0', 'ch.so.sk.bgs.711.1', 'ch.so.sk.bgs.711.61') 
+)
+INSERT INTO arp_npl_oereb.vorschriften_hinweisweiteredokumente (
+    t_basket,
+    t_datasetname,
+    ursprung,
+    hinweis
+)
+SELECT 
+    dokument.t_basket,
+    dokument.t_datasetname,
+    dokument.t_id,
+    gesetze_waldabstandslinien.hinweis
+FROM 
+    arp_npl_oereb.vorschriften_dokument AS dokument
+    LEFT JOIN arp_npl_oereb.vorschriften_hinweisweiteredokumente AS hinweisweitere
+    ON dokument.t_id = hinweisweitere.ursprung 
+    LEFT JOIN gesetze_waldabstandslinien
+    ON 1=1
+WHERE
+    t_type = 'vorschriften_rechtsvorschrift'
+AND
+    dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+AND 
+    hinweisweitere.t_id IS NULL
+;
+
+WITH dangling_documents_waldabstandslinien AS 
+(
+    SELECT 
+        dokument.t_id 
+    FROM    
+        arp_npl_oereb.vorschriften_dokument AS dokument
+        LEFT JOIN arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+        ON dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument 
+    WHERE 
+        dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+    AND hinweisvorschrift.t_id IS NULL
+)
+,
+dangling_documents_waldabstandslinien_multilingualuri AS 
+(
+    SELECT 
+        t_id 
+    FROM 
+        arp_npl_oereb.multilingualuri 
+    WHERE
+        vorschriften_dokument_textimweb IN 
+        (
+            SELECT
+                t_id
+            FROM 
+                dangling_documents_waldabstandslinien
+        )
+)
+,
+dangling_documents_waldabstandslinien_localiseduri AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.localiseduri
+    WHERE
+        multilingualuri_localisedtext IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_waldabstandslinien_multilingualuri
+        )
+)
+,
+dangling_documents_waldabstandslinien_multilingualuri_delete AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.multilingualuri 
+    WHERE
+        t_id IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_waldabstandslinien_multilingualuri
+        )
+)
+,
+dangling_documents_waldabstandslinien_hinweisweitere AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.vorschriften_hinweisweiteredokumente 
+    WHERE 
+        ursprung IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_waldabstandslinien
+        )
+)
+DELETE FROM 
+    arp_npl_oereb.vorschriften_dokument
+WHERE
+    t_id IN 
+    (
+        SELECT
+            t_id
+        FROM 
+            dangling_documents_waldabstandslinien
+    )
+;
+
+/*
+ * Das ganze Theater zu guter Letzt für die Lärmempfindlichkeitsstufen. Es gelten die identischen Bemerkungen
+ * wie bei ch.SO.Baulinien. Achtung: Lärmempfindlichkeitsstufen sind ein Thema (keine Subthema).
+ * 
+ */
+
+WITH dokumente_laermemfindlichkeitsstufen AS 
+(
+    SELECT
+        nextval('arp_npl_oereb.t_ili2db_seq'::regclass) AS dokument_t_id_neu,
+        dokument.t_id AS dokument_t_id_alt,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.t_type,
+        dokument.t_ili_tid,
+        dokument.titel_de,
+        dokument.offiziellertitel_de,
+        dokument.abkuerzung_de,
+        dokument.offiziellenr,
+        dokument.kanton,
+        dokument.gemeinde,
+        dokument.zustaendigestelle,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        multilingualuri.vorschriften_dokument_textimweb AS vorschriften_dokument_textimweb,
+        nextval('arp_npl_oereb.t_ili2db_seq'::regclass) AS multilingualuri_t_id,
+        multilingualuri.t_seq AS multilingualuri_t_seq,
+        localiseduri.t_seq AS localiseduri_t_seq,
+        localiseduri.atext,
+        localiseduri.alanguage,
+        localiseduri.multilingualuri_localisedtext
+    FROM 
+    ( 
+        SELECT
+            DISTINCT ON (hinweisvorschrift.vorschrift_vorschriften_dokument)
+            eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung_t_id,
+            hinweisvorschrift.t_id AS hinweisvorschrift_t_id,
+            vorschrift_vorschriften_dokument
+        FROM 
+            arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+            LEFT JOIN arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+            ON hinweisvorschrift.eigentumsbeschraenkung = eigentumsbeschraenkung.t_id              
+        WHERE 
+            eigentumsbeschraenkung.thema IN ('Laermemfindlichkeitsstufen')
+    ) AS foo
+    LEFT JOIN arp_npl_oereb.vorschriften_dokument AS dokument
+    ON dokument.t_id = foo.vorschrift_vorschriften_dokument
+    LEFT JOIN arp_npl_oereb.multilingualuri AS multilingualuri 
+    ON multilingualuri.vorschriften_dokument_textimweb = dokument.t_id 
+    LEFT JOIN arp_npl_oereb.localiseduri AS localiseduri
+    ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
+)
+,
+dokumente_laermemfindlichkeitsstufen_insert AS 
+(
+    INSERT INTO
+        arp_npl_oereb.vorschriften_dokument 
+        (
+            t_id,
+            t_basket,
+            t_datasetname,
+            t_type,
+            t_ili_tid,
+            titel_de,
+            offiziellertitel_de,
+            abkuerzung_de,
+            offiziellenr,
+            kanton,
+            gemeinde,
+            zustaendigestelle,
+            rechtsstatus,
+            publiziertab
+        )
+    SELECT
+        dokument_t_id_neu,
+        t_basket,
+        t_datasetname,
+        t_type,
+        t_ili_tid || '_Laermemfindlichkeitsstufen',
+        titel_de,
+        offiziellertitel_de,
+        abkuerzung_de,
+        offiziellenr,
+        kanton,
+        gemeinde,
+        zustaendigestelle,
+        rechtsstatus,
+        publiziertab 
+   FROM 
+        dokumente_laermemfindlichkeitsstufen
+)
+,
+multilingualuri_laermemfindlichkeitsstufen AS 
+(
+    INSERT INTO
+        arp_npl_oereb.multilingualuri
+        (
+            t_id,
+            t_basket,
+            t_datasetname,
+            t_seq,
+            vorschriften_dokument_textimweb
+        )
+    SELECT
+        multilingualuri_t_id,
+        t_basket,
+        t_datasetname,
+        multilingualuri_t_seq,
+        dokument_t_id_neu AS vorschriften_dokument_textimweb
+    FROM
+        dokumente_laermemfindlichkeitsstufen
+    RETURNING *        
+)
+,
+localiseduri_laermemfindlichkeitsstufen AS 
+(
+    INSERT INTO
+        arp_npl_oereb.localiseduri 
+        (
+            t_basket,
+            t_datasetname,
+            t_seq,
+            atext,
+            alanguage,
+            multilingualuri_localisedtext 
+        )
+    SELECT 
+        t_basket,
+        t_datasetname,
+        localiseduri_t_seq,
+        atext,
+        alanguage,
+        multilingualuri_t_id
+    FROM 
+        dokumente_laermemfindlichkeitsstufen
+)
+,
+hinweisvorschrift_laermemfindlichkeitsstufen AS 
+(
+    SELECT DISTINCT ON (hinweisvorschrift.t_id)
+        hinweisvorschrift.t_basket,
+        hinweisvorschrift.t_datasetname,
+        eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung_t_id,
+        dokumente_laermemfindlichkeitsstufen.dokument_t_id_neu,
+        dokumente_laermemfindlichkeitsstufen.dokument_t_id_alt
+    FROM
+        arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+        LEFT JOIN arp_npl_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+        ON eigentumsbeschraenkung.t_id = hinweisvorschrift.eigentumsbeschraenkung 
+        LEFT JOIN dokumente_laermemfindlichkeitsstufen
+        ON dokumente_laermemfindlichkeitsstufen.dokument_t_id_alt = hinweisvorschrift.vorschrift_vorschriften_dokument 
+    WHERE 
+        eigentumsbeschraenkung.thema IN ('Laermemfindlichkeitsstufen')
+)
+,
+hinweisvorschrift_laermemfindlichkeitsstufen_insert AS 
+(
+    INSERT INTO
+        arp_npl_oereb.transferstruktur_hinweisvorschrift 
+        (
+            t_basket, 
+            t_datasetname,
+            eigentumsbeschraenkung,
+            vorschrift_vorschriften_dokument
+        )
+        SELECT  
+            t_basket,
+            t_datasetname,
+            eigentumsbeschraenkung_t_id,
+            dokument_t_id_neu
+        FROM
+            hinweisvorschrift_laermemfindlichkeitsstufen
+)
+DELETE FROM 
+    arp_npl_oereb.transferstruktur_hinweisvorschrift 
+WHERE EXISTS 
+(
+    SELECT 
+        1
+    FROM 
+        hinweisvorschrift_laermemfindlichkeitsstufen
+    WHERE
+        arp_npl_oereb.transferstruktur_hinweisvorschrift.eigentumsbeschraenkung = hinweisvorschrift_laermemfindlichkeitsstufen.eigentumsbeschraenkung_t_id
+    AND 
+        arp_npl_oereb.transferstruktur_hinweisvorschrift.vorschrift_vorschriften_dokument = hinweisvorschrift_laermemfindlichkeitsstufen.dokument_t_id_alt
+)
+;
+
+WITH gesetze_laermemfindlichkeitsstufen AS 
+(
+    SELECT
+        t_id AS hinweis
+    FROM
+        arp_npl_oereb.vorschriften_dokument
+    WHERE
+        t_ili_tid IN ('ch.admin.bk.sr.814.41', 'ch.so.sk.bgs.711.1', 'ch.so.sk.bgs.711.61') 
+)
+INSERT INTO arp_npl_oereb.vorschriften_hinweisweiteredokumente (
+    t_basket,
+    t_datasetname,
+    ursprung,
+    hinweis
+)
+SELECT 
+    dokument.t_basket,
+    dokument.t_datasetname,
+    dokument.t_id,
+    gesetze_laermemfindlichkeitsstufen.hinweis
+FROM 
+    arp_npl_oereb.vorschriften_dokument AS dokument
+    LEFT JOIN arp_npl_oereb.vorschriften_hinweisweiteredokumente AS hinweisweitere
+    ON dokument.t_id = hinweisweitere.ursprung 
+    LEFT JOIN gesetze_laermemfindlichkeitsstufen
+    ON 1=1
+WHERE
+    t_type = 'vorschriften_rechtsvorschrift'
+AND
+    dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+AND 
+    hinweisweitere.t_id IS NULL
+;
+
+WITH dangling_documents_laermemfindlichkeitsstufen AS 
+(
+    SELECT 
+        dokument.t_id 
+    FROM    
+        arp_npl_oereb.vorschriften_dokument AS dokument
+        LEFT JOIN arp_npl_oereb.transferstruktur_hinweisvorschrift AS hinweisvorschrift
+        ON dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument 
+    WHERE 
+        dokument.t_datasetname = 'ch.so.arp.nutzungsplanung'
+    AND hinweisvorschrift.t_id IS NULL
+)
+,
+dangling_documents_laermemfindlichkeitsstufen_multilingualuri AS 
+(
+    SELECT 
+        t_id 
+    FROM 
+        arp_npl_oereb.multilingualuri 
+    WHERE
+        vorschriften_dokument_textimweb IN 
+        (
+            SELECT
+                t_id
+            FROM 
+                dangling_documents_laermemfindlichkeitsstufen
+        )
+)
+,
+dangling_documents_laermemfindlichkeitsstufen_localiseduri AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.localiseduri
+    WHERE
+        multilingualuri_localisedtext IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_laermemfindlichkeitsstufen_multilingualuri
+        )
+)
+,
+dangling_documents_laermemfindlichkeitsstufen_multilingualuri_delete AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.multilingualuri 
+    WHERE
+        t_id IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_laermemfindlichkeitsstufen_multilingualuri
+        )
+)
+,
+dangling_documents_laermemfindlichkeitsstufen_hinweisweitere AS 
+(
+    DELETE FROM 
+        arp_npl_oereb.vorschriften_hinweisweiteredokumente 
+    WHERE 
+        ursprung IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_documents_laermemfindlichkeitsstufen
+        )
+)
+DELETE FROM 
+    arp_npl_oereb.vorschriften_dokument
+WHERE
+    t_id IN 
+    (
+        SELECT
+            t_id
+        FROM 
+            dangling_documents_laermemfindlichkeitsstufen
+    )
 ;
 
 /*
