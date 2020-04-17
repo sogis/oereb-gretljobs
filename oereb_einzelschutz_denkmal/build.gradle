@@ -16,7 +16,7 @@ ext {
     symbolsWmsBaseUrl = "https://" + geoservicesHostName
     xtfFileName = "ch.so.ada.denkmalschutz.oereb.xtf"
 
-    dbSchemaEinzelschutzOereb = "einzelschutz_oereb"
+    dbSchemaEinzelschutzOereb = "einzelschutz_denkmal_oereb"
     einzelschutzDenkmalDataSet = "ch.so.ada.denkmalschutz"
 
     federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
@@ -104,7 +104,7 @@ wmsLayerList.each { wmsLayer ->
         sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayerName&SLD_VERSION=1.1.0"
         legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayerName&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-        dbQTable = "einzelschutz_oereb.transferstruktur_legendeeintrag"
+        dbQTable = "einzelschutz_denkmal_oereb.transferstruktur_legendeeintrag"
         typeCodeAttrName = "artcode"
         typeCodeListAttrName = "artcodeliste"
         typeCodeListValue = typeCodeList
