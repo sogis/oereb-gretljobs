@@ -18,9 +18,12 @@ DELETE FROM ${dbSchema}.dm01vch24lv95dbodenbedeckung_boflaeche;
 DELETE FROM ${dbSchema}.dm01vch24lv95dbodenbedeckung_projboflaeche;
 DELETE FROM ${dbSchema}.dm01vch24lv95dbodenbedeckung_gebaeudenummer;
 DELETE FROM ${dbSchema}.dm01vch24lv95dbodenbedeckung_projgebaeudenummer;
+DELETE FROM ${dbSchema}.dm01vch24lv95dbodenbedeckung_bbnachfuehrung;
 -- Einzelobjekte
 DELETE FROM ${dbSchema}.dm01vch24lv95deinzelobjekte_objektnummer;
 DELETE FROM ${dbSchema}.dm01vch24lv95deinzelobjekte_flaechenelement;
 DELETE FROM ${dbSchema}.dm01vch24lv95deinzelobjekte_einzelobjekt;
+DELETE FROM ${dbSchema}.dm01vch24lv95deinzelobjekte_eonachfuehrung;
 -- Nomenklatur
 DELETE FROM ${dbSchema}.dm01vch24lv95dnomenklatur_flurname;
+DELETE FROM ${dbSchema}.dm01vch24lv95dnomenklatur_nknachfuehrung;
