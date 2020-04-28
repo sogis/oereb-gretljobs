@@ -49,7 +49,8 @@ dbSchemas.each { dbSchema ->
             new TransferSet("select_bodenbedeckung_projboflaeche.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_projboflaeche", true),
             new TransferSet("select_bodenbedeckung_gebaeudenummer.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_gebaeudenummer", true),
             new TransferSet("select_bodenbedeckung_projgebaeudenummer.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_projgebaeudenummer", true),
-            new TransferSet("select_nomenklatur_flurname.sql", dbSchema + ".dm01vch24lv95dnomenklatur_flurname", true)         ];        
+            new TransferSet("select_nomenklatur_flurname.sql", dbSchema + ".dm01vch24lv95dnomenklatur_flurname", true)
+            ];        
     }
 }
 
