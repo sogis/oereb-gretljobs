@@ -40,11 +40,16 @@ dbSchemas.each { dbSchema ->
             new TransferSet("select_liegenschaften_grundstueck.sql", dbSchema + ".dm01vch24lv95dliegenschaften_grundstueck", true),
             new TransferSet("select_liegenschaften_liegenschaft.sql", dbSchema + ".dm01vch24lv95dliegenschaften_liegenschaft", true),
             new TransferSet("select_liegenschaften_selbstrecht.sql", dbSchema + ".dm01vch24lv95dliegenschaften_selbstrecht", true),
+            new TransferSet("select_liegenschaften_bergwerk.sql", dbSchema + ".dm01vch24lv95dliegenschaften_bergwerk", true),            
             new TransferSet("select_gebaeudeadressen_gebnachfuehrung.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_gebnachfuehrung", true),
             new TransferSet("select_gebaeudeadressen_lokalisation.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_lokalisation", true),
             new TransferSet("select_gebaeudeadressen_lokalisationsname.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_lokalisationsname", true),
-            new TransferSet("select_gebaeudeadressen_gebaeudeeingang.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_gebaeudeeingang", true)
-        ];        
+            new TransferSet("select_gebaeudeadressen_gebaeudeeingang.sql", dbSchema + ".dm01vch24lv95dgebaeudeadressen_gebaeudeeingang", true),
+            new TransferSet("select_bodenbedeckung_boflaeche.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_boflaeche", true),
+            new TransferSet("select_bodenbedeckung_projboflaeche.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_projboflaeche", true),
+            new TransferSet("select_bodenbedeckung_gebaeudenummer.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_gebaeudenummer", true),
+            new TransferSet("select_bodenbedeckung_projgebaeudenummer.sql", dbSchema + ".dm01vch24lv95dbodenbedeckung_projgebaeudenummer", true),
+            new TransferSet("select_nomenklatur_flurname.sql", dbSchema + ".dm01vch24lv95dnomenklatur_flurname", true)         ];        
     }
 }
 
