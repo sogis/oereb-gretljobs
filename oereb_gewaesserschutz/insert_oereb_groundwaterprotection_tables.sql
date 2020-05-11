@@ -73,7 +73,7 @@ INSERT INTO
          gwsareal.t_id,
          basket_dataset.basket_t_id,
          basket_dataset.datasetname,
-         'Grundwasserschutzareale' AS aussage_de,
+         'Grundwasserschutzareal' AS aussage_de,
          'Grundwasserschutzareale' AS thema,
          gwsareal.typ AS artcode,
          'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale' AS artcodeliste,
