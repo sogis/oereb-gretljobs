@@ -127,6 +127,7 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     dbschema = dbSchemaEinzelschutzOereb
     dataFile = "$rootDir/" + xtfFileName
     dataset = einzelschutzDenkmalDataSet
+    disableValidation = true
 }
 
 task replaceWmsServer(dependsOn: "exportData") {
