@@ -35,7 +35,7 @@ INSERT INTO
         publiziertab,
         zustaendigestelle
     )
-SELECT
+    SELECT
         DISTINCT ON (waldgrenze.t_id)
         waldgrenze.t_id,
         basket_dataset.basket_t_id,
@@ -96,7 +96,7 @@ INSERT INTO
          typ_dokument.dokumente AS vorschrift_vorschriften_dokument
       FROM
          awjf_statische_waldgrenze.geobasisdaten_typ_dokument AS typ_dokument
-         LEFT JOIN awjf_statische_waldgrenze.geobasisdaten_waldgrenze_linie AS waldgrenze
+         INNER JOIN awjf_statische_waldgrenze.geobasisdaten_waldgrenze_linie AS waldgrenze
          ON typ_dokument.festlegung = waldgrenze.waldgrenze_typ
          INNER JOIN awjf_statische_waldgrenze.dokumente_dokument AS dokument
          ON dokument.t_id = typ_dokument.dokumente,
@@ -229,7 +229,12 @@ localiseduri AS
         basket_dataset.datasetname,
         0 AS t_seq,
         'de' AS alanguage,
-        rechtsvorschrften_dokument.text_im_web AS atext,
+        CASE
+            WHEN (rechtsvorschrften_dokument.text_im_web IS NULL
+                  OR rechtsvorschrften_dokument.text_im_web = '[zurzeit nicht verfügbar]')
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/404.pdf'
+            ELSE rechtsvorschrften_dokument.text_im_web
+        END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
         awjf_statische_waldgrenze.dokumente_dokument AS rechtsvorschrften_dokument
