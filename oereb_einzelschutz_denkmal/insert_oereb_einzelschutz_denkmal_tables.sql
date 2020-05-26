@@ -448,7 +448,7 @@ INSERT INTO
                 WHEN geometrie.flaeche_lv95 IS NOT NULL
                     THEN 'Flaeche'
              END AS geometrietyp,
-            'ch.SO.'||thema||'.'||weiteresthema AS layername
+             weiteresthema AS layername
         FROM
             ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
             LEFT JOIN ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
