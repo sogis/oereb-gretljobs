@@ -384,7 +384,10 @@ WITH transferstruktur_darstellungsdienst AS
                 ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
                 LEFT JOIN ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
                 ON eigentumsbeschraenkung.t_id = geometrie.eigentumsbeschraenkung
-            WHERE geometrie.punkt_lv95 IS NOT NULL OR geometrie.flaeche_lv95 IS NOT NULL
+            WHERE
+                ((geometrie.punkt_lv95 IS NOT NULL AND geometrie.flaeche_lv95 IS NULL)
+                 OR
+                (geometrie.punkt_lv95 IS NULL AND geometrie.flaeche_lv95 IS NOT NULL))
                 
         ) AS eigentumsbeschraenkung,
         (
@@ -461,13 +464,14 @@ INSERT INTO
 UPDATE
     ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
 SET 
-    darstellungsdienst = (
-                          SELECT
-                              t_id
-                          FROM
-                              ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
-                          WHERE
-                              verweiswms ILIKE '%ch.SO.Einzelschutz.Punkt%'
+    darstellungsdienst =
+    (
+        SELECT
+            t_id
+        FROM
+            ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
+        WHERE
+            verweiswms ILIKE '%ch.SO.Einzelschutz.Punkt%'
     )
 WHERE
     t_id IN 
@@ -489,13 +493,14 @@ WHERE
 UPDATE
     ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
 SET 
-    darstellungsdienst = (
-                          SELECT
-                              t_id
-                          FROM
-                              ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
-                          WHERE
-                              verweiswms ILIKE '%ch.SO.Einzelschutz.Flaeche%'
+    darstellungsdienst =
+    (
+        SELECT
+            t_id
+        FROM
+            ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
+        WHERE
+            verweiswms ILIKE '%ch.SO.Einzelschutz.Flaeche%'
     )
 WHERE
     t_id IN 
