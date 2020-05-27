@@ -180,6 +180,6 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ["update_oerebwms_einzelschutz_denkmal_tables.sql"]
-    sqlParameters = [dbSchema: 'stage']
+    sqlParameters = [dbSchema: 'live']
 }
 

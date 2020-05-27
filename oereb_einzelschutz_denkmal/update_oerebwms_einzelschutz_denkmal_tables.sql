@@ -178,7 +178,7 @@ WHERE
 AND
      eigentumsbeschraenkung.weiteresthema = 'ch.SO.Einzelschutz'
 AND
-    eigentumsbeschraenkung.aussage = 'geschütztes historisches Kulturdenkmal'
+    eigentumsbeschraenkung.aussage_de = 'geschütztes historisches Kulturdenkmal'
 AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
@@ -364,7 +364,7 @@ WHERE
 AND
      eigentumsbeschraenkung.weiteresthema = 'ch.SO.Einzelschutz'
 AND
-    eigentumsbeschraenkung.aussage = 'geschütztes historisches Kulturdenkmal'
+    eigentumsbeschraenkung.aussage_de = 'geschütztes historisches Kulturdenkmal'
 AND
     geometrie.punkt_lv95 IS NOT NULL
 ;
