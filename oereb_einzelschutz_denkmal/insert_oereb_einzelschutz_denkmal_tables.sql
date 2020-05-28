@@ -365,12 +365,12 @@ WITH transferstruktur_darstellungsdienst AS
         SELECT
             basket_dataset.basket_t_id AS t_basket,
             basket_dataset.datasetname AS t_datasetname,
-            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
-            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.') AS legendeimweb
+            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM(layername), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
+            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM(layername), '.') AS legendeimweb
         FROM
         (
             SELECT 
-                DISTINCT ON (thema, geometrietyp)
+                DISTINCT ON (thema)
                 thema,
                 subthema,
                 CASE
@@ -458,7 +458,7 @@ INSERT INTO
             ON eigentumsbeschraenkung.t_id = geometrie.eigentumsbeschraenkung
     ) AS eigentumsbeschraenkung
     LEFT JOIN transferstruktur_darstellungsdienst
-    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername||'.'||eigentumsbeschraenkung.geometrietyp, '.')||'%'
+    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername, '.')||'%'
 ;
 
 UPDATE
@@ -471,7 +471,7 @@ SET
         FROM
             ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
         WHERE
-            verweiswms ILIKE '%ch.SO.Einzelschutz.Punkt%'
+            verweiswms ILIKE '%ch.SO.Einzelschutz%'
     )
 WHERE
     t_id IN 
@@ -490,34 +490,34 @@ WHERE
     )
 ;
 
-UPDATE
-    ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
-SET 
-    darstellungsdienst =
-    (
-        SELECT
-            t_id
-        FROM
-            ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
-        WHERE
-            verweiswms ILIKE '%ch.SO.Einzelschutz.Flaeche%'
-    )
-WHERE
-    t_id IN 
-    (
-        SELECT
-            DISTINCT ON (geometrie.eigentumsbeschraenkung)
-            geometrie.eigentumsbeschraenkung
-        FROM
-            ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
-        WHERE
-            geometrie.flaeche_lv95 IS NOT NULL
-        AND
-            thema = 'WeiteresThema'
-        AND
-            weiteresthema = 'ch.SO.Einzelschutz'
-    )
-;
+-- UPDATE
+--     ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
+-- SET 
+--     darstellungsdienst =
+--     (
+--         SELECT
+--             t_id
+--         FROM
+--             ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
+--         WHERE
+--             verweiswms ILIKE '%ch.SO.Einzelschutz%'
+--     )
+-- WHERE
+--     t_id IN 
+--     (
+--         SELECT
+--             DISTINCT ON (geometrie.eigentumsbeschraenkung)
+--             geometrie.eigentumsbeschraenkung
+--         FROM
+--             ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
+--         WHERE
+--             geometrie.flaeche_lv95 IS NOT NULL
+--         AND
+--             thema = 'WeiteresThema'
+--         AND
+--             weiteresthema = 'ch.SO.Einzelschutz'
+--     )
+-- ;
 
 /*
  * Hinweise auf die gesetzlichen Grundlagen.
