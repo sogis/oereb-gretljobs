@@ -490,34 +490,6 @@ WHERE
     )
 ;
 
--- UPDATE
---     ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
--- SET 
---     darstellungsdienst =
---     (
---         SELECT
---             t_id
---         FROM
---             ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
---         WHERE
---             verweiswms ILIKE '%ch.SO.Einzelschutz%'
---     )
--- WHERE
---     t_id IN 
---     (
---         SELECT
---             DISTINCT ON (geometrie.eigentumsbeschraenkung)
---             geometrie.eigentumsbeschraenkung
---         FROM
---             ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
---         WHERE
---             geometrie.flaeche_lv95 IS NOT NULL
---         AND
---             thema = 'WeiteresThema'
---         AND
---             weiteresthema = 'ch.SO.Einzelschutz'
---     )
--- ;
 
 /*
  * Hinweise auf die gesetzlichen Grundlagen.
