@@ -482,11 +482,11 @@ WHERE
         FROM
             ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
         WHERE
-            geometrie.punkt_lv95 IS NOT NULL
-        AND
             thema = 'WeiteresThema'
         AND
             weiteresthema = 'ch.SO.Einzelschutz'
+        AND
+            aussage_de = 'geschütztes historisches Kulturdenkmal'
     )
 ;
 
