@@ -16,7 +16,7 @@ ext {
     symbolsWmsBaseUrl = "https://" + geoservicesHostName
     xtfFileName = "ch.so.ada.denkmalschutz.oereb.xtf"
 
-    dbSchemaEinzelschutzOereb = "einzelschutz_denkmal_oereb"
+    dbSchemaEinzelschutzOereb = "ada_denkmalschutz_oereb"
     einzelschutzDenkmalDataSet = "ch.so.ada.denkmalschutz"
 
     federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
@@ -29,9 +29,9 @@ ext {
     responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
 
     wmsLayerList = [
-        ["ch.SO.Einzelschutz", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Einzelschutz"]
-    ]    
-
+        ["ch.SO.Einzelschutz.Punkt", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt"],
+        ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche"]
+    ]
 }
 
 
@@ -104,7 +104,7 @@ wmsLayerList.each { wmsLayer ->
         sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayerName&SLD_VERSION=1.1.0"
         legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayerName&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-        dbQTable = "einzelschutz_denkmal_oereb.transferstruktur_legendeeintrag"
+        dbQTable = "ada_denkmalschutz_oereb.transferstruktur_legendeeintrag"
         typeCodeAttrName = "artcode"
         typeCodeListAttrName = "artcodeliste"
         typeCodeListValue = typeCodeList
@@ -180,6 +180,6 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ["update_oerebwms_einzelschutz_denkmal_tables.sql"]
-    sqlParameters = [dbSchema: 'stage']
+    sqlParameters = [dbSchema: 'live']
 }
 

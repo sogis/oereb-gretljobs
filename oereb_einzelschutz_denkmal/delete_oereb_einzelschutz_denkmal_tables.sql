@@ -1,45 +1,45 @@
 DELETE FROM
-   einzelschutz_denkmal_oereb.transferstruktur_legendeeintrag
+   ada_denkmalschutz_oereb.transferstruktur_legendeeintrag
 WHERE
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM 
-   einzelschutz_denkmal_oereb.localiseduri 
+   ada_denkmalschutz_oereb.localiseduri 
 WHERE 
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM 
-   einzelschutz_denkmal_oereb.multilingualuri
+   ada_denkmalschutz_oereb.multilingualuri
 WHERE 
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM
-   einzelschutz_denkmal_oereb.vorschriften_hinweisweiteredokumente
+   ada_denkmalschutz_oereb.vorschriften_hinweisweiteredokumente
 WHERE
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM 
-   einzelschutz_denkmal_oereb.transferstruktur_hinweisvorschrift
+   ada_denkmalschutz_oereb.transferstruktur_hinweisvorschrift
 WHERE
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM 
-   einzelschutz_denkmal_oereb.vorschriften_dokument
+   ada_denkmalschutz_oereb.vorschriften_dokument
 WHERE
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM 
-   einzelschutz_denkmal_oereb.transferstruktur_geometrie
+   ada_denkmalschutz_oereb.transferstruktur_geometrie
 WHERE 
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;
 DELETE FROM 
-   einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung
+   ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
 WHERE
     t_datasetname = 'ch.so.ada.denkmalschutz'    
 ;
 DELETE FROM
-   einzelschutz_denkmal_oereb.transferstruktur_darstellungsdienst
+   ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
 WHERE
     t_datasetname = 'ch.so.ada.denkmalschutz'
 ;

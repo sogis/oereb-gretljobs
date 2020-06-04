@@ -1,5 +1,8 @@
 -- table 'einzelschutz' with thema 'WeiteresThema', subthema '-', weiteresthema 'ch.SO.Einzelschutz' and geometry 'flaeche'
-DELETE FROM ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche;
+DELETE FROM ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche
+WHERE
+    aussage = 'geschütztes historisches Kulturdenkmal'
+;
 INSERT INTO ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_flaeche
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
@@ -175,14 +178,17 @@ WHERE
 AND
      eigentumsbeschraenkung.weiteresthema = 'ch.SO.Einzelschutz'
 AND
-    eigentumsbeschraenkung.weiteresthema = 'geschütztes historisches Kulturdenkmal'
+    eigentumsbeschraenkung.aussage_de = 'geschütztes historisches Kulturdenkmal'
 AND
     geometrie.flaeche_lv95 IS NOT NULL
 ;
 
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 -- table 'einzelschutz' with thema 'WeiteresThema', subthema '-', weiteresthema 'ch.SO.Einzelschutz' and geometry 'punkt'
-DELETE FROM ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt;
+DELETE FROM ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt
+WHERE
+    aussage = 'geschütztes historisches Kulturdenkmal'
+;
 INSERT INTO ${dbSchema}.oerebwms_weiteres_thema_einzelschutz_punkt
 WITH RECURSIVE x(ursprung, hinweis, parents, last_ursprung, depth) AS 
 (
@@ -358,7 +364,7 @@ WHERE
 AND
      eigentumsbeschraenkung.weiteresthema = 'ch.SO.Einzelschutz'
 AND
-    eigentumsbeschraenkung.weiteresthema = 'geschütztes historisches Kulturdenkmal'
+    eigentumsbeschraenkung.aussage_de = 'geschütztes historisches Kulturdenkmal'
 AND
     geometrie.punkt_lv95 IS NOT NULL
 ;

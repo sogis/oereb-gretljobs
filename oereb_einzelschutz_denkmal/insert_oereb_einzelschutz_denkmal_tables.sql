@@ -9,7 +9,7 @@
  */
 
 INSERT INTO
-    einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung
+    ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
     (
         t_id,
         t_basket,
@@ -36,14 +36,25 @@ INSERT INTO
                 THEN 'kommunal'
             ELSE 'kantonal'
         END AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal' AS artcodeliste,
+        CASE
+            WHEN gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL
+                THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt'
+            WHEN gis_geometrie.apolygon IS NOT NULL AND gis_geometrie.punkt IS NULL
+                THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche'
+        END AS artcodeliste,
         'inKraft' AS rechtsstatus,
         rechtsvorschrift_link.datum AS publiziertab,
         amt.t_id AS zustaendigestelle
     FROM
         ada_denkmalschutz.fachapplikation_denkmal AS denkmal
-        LEFT JOIN einzelschutz_denkmal_oereb.vorschriften_amt AS amt
+        LEFT JOIN ada_denkmalschutz_oereb.vorschriften_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada'
+        INNER JOIN ada_denkmalschutz.gis_geometrie AS gis_geometrie
+        ON denkmal.id = gis_geometrie.denkmal_id
+        AND
+        ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
+         OR
+        (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
         LEFT JOIN ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
         ON denkmal.id = rechtsvorschrift_link.denkmal_id,
         (
@@ -51,8 +62,8 @@ INSERT INTO
                 basket.t_id AS basket_t_id,
                 dataset.datasetname AS datasetname               
             FROM
-                einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-                LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+                ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+                LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
                 ON basket.dataset = dataset.t_id
             WHERE
                 dataset.datasetname = 'ch.so.ada.denkmalschutz'
@@ -68,7 +79,7 @@ INSERT INTO
  */
  
 INSERT INTO 
-    einzelschutz_denkmal_oereb.vorschriften_dokument
+    ada_denkmalschutz_oereb.vorschriften_dokument
     (
         t_id,
         t_basket,
@@ -118,15 +129,15 @@ INSERT INTO
         ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS dokument
         LEFT JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
         ON denkmal.id = dokument.denkmal_id
-        LEFT JOIN einzelschutz_denkmal_oereb.vorschriften_amt AS amt
+        LEFT JOIN ada_denkmalschutz_oereb.vorschriften_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
         (
             SELECT
                 basket.t_id AS basket_t_id,
                 dataset.datasetname AS datasetname           
             FROM
-                einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-                LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+                ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+                LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
                 ON basket.dataset = dataset.t_id
             WHERE
                 dataset.datasetname = 'ch.so.ada.denkmalschutz' 
@@ -137,7 +148,7 @@ INSERT INTO
         denkmal.schutzstufe_code = 'geschuetzt'
 ;
 INSERT INTO
-     einzelschutz_denkmal_oereb.transferstruktur_hinweisvorschrift
+     ada_denkmalschutz_oereb.transferstruktur_hinweisvorschrift
      (
          t_basket,
          t_datasetname,
@@ -147,27 +158,27 @@ INSERT INTO
      SELECT
          basket_t_id,
          datasetname,
-         denkmal.id AS eigentumsbeschraenkung,
+         eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
          typ_dokument.t_id AS vorschrift_vorschriften_dokument
       FROM
          ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS typ_dokument
-         LEFT JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
-         ON typ_dokument.denkmal_id = denkmal.id,
-     (
+         INNER JOIN ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+         ON typ_dokument.denkmal_id = eigentumsbeschraenkung.t_id,
+        (
          SELECT
              basket.t_id AS basket_t_id,
              dataset.datasetname AS datasetname               
          FROM
-             einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-             LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+             ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+             LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
              ON basket.dataset = dataset.t_id
          WHERE
             dataset.datasetname = 'ch.so.ada.denkmalschutz' 
-     ) AS basket_dataset
+        ) AS basket_dataset
      WHERE
         typ_dokument.datum IS NOT NULL
-    AND
-        denkmal.schutzstufe_code = 'geschuetzt'
+--     AND
+--         denkmal.schutzstufe_code = 'geschuetzt'
 ;
 
 /*
@@ -178,7 +189,7 @@ INSERT INTO
 WITH multilingualuri AS
 (
     INSERT INTO
-        einzelschutz_denkmal_oereb.multilingualuri
+        ada_denkmalschutz_oereb.multilingualuri
         (
             t_id,
             t_basket,
@@ -187,20 +198,20 @@ WITH multilingualuri AS
             vorschriften_dokument_textimweb
         )
     SELECT
-        nextval('einzelschutz_denkmal_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
         0 AS t_seq,
         vorschriften_dokument.t_id AS vorschriften_dokument_textimweb
     FROM
-        einzelschutz_denkmal_oereb.vorschriften_dokument AS vorschriften_dokument,
+        ada_denkmalschutz_oereb.vorschriften_dokument AS vorschriften_dokument,
         (
             SELECT
                 basket.t_id AS basket_t_id,
                 dataset.datasetname AS datasetname               
             FROM
-                einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-                LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+                ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+                LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
                 ON basket.dataset = dataset.t_id
             WHERE
                 dataset.datasetname = 'ch.so.ada.denkmalschutz' 
@@ -213,7 +224,7 @@ WITH multilingualuri AS
 localiseduri AS 
 (
     SELECT 
-        nextval('einzelschutz_denkmal_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
         0 AS t_seq,
@@ -233,8 +244,8 @@ localiseduri AS
                 basket.t_id AS basket_t_id,
                 dataset.datasetname AS datasetname               
             FROM
-                einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-                LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+                ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+                LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
                 ON basket.dataset = dataset.t_id
             WHERE
                 dataset.datasetname = 'ch.so.ada.denkmalschutz'                 
@@ -243,7 +254,7 @@ localiseduri AS
         rechtsvorschrften_dokument.datum IS NOT NULL
 )
 INSERT INTO
-    einzelschutz_denkmal_oereb.localiseduri
+    ada_denkmalschutz_oereb.localiseduri
     (
         t_id,
         t_basket,
@@ -270,7 +281,7 @@ INSERT INTO
  */
 
 INSERT INTO
-    einzelschutz_denkmal_oereb.transferstruktur_geometrie
+    ada_denkmalschutz_oereb.transferstruktur_geometrie
     ( 
         t_basket,
         t_datasetname,
@@ -302,21 +313,25 @@ INSERT INTO
         ada_denkmalschutz.gis_geometrie AS gis_geometrie
         LEFT JOIN ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
         ON gis_geometrie.denkmal_id = rechtsvorschrift_link.denkmal_id
-        INNER JOIN einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+        INNER JOIN ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON gis_geometrie.denkmal_id = eigentumsbeschraenkung.t_id,
          (
              SELECT
                  basket.t_id AS basket_t_id,
                  dataset.datasetname AS datasetname               
              FROM
-                 einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-                 LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+                 ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+                 LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
                  ON basket.dataset = dataset.t_id
              WHERE
                  dataset.datasetname = 'ch.so.ada.denkmalschutz'
          ) AS basket_dataset
     WHERE
-        rechtsvorschrift_link.datum IS NOT NULL     
+        rechtsvorschrift_link.datum IS NOT NULL
+    AND
+        ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
+         OR
+        (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
 ;
 
 /*
@@ -340,7 +355,7 @@ INSERT INTO
 WITH transferstruktur_darstellungsdienst AS
 (
     INSERT INTO 
-        einzelschutz_denkmal_oereb.transferstruktur_darstellungsdienst 
+        ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst 
         (
             t_basket,
             t_datasetname,
@@ -350,12 +365,12 @@ WITH transferstruktur_darstellungsdienst AS
         SELECT
             basket_dataset.basket_t_id AS t_basket,
             basket_dataset.datasetname AS t_datasetname,
-            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
-            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM((layername||'.'||geometrietyp)), '.') AS legendeimweb
+            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetMap&FORMAT=image%2Fpng&TRANSPARENT=true&LAYERS='||RTRIM(TRIM(layername), '.')||'&STYLES=&SRS=EPSG%3A2056&CRS=EPSG%3A2056&DPI=96&WIDTH=1200&HEIGHT=1146&BBOX=2591250%2C1211350%2C2646050%2C1263700' AS verweiswms,
+            '${wmsHost}/wms/oereb?SERVICE=WMS&VERSION=1.3.0&REQUEST=GetLegendGraphics&FORMAT=image/png&LAYER='||RTRIM(TRIM(layername), '.') AS legendeimweb
         FROM
         (
             SELECT 
-                DISTINCT ON (thema, geometrietyp)
+                DISTINCT ON (thema)
                 thema,
                 subthema,
                 CASE
@@ -366,10 +381,13 @@ WITH transferstruktur_darstellungsdienst AS
                  END AS geometrietyp,
                  weiteresthema AS layername
             FROM
-                einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
-                LEFT JOIN einzelschutz_denkmal_oereb.transferstruktur_geometrie AS geometrie
+                ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+                LEFT JOIN ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
                 ON eigentumsbeschraenkung.t_id = geometrie.eigentumsbeschraenkung
-            WHERE geometrie.punkt_lv95 IS NOT NULL OR geometrie.flaeche_lv95 IS NOT NULL
+            WHERE
+                ((geometrie.punkt_lv95 IS NOT NULL AND geometrie.flaeche_lv95 IS NULL)
+                 OR
+                (geometrie.punkt_lv95 IS NULL AND geometrie.flaeche_lv95 IS NOT NULL))
                 
         ) AS eigentumsbeschraenkung,
         (
@@ -377,8 +395,8 @@ WITH transferstruktur_darstellungsdienst AS
                 basket.t_id AS basket_t_id,
                 dataset.datasetname AS datasetname               
             FROM
-                einzelschutz_denkmal_oereb.t_ili2db_dataset AS dataset
-                LEFT JOIN einzelschutz_denkmal_oereb.t_ili2db_basket AS basket
+                ada_denkmalschutz_oereb.t_ili2db_dataset AS dataset
+                LEFT JOIN ada_denkmalschutz_oereb.t_ili2db_basket AS basket
                 ON basket.dataset = dataset.t_id
             WHERE
                 dataset.datasetname = 'ch.so.ada.denkmalschutz' 
@@ -386,7 +404,7 @@ WITH transferstruktur_darstellungsdienst AS
     RETURNING *
 )
 INSERT INTO 
-    einzelschutz_denkmal_oereb.transferstruktur_legendeeintrag
+    ada_denkmalschutz_oereb.transferstruktur_legendeeintrag
     (
         t_basket,
         t_datasetname,
@@ -401,7 +419,7 @@ INSERT INTO
         transfrstrkstllngsdnst_legende
     )
     SELECT
-        DISTINCT ON (artcode, artcodeliste, geometrietyp)
+        DISTINCT ON (geometrietyp)
         eigentumsbeschraenkung.t_basket,
         eigentumsbeschraenkung.t_datasetname,
         eigentumsbeschraenkung.t_seq,        
@@ -416,7 +434,7 @@ INSERT INTO
     FROM
     (
         SELECT
-            DISTINCT ON (artcode, artcodeliste, geometrietyp)
+            DISTINCT ON (geometrietyp)
             eigentumsbeschraenkung.t_basket,
             eigentumsbeschraenkung.t_datasetname,
             0::int AS t_seq,        
@@ -433,26 +451,27 @@ INSERT INTO
                 WHEN geometrie.flaeche_lv95 IS NOT NULL
                     THEN 'Flaeche'
              END AS geometrietyp,
-            'ch.SO.'||thema||'.'||weiteresthema AS layername
+             weiteresthema AS layername
         FROM
-            einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
-            LEFT JOIN einzelschutz_denkmal_oereb.transferstruktur_geometrie AS geometrie
+            ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+            LEFT JOIN ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
             ON eigentumsbeschraenkung.t_id = geometrie.eigentumsbeschraenkung
     ) AS eigentumsbeschraenkung
     LEFT JOIN transferstruktur_darstellungsdienst
-    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername||'.'||eigentumsbeschraenkung.geometrietyp, '.')||'%'
+    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername, '.')||'%'
 ;
 
 UPDATE
-    einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung
+    ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung
 SET 
-    darstellungsdienst = (
-                          SELECT
-                              t_id
-                          FROM
-                              einzelschutz_denkmal_oereb.transferstruktur_darstellungsdienst
-                          WHERE
-                              verweiswms ILIKE '%ch.SO.Einzelschutz.Punkt%'
+    darstellungsdienst =
+    (
+        SELECT
+            t_id
+        FROM
+            ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst
+        WHERE
+            verweiswms ILIKE '%ch.SO.Einzelschutz%'
     )
 WHERE
     t_id IN 
@@ -461,43 +480,16 @@ WHERE
             DISTINCT ON (geometrie.eigentumsbeschraenkung)
             geometrie.eigentumsbeschraenkung
         FROM
-            einzelschutz_denkmal_oereb.transferstruktur_geometrie AS geometrie
+            ada_denkmalschutz_oereb.transferstruktur_geometrie AS geometrie
         WHERE
-            geometrie.punkt_lv95 IS NOT NULL
-        AND
             thema = 'WeiteresThema'
         AND
             weiteresthema = 'ch.SO.Einzelschutz'
+        AND
+            aussage_de = 'geschütztes historisches Kulturdenkmal'
     )
 ;
 
-UPDATE
-    einzelschutz_denkmal_oereb.transferstruktur_eigentumsbeschraenkung
-SET 
-    darstellungsdienst = (
-                          SELECT
-                              t_id
-                          FROM
-                              einzelschutz_denkmal_oereb.transferstruktur_darstellungsdienst
-                          WHERE
-                              verweiswms ILIKE '%ch.SO.Einzelschutz.Flaeche%'
-    )
-WHERE
-    t_id IN 
-    (
-        SELECT
-            DISTINCT ON (geometrie.eigentumsbeschraenkung)
-            geometrie.eigentumsbeschraenkung
-        FROM
-            einzelschutz_denkmal_oereb.transferstruktur_geometrie AS geometrie
-        WHERE
-            geometrie.flaeche_lv95 IS NOT NULL
-        AND
-            thema = 'WeiteresThema'
-        AND
-            weiteresthema = 'ch.SO.Einzelschutz'
-    )
-;
 
 /*
  * Hinweise auf die gesetzlichen Grundlagen.
@@ -512,11 +504,11 @@ WITH vorschriften_dokument_gesetze AS (
   SELECT
     t_id AS hinweis
   FROM
-    einzelschutz_denkmal_oereb.vorschriften_dokument
+    ada_denkmalschutz_oereb.vorschriften_dokument
   WHERE
     t_ili_tid IN ('ch.so.sk.bgs.436.11', 'ch.so.sk.bgs.711.1', 'ch.so.sk.bgs.711.61') 
 )
-INSERT INTO einzelschutz_denkmal_oereb.vorschriften_hinweisweiteredokumente (
+INSERT INTO ada_denkmalschutz_oereb.vorschriften_hinweisweiteredokumente (
   t_basket,
   t_datasetname,
   ursprung,
@@ -528,7 +520,7 @@ SELECT
   vorschriften_dokument.t_id,  
   vorschriften_dokument_gesetze.hinweis
 FROM 
-  einzelschutz_denkmal_oereb.vorschriften_dokument AS vorschriften_dokument
+  ada_denkmalschutz_oereb.vorschriften_dokument AS vorschriften_dokument
   LEFT JOIN vorschriften_dokument_gesetze
   ON 1=1
 WHERE
@@ -556,7 +548,7 @@ AND
  */ 
 
 UPDATE 
-    einzelschutz_denkmal_oereb.vorschriften_amt
+    ada_denkmalschutz_oereb.vorschriften_amt
 SET
     t_ili_tid = 'ch.so.sk.'||uuid_generate_v4()
 WHERE
