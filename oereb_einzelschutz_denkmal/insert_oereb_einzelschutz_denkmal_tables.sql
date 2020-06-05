@@ -33,8 +33,8 @@ INSERT INTO
         'ch.SO.Einzelschutz' AS weiteresthema,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
-                THEN 'kommunal'
-            ELSE 'kantonal'
+                THEN 'kommunal.geschuetztes_historisches_Kulturdenkmal'
+            ELSE 'kantonal.geschuetztes_historisches_Kulturdenkmal'
         END AS artcode,
         CASE
             WHEN gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL
