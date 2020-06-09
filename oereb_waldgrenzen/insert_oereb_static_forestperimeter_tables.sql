@@ -42,14 +42,14 @@ INSERT INTO
         basket_dataset.datasetname,
         CASE
             WHEN geobasisdaten_typ.art = 'Nutzungsplanung_in_Bauzonen'
-                THEN 'Bauzonen'
+                THEN 'in Bauzonen'
             ELSE 'ausserhalb Bauzonen'
         END AS aussage_de,
         'Waldgrenzen' AS thema,
         CASE
             WHEN geobasisdaten_typ.art = 'Nutzungsplanung_in_Bauzonen'
-                THEN 'Bauzonen'
-            ELSE 'ausserhalb Bauzonen'
+                THEN 'in_Bauzonen'
+            ELSE 'ausserhalb_Bauzonen'
         END AS  artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen' AS artcodeliste,
         waldgrenze.rechtsstatus,
