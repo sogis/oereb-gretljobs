@@ -40,10 +40,17 @@ INSERT INTO
         waldgrenze.t_id,
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
-        --geobasisdaten_typ.bezeichnung AS aussage_de,
-        'Waldgrenzen' AS aussage_de,
+        CASE
+            WHEN geobasisdaten_typ.art = 'Nutzungsplanung_in_Bauzonen'
+                THEN 'Bauzonen'
+            ELSE 'ausserhalb Bauzonen'
+        END AS aussage_de,
         'Waldgrenzen' AS thema,
-        'Waldgrenzen' AS artcode,
+        CASE
+            WHEN geobasisdaten_typ.art = 'Nutzungsplanung_in_Bauzonen'
+                THEN 'Bauzonen'
+            ELSE 'ausserhalb Bauzonen'
+        END AS  artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen' AS artcodeliste,
         waldgrenze.rechtsstatus,
         waldgrenze.publiziert_ab AS publiziertab, 
