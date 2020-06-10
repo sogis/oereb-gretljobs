@@ -114,7 +114,11 @@ INSERT INTO
                 THEN 'GRB'
             ELSE 'RRB'
         END AS abkuerzung_de,
-        dokument.nummer AS offiziellenr,
+        CASE
+            WHEN dokument.nummer LIKE '%/%'
+                THEN dokument.nummer
+            ELSE EXTRACT(YEAR FROM datum)||'/'||nummer
+        END AS offiziellenr,
         'SO' AS kanton,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
@@ -124,10 +128,9 @@ INSERT INTO
         'inKraft' AS rechtsstatus,
         dokument.datum AS publiziertab,
         amt.t_id AS zustaendigestelle
-
     FROM
         ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS dokument
-        LEFT JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
+        INNER JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
         ON denkmal.id = dokument.denkmal_id
         LEFT JOIN ada_denkmalschutz_oereb.vorschriften_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
@@ -177,8 +180,6 @@ INSERT INTO
         ) AS basket_dataset
      WHERE
         typ_dokument.datum IS NOT NULL
---     AND
---         denkmal.schutzstufe_code = 'geschuetzt'
 ;
 
 /*
