@@ -31,11 +31,12 @@ INSERT INTO
         'geschütztes historisches Kulturdenkmal' AS aussage_de,
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
-        CASE
+        /*CASE
             WHEN schutzdurchgemeinde IS TRUE
                 THEN 'kommunal.geschuetztes_Kulturdenkmal'
             ELSE 'kantonal.geschuetztes_Kulturdenkmal'
-        END AS artcode,
+        END AS artcode,*/
+        'geschuetztes_Kulturdenkmal' AS artcode,
         CASE
             WHEN gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL
                 THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt'
