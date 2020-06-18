@@ -31,11 +31,12 @@ INSERT INTO
         'geschütztes historisches Kulturdenkmal' AS aussage_de,
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
-        CASE
+        /*CASE
             WHEN schutzdurchgemeinde IS TRUE
-                THEN 'kommunal'
-            ELSE 'kantonal'
-        END AS artcode,
+                THEN 'kommunal.geschuetztes_Kulturdenkmal'
+            ELSE 'kantonal.geschuetztes_Kulturdenkmal'
+        END AS artcode,*/
+        'geschuetztes_Kulturdenkmal' AS artcode,
         CASE
             WHEN gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL
                 THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt'
@@ -114,7 +115,11 @@ INSERT INTO
                 THEN 'GRB'
             ELSE 'RRB'
         END AS abkuerzung_de,
-        dokument.nummer AS offiziellenr,
+        CASE
+            WHEN dokument.nummer LIKE '%/%'
+                THEN dokument.nummer
+            ELSE EXTRACT(YEAR FROM datum)||'/'||nummer
+        END AS offiziellenr,
         'SO' AS kanton,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
@@ -124,10 +129,9 @@ INSERT INTO
         'inKraft' AS rechtsstatus,
         dokument.datum AS publiziertab,
         amt.t_id AS zustaendigestelle
-
     FROM
         ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS dokument
-        LEFT JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
+        INNER JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
         ON denkmal.id = dokument.denkmal_id
         LEFT JOIN ada_denkmalschutz_oereb.vorschriften_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
@@ -177,8 +181,6 @@ INSERT INTO
         ) AS basket_dataset
      WHERE
         typ_dokument.datum IS NOT NULL
---     AND
---         denkmal.schutzstufe_code = 'geschuetzt'
 ;
 
 /*
@@ -231,8 +233,8 @@ localiseduri AS
         'de' AS alanguage,
         CASE
             WHEN rechtsvorschrften_dokument.multimedia_link IS NULL
-                THEN 'https://artplus.verw.rootso.org/MpWeb-apSolothurnDenkmal/download/pdf_404.pdf'
-            ELSE rechtsvorschrften_dokument.multimedia_link
+                THEN 'https://geo.so.ch/docs/ch.so.ada.denkmal/pdf_404.pdf'
+            ELSE regexp_replace(rechtsvorschrften_dokument.multimedia_link, 'artplus\.verw\.rootso\.org/MpWeb-apSolothurnDenkmal/download/(.*)\?mode=gis','geo.so.ch/docs/ch.so.ada.denkmal/ada_\1.pdf')
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
