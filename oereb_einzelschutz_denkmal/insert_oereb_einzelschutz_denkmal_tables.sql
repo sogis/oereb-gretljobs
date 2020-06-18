@@ -308,13 +308,11 @@ INSERT INTO
             ELSE NULL
         END AS flaeche_lv95,
         'inKraft' AS rechtsstatus,
-        rechtsvorschrift_link.datum AS publiziertab, 
+        CAST(now() AS date) AS publiziertab,
         eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
         eigentumsbeschraenkung.zustaendigestelle AS zustaendigestelle
     FROM
         ada_denkmalschutz.gis_geometrie AS gis_geometrie
-        LEFT JOIN ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
-        ON gis_geometrie.denkmal_id = rechtsvorschrift_link.denkmal_id
         INNER JOIN ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON gis_geometrie.denkmal_id = eigentumsbeschraenkung.t_id,
          (
@@ -329,8 +327,6 @@ INSERT INTO
                  dataset.datasetname = 'ch.so.ada.denkmalschutz'
          ) AS basket_dataset
     WHERE
-        rechtsvorschrift_link.datum IS NOT NULL
-    AND
         ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
          OR
         (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
