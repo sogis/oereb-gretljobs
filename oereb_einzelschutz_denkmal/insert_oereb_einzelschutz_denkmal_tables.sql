@@ -278,6 +278,13 @@ INSERT INTO
 
 /*
  * Umbau der Geometrien, die Inhalt des ÖREB-Katasters sind.
+ * 
+ * (1) Es gab Probleme beim zuweisen eines publiziertAb-Datums zu der Geometrie. Weil
+ * ein solches in den Originaldaten im Fachsystem fehlt, wurde mit den Rechtsvorschriften
+ * gejoined. Weil es aber mehrere Rechtsvorschriften zu einer Geometrie geben kann, gab 
+ * es dann auch mehrere identische Geometrien für die gleiche Eigentumsbeschraenkung. 
+ * Weil das nicht korrekt ist, wurde entschieden, dass für das publiziertAb-Datum der
+ * Geometrie now() verwendet wird.
  */
 
 INSERT INTO
@@ -306,13 +313,11 @@ INSERT INTO
             ELSE NULL
         END AS flaeche_lv95,
         'inKraft' AS rechtsstatus,
-        rechtsvorschrift_link.datum AS publiziertab, 
+        CAST(now() AS date) AS publiziertab,
         eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
         eigentumsbeschraenkung.zustaendigestelle AS zustaendigestelle
     FROM
         ada_denkmalschutz.gis_geometrie AS gis_geometrie
-        LEFT JOIN ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
-        ON gis_geometrie.denkmal_id = rechtsvorschrift_link.denkmal_id
         INNER JOIN ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON gis_geometrie.denkmal_id = eigentumsbeschraenkung.t_id,
          (
@@ -327,8 +332,6 @@ INSERT INTO
                  dataset.datasetname = 'ch.so.ada.denkmalschutz'
          ) AS basket_dataset
     WHERE
-        rechtsvorschrift_link.datum IS NOT NULL
-    AND
         ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
          OR
         (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
