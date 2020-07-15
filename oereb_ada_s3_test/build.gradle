@@ -13,20 +13,20 @@ ext {
 task exportPdfFromDatabase(type: DatabaseDocumentExport) {
     description = "PDF aus Datenbank exportieren."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-	qualifiedTableName = "ada_denkmalschutz.fachapplikation_rechtsvorschrift_link"
-	documentColumn = "multimedia_link"
+    qualifiedTableName = "ada_denkmalschutz.fachapplikation_rechtsvorschrift_link"
+    documentColumn = "multimedia_link"
     targetDir = file(pathToTempFolder)
-	fileNamePrefix = "ada_"
-	fileNameExtension = "pdf"
+    fileNamePrefix = "ada_"
+    fileNameExtension = "pdf"
 }
 
 task uploadPdfToS3(type: S3Upload) {
     description = "PDF aus Verzeichnis nach S3 hochladen."
     accessKey = s3AccessKeyAda
-	secretKey = s3SecretKeyAda
-	sourceDir = file(pathToTempFolder)
-	endPoint = "https://s3.amazonaws.com/"
+    secretKey = s3SecretKeyAda
+    sourceDir = file(pathToTempFolder)
+    endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-	bucketName = "ch.so.ada.denkmal"
+    bucketName = "ch.so.ada.denkmal"
     acl = "PublicRead"
 }
