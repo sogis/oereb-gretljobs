@@ -17,7 +17,6 @@ should be directly exported from the database into the GRETL-Job directory (deve
 ```
 Denkmalschutz
 java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar  --export --dbhost geodb.rootso.org --dbdatabase edit --dbusr $USER --dbpwd $(awk -v dbhost=$DBHOST -F ':' '$1~dbhost{print $5}' ~/.pgpass) --disableValidation --models SO_ADA_Denkmal_20191128 --dbschema ada_denkmalschutz ada_denkmalschutz1.xtf
-
 Geotope
 java -jar /usr/local/ili2pg-3.11.2/ili2pg.jar --export --dbhost geodb.rootso.org --dbdatabase edit --dbusr $USER --dbpwd $(awk -v dbhost=$DBHOST -F ':' '$1~dbhost{print $5}' ~/.pgpass) --disableValidation --models SO_AFU_Geotope_20200312 --dbschema afu_geotope afu_geotope.xtf
 ```
