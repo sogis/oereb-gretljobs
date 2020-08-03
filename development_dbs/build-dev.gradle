@@ -8,6 +8,7 @@ apply plugin: "ch.so.agi.gretl"
 
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
+    pathToUserFolder = System.getProperty("user.dir")
 
     iliModelVorschriften = "OeREBKRMvs_V1_1"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
@@ -33,11 +34,19 @@ ext {
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "awjf_statische_waldgrenze.xtf"
     staticForestPerimetersBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+    
+    iliModelEinzelschutzDenkmal = "SO_ADA_Denkmal_20191128"
+    dbSchemaEinzelschutzDenkmal = "ada_denkmalschutz"
+    einzelschutzDenkmalDataFile = "ada_denkmalschutz.xtf"
+//  einzelschutzDenkmalBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
+    iliModelEinzelschutzGeotop = "SO_AFU_Geotope_20200312"
+    dbSchemaEinzelschutzGeotop = "afu_geotope"
+    einzelschutzGeotopDataFile = "afu_geotope.xtf"
+    einzelschutzGeotopBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 }    
 
-// Cannot use GRETL for ili2pgImportSchema since not all v4 options
-// are exposed. 
+// Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 
 task createSchemaLandUsePlans(type: SqlExecutor){
     database = [dbUriEdit, "admin", "admin"]
     sqlFiles = ['arp_npl.sql', 'arp_npl_grants.sql']
@@ -74,13 +83,13 @@ task replaceDataLandUsePlans() {
 /*
 task uploadToS3(type: AmazonS3FileUploadTask) {
     description = "Hochladen der exportierten Datei auf S3."
-	file file("$rootDir/" + xtfFileName) 
-	bucketName "ch.so.arp.nutzungsplanung.oereb"
-	key xtfFileName
+    file file("$rootDir/" + xtfFileName) 
+    bucketName "ch.so.arp.nutzungsplanung.oereb"
+    key xtfFileName
 
-	def m = new ObjectMetadata()
-	m.setCacheControl("no-cache, no-store")
-	objectMetadata = m
+    def m = new ObjectMetadata()
+    m.setCacheControl("no-cache, no-store")
+    objectMetadata = m
 }
 */
 
@@ -132,6 +141,50 @@ task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadD
 }
 
 
+task createSchemaEinzelschutzDenkmal(type: SqlExecutor){
+    database = [dbUriEdit, "admin", "admin"]
+    sqlFiles = ['ada_denkmalschutz.sql', 'ada_denkmalschutz_grants.sql']
+}
+
+
+// Denkmalschutz ist nicht öffentlich, Download siehe README
+
+task replaceDataEinzelschutzDenkmal(type: Ili2pgImport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelEinzelschutzDenkmal
+    dbschema = dbSchemaEinzelschutzDenkmal
+    dataFile = einzelschutzDenkmalDataFile
+    deleteData = true
+    disableValidation = true
+}
+
+
+task createSchemaEinzelschutzGeotop(type: SqlExecutor){
+    database = [dbUriEdit, "admin", "admin"]
+    sqlFiles = ['afu_geotope.sql', 'afu_geotope_grants.sql']
+}
+
+/* Geotope noch nicht verfügbar auf geodata
+task downloadDataEinzelschutzGeotop(type: Download) {
+    src einzelschutzGeotopBaseUrl + einzelschutzGeotopDataFile
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+}
+*/
+
+task replaceDataEinzelschutzGeotop(type: Ili2pgImport) {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelEinzelschutzGeotop
+    dbschema = dbSchemaEinzelschutzGeotop
+    dataFile = einzelschutzGeotopDataFile
+    deleteData = true
+    disableValidation = true
+}
+
+
 task downloadFederalLegalBasis(type: Download) {
     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
     src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
@@ -165,4 +218,3 @@ task importCantonalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadCa
     dataset = cantonalLegalBaseDataSet 
     disableValidation = true
 }
-

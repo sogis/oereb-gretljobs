@@ -6,6 +6,8 @@ curl https://raw.githubusercontent.com/sogis/oereb-db/master/sql/set_role.sql > 
 curl https://raw.githubusercontent.com/sogis/oereb-db/master/sql/transfer_arp_npl_oereb_gdi.sql > /pgconf/transfer_arp_npl_oereb_gdi.sql
 curl https://raw.githubusercontent.com/sogis/oereb-db/master/sql/transfer_afu_grundwasserschutz_oereb_gdi.sql > /pgconf/transfer_afu_grundwasserschutz_oereb_gdi.sql
 curl https://raw.githubusercontent.com/sogis/oereb-db/master/sql/transfer_awjf_statische_waldgrenzen_oereb_gdi.sql > /pgconf/transfer_awjf_statische_waldgrenzen_oereb_gdi.sql
+curl https://raw.githubusercontent.com/sogis/oereb-db/master/sql/transfer_ada_denkmalschutz_oereb_gdi.sql > /pgconf/transfer_ada_denkmalschutz_oereb_gdi.sql
+curl https://raw.githubusercontent.com/sogis/oereb-db/master/sql/transfer_afu_geotope_oereb_gdi.sql > /pgconf/transfer_afu_geotope_oereb_gdi.sql
 cat /pgconf/setup_original.sql /pgconf/set_role.sql /pgconf/transfer_*_oereb_gdi.sql > /pgconf/setup.sql
 # Hack/unnecessary but required command (PG_WRITE_USER does not exist yet):
 sed -i s/:PG_WRITE_USER/${PG_USER}/g /pgconf/setup.sql
