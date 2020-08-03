@@ -12,7 +12,7 @@ import data required for the data transformation
 (the so called legal basis data) into the "oereb" DB,
 and import demo data into the "edit" DB.
 
-XTF files that are not available on «https://github.com/sogis/oereb-gretljobs/tree/master/development_dbs»
+XTF files that are not available on https://github.com/sogis/oereb-gretljobs/tree/master/development_dbs
 should be directly exported from the database into the GRETL-Job directory (development_dbs):
 ```
 Denkmalschutz
