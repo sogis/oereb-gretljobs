@@ -38,7 +38,7 @@ ext {
     iliModelEinzelschutzDenkmal = "SO_ADA_Denkmal_20191128"
     dbSchemaEinzelschutzDenkmal = "ada_denkmalschutz"
     einzelschutzDenkmalDataFile = "ada_denkmalschutz.xtf"
-//  einzelschutzDenkmalBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+    einzelschutzDenkmalBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
     iliModelEinzelschutzGeotop = "SO_AFU_Geotope_20200312"
     dbSchemaEinzelschutzGeotop = "afu_geotope"
@@ -146,14 +146,20 @@ task createSchemaEinzelschutzDenkmal(type: SqlExecutor){
     sqlFiles = ['ada_denkmalschutz.sql', 'ada_denkmalschutz_grants.sql']
 }
 
-
-// Denkmalschutz ist nicht öffentlich, Download siehe README
+task downloadDataEinzelschutzDenkmal(type: Download) {
+    src einzelschutzDenkmalBaseUrl + einzelschutzDenkmalDataFile
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+}
 
 task replaceDataEinzelschutzDenkmal(type: Ili2pgImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelEinzelschutzDenkmal
     dbschema = dbSchemaEinzelschutzDenkmal
-    dataFile = einzelschutzDenkmalDataFile
+    dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzDenkmalDataFile))
     deleteData = true
     disableValidation = true
 }
@@ -164,7 +170,6 @@ task createSchemaEinzelschutzGeotop(type: SqlExecutor){
     sqlFiles = ['afu_geotope.sql', 'afu_geotope_grants.sql']
 }
 
-/* Geotope noch nicht verfügbar auf geodata
 task downloadDataEinzelschutzGeotop(type: Download) {
     src einzelschutzGeotopBaseUrl + einzelschutzGeotopDataFile
     dest pathToTempFolder
@@ -173,12 +178,12 @@ task downloadDataEinzelschutzGeotop(type: Download) {
         println "File downloaded to: " + pathToTempFolder
     }
 }
-*/
 
 task replaceDataEinzelschutzGeotop(type: Ili2pgImport) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelEinzelschutzGeotop
     dbschema = dbSchemaEinzelschutzGeotop
+    dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzGeotopDataFile))
     dataFile = einzelschutzGeotopDataFile
     deleteData = true
     disableValidation = true
