@@ -155,7 +155,7 @@ task downloadDataEinzelschutzDenkmal(type: Download) {
     }
 }
 
-task replaceDataEinzelschutzDenkmal(type: Ili2pgImport) {
+task replaceDataEinzelschutzDenkmal(type: Ili2pgImport, dependsOn: "downloadDataEinzelschutzDenkmal") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelEinzelschutzDenkmal
     dbschema = dbSchemaEinzelschutzDenkmal
@@ -179,12 +179,11 @@ task downloadDataEinzelschutzGeotop(type: Download) {
     }
 }
 
-task replaceDataEinzelschutzGeotop(type: Ili2pgImport) {
+task replaceDataEinzelschutzGeotop(type: Ili2pgImport, dependsOn: "downloadDataEinzelschutzGeotop") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelEinzelschutzGeotop
     dbschema = dbSchemaEinzelschutzGeotop
     dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzGeotopDataFile))
-    dataFile = einzelschutzGeotopDataFile
     deleteData = true
     disableValidation = true
 }
