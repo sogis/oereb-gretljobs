@@ -24,7 +24,8 @@ def oerebThemen = [
                    "ch.bazl.projektierungszonen-flughafenanlagen.oereb",
                    "ch.bav.kataster-belasteter-standorte-oev.oereb",
                    "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.oereb",
-                   "ch.bazl.sicherheitszonenplan.oereb"
+                   "ch.bazl.sicherheitszonenplan.oereb",
+                   "ch.vbs.kataster-belasteter-standorte-militaer.oereb"
                    ]
 
 // Oereb-DB Schemas
