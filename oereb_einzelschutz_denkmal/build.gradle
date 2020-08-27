@@ -160,7 +160,17 @@ task uploadPdfToS3(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     sourceDir = file(pathToPdfExportFolder)
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-    bucketName = "ch.so.ada.denkmal"
+    
+    if (gretlEnvironment == "test") {
+        bucketName = "ch.so.ada.denkmal-test"
+    }
+    else if (gretlEnvironment == "integration") {
+        bucketName = "ch.so.ada.denkmal-integration"
+    }
+    
+    else if (gretlEnvironment == "production") {
+        bucketName = "ch.so.ada.denkmal"
+    }
     acl = "PublicRead"
 }
 
