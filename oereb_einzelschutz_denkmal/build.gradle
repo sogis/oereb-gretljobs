@@ -162,7 +162,7 @@ task uploadPdfToS3(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     region = "eu-central-1"
     
     if (gretlEnvironment == "test") {
-        bucketName = "ch.so.ada.denkmal"
+        bucketName = "ch.so.ada.denkmal-test"
     }
     else if (gretlEnvironment == "integration") {
         bucketName = "ch.so.ada.denkmal-integration"
