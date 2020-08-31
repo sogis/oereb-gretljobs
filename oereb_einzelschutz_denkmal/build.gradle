@@ -4,11 +4,13 @@ apply plugin: "ch.so.agi.gretl"
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
+import java.nio.file.Files
 import de.undercouch.gradle.tasks.download.Download
 
 
 ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
+    pathToPdfExportFolder = Files.createTempDirectory("oerebadaeinzelschutz-").toFile().getAbsolutePath()
 
     iliModelVorschriften = "OeREBKRMvs_V1_1"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
@@ -141,7 +143,38 @@ task replaceWmsServer(dependsOn: "exportData") {
     }
 }
 
-task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
+task exportPdfFromDatabase(type: DatabaseDocumentExport, dependsOn: "replaceWmsServer") {
+    description = "PDF aus Datenbank exportieren."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    qualifiedTableName = "ada_denkmalschutz.fachapplikation_rechtsvorschrift_link"
+    documentColumn = "multimedia_link"
+    targetDir = file(pathToPdfExportFolder)
+    fileNamePrefix = "ada_"
+    fileNameExtension = "pdf"
+}
+
+task uploadPdfToS3(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
+    description = "PDF aus Verzeichnis nach S3 hochladen."
+    accessKey = awsAccessKeyAda
+    secretKey = awsSecretAccessKeyAda
+    sourceDir = file(pathToPdfExportFolder)
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    
+    if (gretlEnvironment == "test") {
+        bucketName = "ch.so.ada.denkmal-test"
+    }
+    else if (gretlEnvironment == "integration") {
+        bucketName = "ch.so.ada.denkmal-integration"
+    }
+    
+    else if (gretlEnvironment == "production") {
+        bucketName = "ch.so.ada.denkmal"
+    }
+    acl = "PublicRead"
+}
+
+task validateData(type: IliValidator, dependsOn: "uploadPdfToS3") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
         file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
