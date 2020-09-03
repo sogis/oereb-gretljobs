@@ -34,6 +34,20 @@ ext {
         ["ch.SO.Einzelschutz.Punkt", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt"],
         ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche"]
     ]
+    
+    if (gretlEnvironment == "test") {
+        s3SourceBucket = "ch.so.ada.denkmal-stage-test"
+        s3TargetBucket = "ch.so.ada.denkmal-test"
+    }
+    else if (gretlEnvironment == "integration") {
+        s3SourceBucket = "ch.so.ada.denkmal-stage-integration"
+        s3TargetBucket = "ch.so.ada.denkmal-integration"
+    }
+    
+    else if (gretlEnvironment == "production") {
+        s3SourceBucket = "ch.so.ada.denkmal-stage"
+        s3TargetBucket = "ch.so.ada.denkmal"
+    }
 }
 
 
@@ -160,16 +174,15 @@ task uploadPdfToS3(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     sourceDir = file(pathToPdfExportFolder)
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-    
     if (gretlEnvironment == "test") {
-        bucketName = "ch.so.ada.denkmal-test"
+        bucketName = "ch.so.ada.denkmal-stage-test"
     }
     else if (gretlEnvironment == "integration") {
-        bucketName = "ch.so.ada.denkmal-integration"
+        bucketName = "ch.so.ada.denkmal-stage-integration"
     }
     
     else if (gretlEnvironment == "production") {
-        bucketName = "ch.so.ada.denkmal"
+        bucketName = "ch.so.ada.denkmal-stage"
     }
     acl = "PublicRead"
 }
@@ -200,7 +213,14 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
 
 
 
-task importDataToLive(type: Ili2pgReplace) {
+task copyFiles(type: S3Bucket2Bucket) {
+    accessKey = awsAccessKeyAda
+    secretKey = awsSecretAccessKeyAda
+    sourceBucket = s3SourceBucket
+    targetBucket = s3TargetBucket
+}
+
+task importDataToLive(type: Ili2pgReplace, dependsOn: "copyFiles") {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
