@@ -167,27 +167,18 @@ task exportPdfFromDatabase(type: DatabaseDocumentExport, dependsOn: "replaceWmsS
     fileNameExtension = "pdf"
 }
 
-task uploadPdfToS3(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
+task uploadPdfToS3Stage(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     description = "PDF aus Verzeichnis nach S3 hochladen."
     accessKey = awsAccessKeyAda
     secretKey = awsSecretAccessKeyAda
     sourceDir = file(pathToPdfExportFolder)
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-    if (gretlEnvironment == "test") {
-        bucketName = "ch.so.ada.denkmal-stage-test"
-    }
-    else if (gretlEnvironment == "integration") {
-        bucketName = "ch.so.ada.denkmal-stage-integration"
-    }
-    
-    else if (gretlEnvironment == "production") {
-        bucketName = "ch.so.ada.denkmal-stage"
-    }
+    bucketName = s3SourceBucket
     acl = "PublicRead"
 }
 
-task validateData(type: IliValidator, dependsOn: "uploadPdfToS3") {
+task validateData(type: IliValidator, dependsOn: "uploadPdfToS3Stage") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
         file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
@@ -213,14 +204,14 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
 
 
 
-task copyFiles(type: S3Bucket2Bucket) {
+task copyPdfToS3Live(type: S3Bucket2Bucket) {
     accessKey = awsAccessKeyAda
     secretKey = awsSecretAccessKeyAda
     sourceBucket = s3SourceBucket
     targetBucket = s3TargetBucket
 }
 
-task importDataToLive(type: Ili2pgReplace, dependsOn: "copyFiles") {
+task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
