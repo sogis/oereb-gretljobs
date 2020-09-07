@@ -60,8 +60,7 @@ oerebThemen.each { oerebThema ->
 
     dbSchemas.eachWithIndex { dbSchema, i ->
         def schema = dbSchema.toString()
-        def index = i.toString()
-        def taskIndex = index
+        def taskIndex = i.toString()
     
         task "oereb_Import_$taskIndex$themaName$schema"(type: Ili2pgReplace, dependsOn: "oereb_unzipData_$themaName"){
             description = "Import Bundesdaten in DB schema stage"
