@@ -25,7 +25,7 @@ task "deletePreviousAVData_stage"(type: SqlExecutor) {
     group = GROUP
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ['delete_previous_av_data.sql']
-    sqlParameters = [dbSchema: stage]
+    sqlParameters = [dbSchema: 'stage']
 }
 
 // finds all tasks from the each loop and sets them as dependants
