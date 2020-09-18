@@ -72,7 +72,7 @@ task "transferAV_live"(type: SqlExecutor, dependsOn: "transferAV_stage") {
     group = GROUP
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ['delete_previous_av_data.sql','uebertrag_stage_zu_live.sql']
-    sqlParameters = [dbSchema: live]
+    sqlParameters = [dbSchema: 'live']
     doLast {
         println "AV data imported."
     }
