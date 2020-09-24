@@ -24,7 +24,8 @@ def oerebThemen = [
                    "ch.bazl.projektierungszonen-flughafenanlagen.oereb",
                    "ch.bav.kataster-belasteter-standorte-oev.oereb",
                    "ch.bazl.kataster-belasteter-standorte-zivilflugplaetze.oereb",
-                   "ch.bazl.sicherheitszonenplan.oereb"
+                   "ch.bazl.sicherheitszonenplan.oereb",
+                   "ch.vbs.kataster-belasteter-standorte-militaer.oereb"
                    ]
 
 // Oereb-DB Schemas
@@ -58,10 +59,11 @@ oerebThemen.each { oerebThema ->
         }
     }
 
-    dbSchemas.each { dbSchema ->
+    dbSchemas.eachWithIndex { dbSchema, i ->
         def schema = dbSchema.toString()
+        def taskIndex = i.toString()
     
-        task "oereb_Import_$themaName$schema"(type: Ili2pgReplace, dependsOn: "oereb_unzipData_$themaName"){
+        task "oereb_Import_$taskIndex$themaName$schema"(type: Ili2pgReplace, dependsOn: "oereb_unzipData_$themaName"){
             description = "Import Bundesdaten in DB schema stage"
             database = [dbUriOereb, dbUserOereb, dbPwdOereb]
             dbschema = schema
