@@ -131,7 +131,7 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
     dbschema = dbSchemaGroundwaterProtectionOereb
-    dataFile = "$rootDir/" + xtfFileName
+    dataFile = "$rootDir" + xtfFileName
     dataset = groundwaterProtectionDataSet
     disableValidation = true
 }
@@ -140,7 +140,7 @@ task replaceWmsServer(dependsOn: "exportData") {
     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
     doLast {
         ant.replace(
-        file: "$rootDir/" + xtfFileName,
+        file: "$rootDir" + xtfFileName,
         token: '${wmsHost}',
         value: 'https://' + geoservicesHostName,
         encoding: 'UTF-8')
@@ -151,7 +151,7 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
         file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
-        file(Paths.get("$rootDir/" + xtfFileName))]
+        file(Paths.get("$rootDir" + xtfFileName))]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
 }
@@ -161,7 +161,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir" + xtfFileName))
     dataset = groundwaterProtectionDataSet
     disableValidation = true
 }
@@ -180,15 +180,24 @@ task importDataToLive(type: Ili2pgReplace) {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "live"
-    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir" + xtfFileName))
     dataset = groundwaterProtectionDataSet
     disableValidation = true
     
 }
 
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["update_oerebwms_groundwaterprotection_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
+
+
+
 task zipXtfFile(type: Zip) {
     description = "Zipt das xtf-File mit den Gewässerschutzdaten für den Upload nach S3"
-    from "$rootDir/"
+    from "$rootDir"
     include xtfFileName
     archiveName zipFileName
     destinationDir(file("$rootDir"))
@@ -198,17 +207,9 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "Xtf-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    //sourceDir = file("$rootDir/")
-    sourceFile = file(Paths.get("$rootDir/" + zipFileName))
+    sourceFile = file(Paths.get("$rootDir", zipFileName))
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
     bucketName = s3TargetBucket
     acl = "PublicRead"
-}
-
-task refreshOerebWMSTablesLive(type: SqlExecutor) {
-    description = "Aktualisiert OEREB WMS Tabellen."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    sqlFiles = ["update_oerebwms_groundwaterprotection_tables.sql"]
-    sqlParameters = [dbSchema: 'live']
 }
