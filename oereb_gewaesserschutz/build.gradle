@@ -35,15 +35,7 @@ ext {
         ["ch.SO.Grundwasserschutzareale", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale"]
     ]
     
-    if (gretlEnvironment == "test") {
-        s3TargetBucket = "ch.so.agi.geodata-test"
-    }
-    else if (gretlEnvironment == "integration") {
-        s3TargetBucket = "ch.so.agi.geodata-integration"
-    }
-    else if (gretlEnvironment == "production") {
-        s3TargetBucket = "ch.so.agi.geodata"
-    }
+    s3TargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 }
 
 
