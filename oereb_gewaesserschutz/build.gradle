@@ -4,6 +4,7 @@ apply plugin: "ch.so.agi.gretl"
 import ch.so.agi.gretl.api.TransferSet
 import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
+import java.nio.file.Files
 import de.undercouch.gradle.tasks.download.Download
 
 
@@ -15,6 +16,7 @@ ext {
 
     symbolsWmsBaseUrl = "https://" + geoservicesHostName
     xtfFileName = "ch.so.afu.grundwasserschutz.oereb.xtf"
+    zipFileName = 'ch.so.afu.grundwasserschutz.oereb_xtf.zip'
 
     dbSchemaGroundwaterProtectionOereb = "afu_grundwasserschutz_oereb"
     groundwaterProtectionDataSet = "ch.so.afu.grundwasserschutz"
@@ -31,8 +33,17 @@ ext {
     wmsLayerList = [
         ["ch.SO.Grundwasserschutzzonen", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen"],
         ["ch.SO.Grundwasserschutzareale", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale"]
-    ]    
-
+    ]
+    
+    if (gretlEnvironment == "test") {
+        s3TargetBucket = "ch.so.agi.geodata-test"
+    }
+    else if (gretlEnvironment == "integration") {
+        s3TargetBucket = "ch.so.agi.geodata-integration"
+    }
+    else if (gretlEnvironment == "production") {
+        s3TargetBucket = "ch.so.agi.geodata"
+    }
 }
 
 
@@ -160,7 +171,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir/" + xtfFileName))
     dataset = groundwaterProtectionDataSet
-    disableValidation = true 
+    disableValidation = true
 }
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
@@ -179,7 +190,28 @@ task importDataToLive(type: Ili2pgReplace) {
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir/" + xtfFileName))
     dataset = groundwaterProtectionDataSet
-    disableValidation = true 
+    disableValidation = true
+    
+}
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das xtf-File mit den Gewässerschutzdaten für den Upload nach S3"
+    from "$rootDir/"
+    include xtfFileName
+    archiveName zipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    //sourceDir = file("$rootDir/")
+    sourceFile = file(Paths.get("$rootDir/" + zipFileName))
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    bucketName = s3TargetBucket
+    acl = "PublicRead"
 }
 
 task refreshOerebWMSTablesLive(type: SqlExecutor) {
@@ -188,4 +220,3 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     sqlFiles = ["update_oerebwms_groundwaterprotection_tables.sql"]
     sqlParameters = [dbSchema: 'live']
 }
-
