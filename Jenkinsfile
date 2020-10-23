@@ -40,7 +40,7 @@ pipeline {
             steps {
                 unstash name: "gretljob"
                 dir(env.JOB_BASE_NAME) {
-                    sh 'gretl importDataToLive refreshOerebWMSTablesLive'
+                    sh 'gretl importDataToLive refreshOerebWMSTablesLive uploadXtfToS3Geodata'
                 }
             }
         }
