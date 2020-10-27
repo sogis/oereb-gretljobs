@@ -151,7 +151,7 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
         file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
-        file(Paths.get("$rootDir" + xtfFileName))]
+        file(Paths.get("$rootDir", xtfFileName))]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
 }
@@ -161,7 +161,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = groundwaterProtectionDataSet
     disableValidation = true
 }
@@ -180,7 +180,7 @@ task importDataToLive(type: Ili2pgReplace) {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "live"
-    dataFile = file(Paths.get("$rootDir" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = groundwaterProtectionDataSet
     disableValidation = true
     
