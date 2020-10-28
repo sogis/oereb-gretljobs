@@ -131,7 +131,7 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
     dbschema = dbSchemaGroundwaterProtectionOereb
-    dataFile = "$rootDir" + xtfFileName
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = groundwaterProtectionDataSet
     disableValidation = true
 }
@@ -140,7 +140,7 @@ task replaceWmsServer(dependsOn: "exportData") {
     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
     doLast {
         ant.replace(
-        file: "$rootDir" + xtfFileName,
+        file: file(Paths.get("$rootDir", xtfFileName)),
         token: '${wmsHost}',
         value: 'https://' + geoservicesHostName,
         encoding: 'UTF-8')
