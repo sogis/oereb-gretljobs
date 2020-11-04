@@ -14,10 +14,12 @@ ext {
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
 
     symbolsWmsBaseUrl = "https://" + geoservicesHostName
-    xtfFileName = "ch.so.awjf.waldgrenzen.oereb.xtf"
 
     dbSchemaStaticForestPerimeterOereb = "awjf_statische_waldgrenzen_oereb"
     staticForestPerimeterDataSet = "ch.so.awjf.waldgrenzen"
+    
+    xtfFileName = staticForestPerimeterDataSet + ".oereb.xtf"
+    zipFileName = staticForestPerimeterDataSet + ".oereb_xtf.zip"
 
     federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
     federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
@@ -32,6 +34,7 @@ ext {
         ["ch.SO.Waldgrenzen", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen"]
     ]    
 
+    s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 }
 
 
@@ -124,7 +127,7 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
     dbschema = dbSchemaStaticForestPerimeterOereb
-    dataFile = "$rootDir/" + xtfFileName
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet
     disableValidation = true
 }
@@ -133,7 +136,7 @@ task replaceWmsServer(dependsOn: "exportData") {
     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
     doLast {
         ant.replace(
-        file: "$rootDir/" + xtfFileName,
+        file: file(Paths.get("$rootDir", xtfFileName)),
         token: '${wmsHost}',
         value: 'https://' + geoservicesHostName,
         encoding: 'UTF-8')
@@ -142,9 +145,11 @@ task replaceWmsServer(dependsOn: "exportData") {
 
 task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
-    dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
-        file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
-        file(Paths.get("$rootDir/" + xtfFileName))]
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
+                 file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
 }
@@ -154,7 +159,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet 
 }
 
@@ -172,7 +177,7 @@ task importDataToLive(type: Ili2pgReplace) {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "live"
-    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet 
 }
 
@@ -181,5 +186,25 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
     sqlParameters = [dbSchema: 'live']
+}
+
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das xtf-File mit den Waldgrenzen für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName zipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "PublicRead"
 }
 

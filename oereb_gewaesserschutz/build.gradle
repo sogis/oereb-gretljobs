@@ -15,11 +15,12 @@ ext {
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
 
     symbolsWmsBaseUrl = "https://" + geoservicesHostName
-    xtfFileName = "ch.so.afu.grundwasserschutz.oereb.xtf"
-    zipFileName = 'ch.so.afu.grundwasserschutz.oereb_xtf.zip'
 
     dbSchemaGroundwaterProtectionOereb = "afu_grundwasserschutz_oereb"
     groundwaterProtectionDataSet = "ch.so.afu.grundwasserschutz"
+    
+    xtfFileName = groundwaterProtectionDataSet + ".oereb.xtf"
+    zipFileName = groundwaterProtectionDataSet + ".oereb_xtf.zip"
 
     federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
     federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
@@ -35,7 +36,7 @@ ext {
         ["ch.SO.Grundwasserschutzareale", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale"]
     ]
     
-    s3TargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
+    s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 }
 
 
@@ -149,9 +150,11 @@ task replaceWmsServer(dependsOn: "exportData") {
 
 task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
-    dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
-        file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
-        file(Paths.get("$rootDir", xtfFileName))]
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
+                 file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
 }
@@ -210,6 +213,6 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     sourceFile = file(Paths.get("$rootDir", zipFileName))
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-    bucketName = s3TargetBucket
+    bucketName = s3AgiTargetBucket
     acl = "PublicRead"
 }
