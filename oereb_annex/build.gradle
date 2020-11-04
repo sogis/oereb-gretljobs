@@ -11,10 +11,14 @@ defaultTasks "importOEREBAnnex"
 def GROUP = "oereb-annex_data-transfer"
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def annexModel = "OeREB_ExtractAnnex_V1_0"
-def xtfFile = "ch.so.agi.OeREB_extractAnnex.xtf"
+def xtfFile = "ch.so.agi.OeREB_extractAnnex.oereb.xtf"
+def zipFileName = "ch.so.agi.OeREB_extractAnnex.oereb_xtf.zip"
 def dbSchemas = ["stage","live"]
+def s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 
-task "updateAVImportDate"(type: SqlExecutor){
+
+
+task "updateAVImportDate"(type: SqlExecutor) {
     description = "Update des AV-Import Datums per Gemeinde"
     group = GROUP
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -28,19 +32,19 @@ task "exportAnnexData"(type: Ili2pgExport, dependsOn: "updateAVImportDate") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = annexModel
     dbschema = "agi_oereb_annex"
-    dataFile = "$rootDir/" + "$xtfFile"
+    dataFile = file(Paths.get("$rootDir", xtfFile))
     disableValidation = false
 }
 
 dbSchemas.each { dbSchema ->
-    task "importAnnexData_$dbSchema"(type: Ili2pgReplace, dependsOn: "exportAnnexData"){
+    task "importAnnexData_$dbSchema"(type: Ili2pgReplace, dependsOn: "exportAnnexData") {
         description = "Import Annex live Data into Schema $dbSchema with dataset $xtfFile"
         group = GROUP
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
         models = annexModel
         dataset = "ch.so.agi.OeREB_extractAnnex"
         dbschema = "$dbSchema"
-        dataFile = "$rootDir/" + "$xtfFile"
+        dataFile = file(Paths.get("$rootDir", xtfFile))
         disableValidation = false
     }
 }
@@ -57,4 +61,25 @@ task importOEREBAnnex() {
 // finds all tasks from the each loop and sets them as dependants
 importOEREBAnnex.dependsOn {
     tasks.findAll { task -> task.name.startsWith('importAnnexData_') }
+}
+
+
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das xtf-File mit den Annexdaten für den Upload nach S3"
+    from "$rootDir"
+    include xtfFile
+    archiveName zipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "PublicRead"
 }

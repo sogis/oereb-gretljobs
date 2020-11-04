@@ -16,10 +16,12 @@ ext {
     iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
 
     symbolsWmsBaseUrl = "https://" + geoservicesHostName
-    xtfFileName = "ch.so.ada.denkmalschutz.oereb.xtf"
 
     dbSchemaEinzelschutzOereb = "ada_denkmalschutz_oereb"
     einzelschutzDenkmalDataSet = "ch.so.ada.denkmalschutz"
+    
+    xtfFileName = einzelschutzDenkmalDataSet + ".oereb.xtf"
+    zipFileName = einzelschutzDenkmalDataSet + ".oereb_xtf.zip"
 
     federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
     federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
@@ -34,20 +36,11 @@ ext {
         ["ch.SO.Einzelschutz.Punkt", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt"],
         ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche"]
     ]
+ 
+    s3AdaSourceBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal-stage' : "ch.so.ada.denkmal-stage-$gretlEnvironment"
+    s3AdaTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal' : "ch.so.ada.denkmal-$gretlEnvironment"
     
-    if (gretlEnvironment == "test") {
-        s3SourceBucket = "ch.so.ada.denkmal-stage-test"
-        s3TargetBucket = "ch.so.ada.denkmal-test"
-    }
-    else if (gretlEnvironment == "integration") {
-        s3SourceBucket = "ch.so.ada.denkmal-stage-integration"
-        s3TargetBucket = "ch.so.ada.denkmal-integration"
-    }
-    
-    else if (gretlEnvironment == "production") {
-        s3SourceBucket = "ch.so.ada.denkmal-stage"
-        s3TargetBucket = "ch.so.ada.denkmal"
-    }
+    s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 }
 
 
@@ -141,7 +134,7 @@ task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
     dbschema = dbSchemaEinzelschutzOereb
-    dataFile = "$rootDir/" + xtfFileName
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet
     disableValidation = true
 }
@@ -150,7 +143,7 @@ task replaceWmsServer(dependsOn: "exportData") {
     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
     doLast {
         ant.replace(
-        file: "$rootDir/" + xtfFileName,
+        file: file(Paths.get("$rootDir", xtfFileName)),
         token: '${wmsHost}',
         value: 'https://' + geoservicesHostName,
         encoding: 'UTF-8')
@@ -174,15 +167,17 @@ task uploadPdfToS3Stage(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     sourceDir = file(pathToPdfExportFolder)
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-    bucketName = s3SourceBucket
+    bucketName = s3AdaSourceBucket
     acl = "PublicRead"
 }
 
 task validateData(type: IliValidator, dependsOn: "uploadPdfToS3Stage") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
-    dataFiles = [file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
-        file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
-        file(Paths.get("$rootDir/" + xtfFileName))]
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")), 
+                 file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")), 
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
     allObjectsAccessible = true
 }
 
@@ -191,7 +186,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet 
 }
 
@@ -207,8 +202,8 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
 task copyPdfToS3Live(type: S3Bucket2Bucket) {
     accessKey = awsAccessKeyAda
     secretKey = awsSecretAccessKeyAda
-    sourceBucket = s3SourceBucket
-    targetBucket = s3TargetBucket
+    sourceBucket = s3AdaSourceBucket
+    targetBucket = s3AdaTargetBucket
 }
 
 task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
@@ -216,7 +211,7 @@ task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "live"
-    dataFile = file(Paths.get("$rootDir/" + xtfFileName))
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet 
 }
 
@@ -227,3 +222,22 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     sqlParameters = [dbSchema: 'live']
 }
 
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das xtf-File mit den Einzelschutz-Denkmal-Daten für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName zipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    endPoint = "https://s3.amazonaws.com/"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "PublicRead"
+}
