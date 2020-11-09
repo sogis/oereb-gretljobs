@@ -39,6 +39,9 @@ export ORG_GRADLE_PROJECT_dbUriOereb="jdbc:postgresql://oereb-db/oereb"
 export ORG_GRADLE_PROJECT_dbUserOereb="gretl"
 export ORG_GRADLE_PROJECT_dbPwdOereb="gretl"
 export ORG_GRADLE_PROJECT_geoservicesHostName="geo-t.so.ch"
+export ORG_GRADLE_PROJECT_gretlEnvironment="test"
+export ORG_GRADLE_PROJECT_awsAccessKeyAgi="xy"
+export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi="yx"
 ```
 
 Start the GRETL job
