@@ -9,6 +9,7 @@ apply plugin: "de.undercouch.download"
 defaultTasks "importOEREBAnnex", "uploadXtfToS3Geodata"
 
 def GROUP = "oereb-annex_data-transfer"
+def GROUP_UPLOAD = 'oereb-annex_data-upload'
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def annexModel = "OeREB_ExtractAnnex_V1_0"
 def xtfFile = "ch.so.agi.OeREB_extractAnnex.oereb.xtf"
@@ -67,6 +68,7 @@ importOEREBAnnex.dependsOn {
 
 task zipXtfFile(type: Zip) {
     description = "Zipt das xtf-File mit den Annexdaten für den Upload nach S3"
+    group = GROUP_UPLOAD
     from "$rootDir"
     include xtfFile
     archiveName zipFileName
@@ -75,6 +77,7 @@ task zipXtfFile(type: Zip) {
 
 task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "Xtf-File nach S3 hochladen."
+    group = GROUP_UPLOAD
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     sourceFile = file(Paths.get("$rootDir", zipFileName))
