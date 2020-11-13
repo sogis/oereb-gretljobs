@@ -37,8 +37,19 @@ ext {
         ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche"]
     ]
  
-    s3AdaSourceBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal-stage' : "ch.so.ada.denkmal-stage-$gretlEnvironment"
-    s3AdaTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal' : "ch.so.ada.denkmal-$gretlEnvironment"
+    if (gretlEnvironment == "test") {
+        s3AdaSourceBucket = "ch.so.ada.denkmal-stage-test"
+        s3AdaTargetBucket = "ch.so.ada.denkmal-test"
+    }
+    else if (gretlEnvironment == "integration") {
+        s3AdaSourceBucket = "ch.so.ada.denkmal-stage-integration"
+        s3AdaTargetBucket = "ch.so.ada.denkmal-integration"
+    }
+
+    else if (gretlEnvironment == "production") {
+        s3AdaSourceBucket = "ch.so.ada.denkmal-stage"
+        s3AdaTargetBucket = "ch.so.ada.denkmal"
+    } 
     
     s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 }
