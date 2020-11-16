@@ -46,7 +46,15 @@ ext {
         ["ch.SO.Waldabstandslinien", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt"]
     ]
     
-    s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
+    bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) {
+        bucketSuffix = ''
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+    s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 }
 
 

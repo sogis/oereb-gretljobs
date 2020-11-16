@@ -15,7 +15,15 @@ def annexModel = "OeREB_ExtractAnnex_V1_0"
 def xtfFile = "ch.so.agi.OeREB_extractAnnex.oereb.xtf"
 def zipFileName = "ch.so.agi.OeREB_extractAnnex.oereb_xtf.zip"
 def dbSchemas = ["stage","live"]
-def s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 
 
