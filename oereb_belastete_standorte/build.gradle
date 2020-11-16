@@ -22,7 +22,15 @@ def kbsDataSet = "ch.so.kataster-belasteter-standorte.oereb"
 def xtfFileName = kbsDataSet + ".xtf"
 def zipFileName = kbsDataSet + "_xtf.zip"
 
-def s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 
 task downloadFederalLegalBasis(type: Download) {
