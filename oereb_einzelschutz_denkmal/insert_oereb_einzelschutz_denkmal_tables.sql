@@ -233,8 +233,8 @@ localiseduri AS
         'de' AS alanguage,
         CASE
             WHEN rechtsvorschrften_dokument.multimedia_link IS NULL
-                THEN 'https://geo.so.ch/docs/ch.so.ada.denkmal/pdf_404.pdf'
-            ELSE regexp_replace(rechtsvorschrften_dokument.multimedia_link, 'artplus\.verw\.rootso\.org/MpWeb-apSolothurnDenkmal/download/(.*)\?mode=gis','geo.so.ch/docs/ch.so.ada.denkmal/ada_\1.pdf')
+                THEN 'https://'||${s3AdaStageBucket}||'/pdf_404.pdf'
+            ELSE regexp_replace(rechtsvorschrften_dokument.multimedia_link, 'artplus\.verw\.rootso\.org/MpWeb-apSolothurnDenkmal/download/(.*)\?mode=gis', ${s3AdaStageBucket}||'/ada_\1.pdf')
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM

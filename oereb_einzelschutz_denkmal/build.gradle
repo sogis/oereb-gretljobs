@@ -37,8 +37,8 @@ ext {
         ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche"]
     ]
  
-    s3AdaSourceBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal-stage' : "ch.so.ada.denkmal-stage-$gretlEnvironment"
-    s3AdaTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal' : "ch.so.ada.denkmal-$gretlEnvironment"
+    s3AdaStageBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal-stage' : "ch.so.ada.denkmal-stage-$gretlEnvironment"
+    s3AdaLiveBucket = (gretlEnvironment == 'production') ? 'ch.so.ada.denkmal' : "ch.so.ada.denkmal-$gretlEnvironment"
     
     s3AgiTargetBucket = (gretlEnvironment == 'production') ? 'ch.so.agi.geodata' : "ch.so.agi.geodata-$gretlEnvironment"
 }
@@ -101,9 +101,9 @@ task deleteFromOereb(type: SqlExecutor) {
 task transferData(type: SqlExecutor, dependsOn: ["importFederalLegalBasisToOereb", "importCantonalLegalBasisToOereb", "importResponsibleOfficesToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlParameters = [s3AdaStageBucket: "'" + s3AdaStageBucket.replaceAll("-stage", "") + "'"]
     sqlFiles = ["insert_oereb_einzelschutz_denkmal_tables.sql"]
 }
-
 
 wmsLayerList.each { wmsLayer ->
     def wmsLayerName = wmsLayer.getAt(0)
@@ -167,7 +167,7 @@ task uploadPdfToS3Stage(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     sourceDir = file(pathToPdfExportFolder)
     endPoint = "https://s3.amazonaws.com/"
     region = "eu-central-1"
-    bucketName = s3AdaSourceBucket
+    bucketName = s3AdaStageBucket
     acl = "PublicRead"
 }
 
@@ -187,7 +187,16 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     models = iliModelTransferstruktur
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = einzelschutzDenkmalDataSet 
+    dataset = einzelschutzDenkmalDataSet
+    finalizedBy {
+        updateS3StageLink
+    }
+}
+
+task updateS3StageLink(type: SqlExecutor) {
+    description = "Ersetzt den Link der Pdfs wieder auf die Stage-Umbebung"
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["update_oerebkrm_v1_1_localiseduri_table.sql"]
 }
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
@@ -202,8 +211,8 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
 task copyPdfToS3Live(type: S3Bucket2Bucket) {
     accessKey = awsAccessKeyAda
     secretKey = awsSecretAccessKeyAda
-    sourceBucket = s3AdaSourceBucket
-    targetBucket = s3AdaTargetBucket
+    sourceBucket = s3AdaStageBucket
+    targetBucket = s3AdaLiveBucket
 }
 
 task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
