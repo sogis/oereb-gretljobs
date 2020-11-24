@@ -49,7 +49,7 @@ ext {
     s3AdaStageBucket = "ch.so.ada.denkmal-stage$bucketSuffix"
     s3AdaLiveBucket = "ch.so.ada.denkmal$bucketSuffix"
 
-    s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"    
+    s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 }
 
 
@@ -203,7 +203,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 }
 
 task updateS3StageLink(type: SqlExecutor) {
-    description = "Ersetzt den Link der Pdfs wieder auf die Stage-Umbebung"
+    description = "Setzt den Link der Pdfs auf die Stage-Umbebung"
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     sqlFiles = ["update_oerebkrm_v1_1_localiseduri_table.sql"]
 }
