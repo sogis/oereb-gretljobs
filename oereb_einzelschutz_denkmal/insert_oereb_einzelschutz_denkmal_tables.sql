@@ -234,7 +234,7 @@ localiseduri AS
         CASE
             WHEN rechtsvorschrften_dokument.multimedia_link IS NULL
                 THEN 'https://'||${s3AdaLiveBucket}||'/pdf_404.pdf'
-            ELSE regexp_replace(rechtsvorschrften_dokument.multimedia_link, 'artplus\.verw\.rootso\.org/MpWeb-apSolothurnDenkmal/download/(.*)\?mode=gis', ${s3AdaLiveBucket}||'/ada_\1.pdf')
+            ELSE regexp_replace(rechtsvorschrften_dokument.multimedia_link, 'artplus\.verw\.rootso\.org/MpWeb-apSolothurnDenkmal/download/(.*)\?mode=gis', 's3.eu-central-1.amazonaws.com/'||${s3AdaLiveBucket}||'/ada_\1.pdf')
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
