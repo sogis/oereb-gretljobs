@@ -19,23 +19,14 @@ dbSchemas.each { dbSchema ->
         sqlParameters = [dbSchema: dbSchema]
     }
 
-    task "deletePreviousGBKreisData_$dbSchema"(type: SqlExecutor, dependsOn: "createGBKreisBasket_$dbSchema") {
-        description = "Löscht GBKreis-Daten vor einem neuen Datenübertrag."
-        group = GROUP
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-        sqlFiles = ['delete_previous_gbkreis_data.sql']
-        sqlParameters = [dbSchema: dbSchema]
-    }
-
-    task "transferGBKreis_$dbSchema"(type: Db2Db, dependsOn: "deletePreviousGBKreisData_$dbSchema"){
+    task "transferGBKreis_$dbSchema"(type: Db2Db, dependsOn: "createGBKreisBasket_$dbSchema"){
         description = "Datenübertrag ins GBKreis-Modell."    
         group = GROUP
         sourceDb = [dbUriPub, dbUserPub, dbPwdPub]
         targetDb = [dbUriOereb, dbUserOereb, dbPwdOereb]
         transferSets = [
-            new TransferSet("select_grundbuchkreise.sql", dbSchema + ".so_g_v_0180822grundbuchkreise_grundbuchkreis", true),
-            new TransferSet("select_nachfuehrungskreise_gemeinde.sql", dbSchema + ".so_g_v_0180822nachfuehrngskrise_gemeinde", true)
-
+              new TransferSet("select_grundbuchkreise.sql", dbSchema + ".so_g_v_0180822grundbuchkreise_grundbuchkreis", true),
+              new TransferSet("select_nachfuehrungskreise_gemeinde.sql", dbSchema + ".so_g_v_0180822nachfuehrngskrise_gemeinde", true)
             ];        
     }
 }
