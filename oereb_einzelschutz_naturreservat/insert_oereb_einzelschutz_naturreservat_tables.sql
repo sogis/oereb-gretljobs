@@ -30,7 +30,7 @@ INSERT INTO
         'Naturschutzgebiete' AS aussage_de,
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
-        'naturschutzgebiet' AS artcode,
+        'naturschutzgebiete' AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2019:Typ_Naturschutzgebiete_Flaeche' AS artcodeliste,
         'inKraft' AS rechtsstatus,
         reservat.publiziertab AS publiziertab,
