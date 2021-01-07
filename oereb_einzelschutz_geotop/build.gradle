@@ -31,7 +31,8 @@ ext {
     responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
 
     wmsLayerList = [
-        ["ch.SO.Einzelschutz", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Einzelschutz"]
+        ["ch.SO.Einzelschutz.Punkt", "urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Punkt"],
+        ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Flaeche"]
     ]
 
     bucketSuffix = '-undefined'
@@ -121,6 +122,8 @@ wmsLayerList.each { wmsLayer ->
         typeCodeListValue = typeCodeList
         symbolAttrName = "symbol"
         useCommunalTypeCodes = false
+        println sldUrl
+        println legendGraphicUrl
     }
 }
 

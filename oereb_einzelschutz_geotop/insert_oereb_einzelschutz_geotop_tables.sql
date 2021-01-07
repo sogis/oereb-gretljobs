@@ -33,7 +33,7 @@ INSERT INTO
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
         'geotope' AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_geschuetztes_Geotop_Flaeche' AS artcodeliste,
+        'urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Flaeche' AS artcodeliste,
         rechtsstatus,
         aufschluss.publiziert_ab AS publiziertab,
         amt.t_id AS zustaendigestelle
@@ -67,7 +67,7 @@ INSERT INTO
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
         'geotope' AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_geschuetztes_Geotop_Punkt' AS artcodeliste,
+        'urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Punkt' AS artcodeliste,
         rechtsstatus,
         erratiker.publiziert_ab AS publiziertab,
         amt.t_id AS zustaendigestelle
@@ -101,7 +101,7 @@ INSERT INTO
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
         'geotope' AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_geschuetztes_Geotop_Punkt' AS artcodeliste,
+        'urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Punkt' AS artcodeliste,
         rechtsstatus,
         hoehle.publiziert_ab AS publiziertab,
         amt.t_id AS zustaendigestelle
@@ -135,7 +135,7 @@ INSERT INTO
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
         'geotope' AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_geschuetztes_Geotop_Flaeche' AS artcodeliste,
+        'urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Flaeche' AS artcodeliste,
         rechtsstatus,
         landschaftsform.publiziert_ab AS publiziertab,
         amt.t_id AS zustaendigestelle
@@ -169,7 +169,7 @@ INSERT INTO
         'WeiteresThema' AS thema,
         'ch.SO.Einzelschutz' AS weiteresthema,
         'geotope' AS artcode,
-        'urn:fdc:ilismeta.interlis.ch:2017:Typ_geschuetztes_Geotop_Punkt' AS artcodeliste,
+        'urn:fdc:ilismeta.interlis.ch:2020:Typ_geschuetztes_Geotop_Punkt' AS artcodeliste,
         rechtsstatus,
         quelle.publiziert_ab AS publiziertab,
         amt.t_id AS zustaendigestelle
@@ -261,33 +261,25 @@ WITH dokumente AS
         dokument
     FROM
         afu_geotope.geotope_aufschluss_dokument
-        
-    UNION ALL
-    
+    UNION ALL    
     SELECT
         erratiker AS geotop,
         dokument
     FROM
         afu_geotope.geotope_erratiker_dokument
-        
-    UNION ALL
-    
+    UNION ALL    
     SELECT
         hoehle AS geotop,
         dokument
     FROM
         afu_geotope.geotope_hoehle_dokument
-        
-    UNION ALL
-    
+    UNION ALL    
     SELECT
         landform AS geotop,
         dokument
     FROM
         afu_geotope.geotope_landform_dokument
-        
     UNION ALL
-    
     SELECT
         quelle AS geotop,
         dokument
@@ -613,14 +605,21 @@ WITH transferstruktur_darstellungsdienst AS
                 DISTINCT ON (thema)
                 thema,
                 CASE
-                    WHEN artcodeliste ILIKE '%Typ_geschuetztes_Geotop_Flaeche%'
-                        THEN 'Flaeche'
-                    WHEN artcodeliste ILIKE '%Typ_geschuetztes_Geotop_Punkt%'
+                    WHEN geometrie.punkt_lv95 IS NOT NULL
                         THEN 'Punkt'
-                END AS geometrietyp,
-                weiteresthema AS layername
+                    WHEN geometrie.flaeche_lv95 IS NOT NULL
+                        THEN 'Flaeche'
+                 END AS geometrietyp,
+                 weiteresthema AS layername
             FROM
                 afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+                LEFT JOIN afu_geotope_oereb.transferstruktur_geometrie AS geometrie
+                ON eigentumsbeschraenkung.t_id = geometrie.eigentumsbeschraenkung
+            WHERE
+                ((geometrie.punkt_lv95 IS NOT NULL AND geometrie.flaeche_lv95 IS NULL)
+                 OR
+                (geometrie.punkt_lv95 IS NULL AND geometrie.flaeche_lv95 IS NOT NULL))
+                
         ) AS eigentumsbeschraenkung,
         (
             SELECT
@@ -702,6 +701,8 @@ SET
             afu_geotope_oereb.transferstruktur_darstellungsdienst
         WHERE
             verweiswms ILIKE '%ch.SO.Einzelschutz%'
+        AND
+            t_datasetname = 'ch.so.afu.geotop'
     )
 WHERE
     t_id IN
