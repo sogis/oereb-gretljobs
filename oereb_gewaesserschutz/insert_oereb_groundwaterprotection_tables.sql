@@ -30,13 +30,17 @@ INSERT INTO
         basket_dataset.basket_t_id,
         basket_dataset.datasetname,
         CASE
-	    WHEN gwszone.typ = 'S1'
-	        THEN 'Grundwasserschutzzone S1'
-	    WHEN gwszone.typ = 'S2'
-		THEN 'Grundwasserschutzzone S2'
-	    WHEN gwszone.typ = 'S3'
-		THEN 'Grundwasserschutzzone S3'
-	END AS aussage_de,
+        WHEN gwszone.typ = 'S1'
+            THEN 'Grundwasserschutzzone S1'
+        WHEN gwszone.typ = 'S2'
+            THEN 'Grundwasserschutzzone S2'
+        WHEN gwszone.typ = 'S3'
+            THEN 'Grundwasserschutzzone S3'
+        WHEN gwszone.typ = 'Sh'
+            THEN 'Grundwasserschutzzone Sh'
+        WHEN gwszone.typ = 'Sm'
+            THEN 'Grundwasserschutzzone Sm'
+    END AS aussage_de,
         'Grundwasserschutzzonen' AS thema,
         gwszone.typ AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen' AS artcodeliste,
