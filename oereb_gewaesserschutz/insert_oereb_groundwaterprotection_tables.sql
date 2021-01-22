@@ -42,15 +42,11 @@ INSERT INTO
                 THEN 'Grundwasserschutzzone Sm'
             WHEN gwszone.typ = 'S3Zu'
                 THEN 'Grundwasserschutzzone S3Zu'
-            WHEN gwszone.typ = 'S3_Plus'
-                THEN 'Grundwasserschutzzone S3_Plus'
+            WHEN gwszone.typ = 'S_kantonaleArt'
+                THEN 'Grundwasserschutzzone S_kantonaleArt'
         END AS aussage_de,
         'Grundwasserschutzzonen' AS thema,
-        CASE
-            WHEN gwszone.typ = 'S3_Plus'
-                THEN 'S_kantonaleArt'
-            ELSE gwszone.typ
-        END AS artcode,
+        gwszone.typ AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzzonen' AS artcodeliste,
         status.rechtsstatus,
         status.rechtskraftdatum AS publiziertab, 
