@@ -181,7 +181,7 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
 
 
 
-task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
+task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur

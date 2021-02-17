@@ -687,7 +687,7 @@ INSERT INTO
             afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
     ) AS eigentumsbeschraenkung
     LEFT JOIN transferstruktur_darstellungsdienst
-    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername||'.'||eigentumsbeschraenkung.geometrietyp, '.')||'%'
+    ON transferstruktur_darstellungsdienst.verweiswms ILIKE '%'||RTRIM(eigentumsbeschraenkung.layername, '.')||'%'
 ;
 
 UPDATE

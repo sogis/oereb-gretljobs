@@ -122,8 +122,6 @@ wmsLayerList.each { wmsLayer ->
         typeCodeListValue = typeCodeList
         symbolAttrName = "symbol"
         useCommunalTypeCodes = false
-        println sldUrl
-        println legendGraphicUrl
     }
 }
 
