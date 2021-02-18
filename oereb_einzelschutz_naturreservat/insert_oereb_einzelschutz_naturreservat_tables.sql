@@ -196,7 +196,7 @@ localiseduri AS
         CASE
             WHEN rechtsvorschrften_dokument.dateipfad IS NULL
                 THEN 'https://geo.so.ch/docs/ch.so.arp.naturreservate/rrb/404.pdf'
-            ELSE replace(rechtsvorschrften_dokument.dateipfad, 'G:\documents\ch.so.arp.naturreservate\rrb\', 'https://geo.so.ch/docs/arp/ch.so.arp.naturreservate/rrb/')
+            ELSE replace(rechtsvorschrften_dokument.dateipfad, 'G:\documents\ch.so.arp.naturreservate\rrb\', 'https://geo.so.ch/docs/ch.so.arp.naturreservate/rrb/')
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
