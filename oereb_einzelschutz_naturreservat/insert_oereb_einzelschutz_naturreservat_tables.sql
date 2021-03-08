@@ -84,9 +84,13 @@ INSERT INTO
         basket_dataset.datasetname,
         'vorschriften_rechtsvorschrift' AS t_type,
         '_'||SUBSTRING(REPLACE(CAST(dokument.t_id AS text), '-', ''),1,15) AS t_ili_tid,       
-        'Regierungsratsbeschluss' AS titel_de,
+        CASE
+            WHEN dokument.typ = 'RRB'
+                 THEN 'Regierungsratsbeschluss'
+            ELSE dokument.typ
+        END AS titel_de,
         dokument.bezeichnung AS offizellertitel_de,
-       'RRB' AS abkuerzung_de,
+        dokument.typ AS abkuerzung_de,
         dokument.offiziellenr AS offiziellenr,
         'SO' AS kanton,
         NULL AS gemeinde,
@@ -196,7 +200,7 @@ localiseduri AS
         CASE
             WHEN rechtsvorschrften_dokument.dateipfad IS NULL
                 THEN 'https://geo.so.ch/docs/ch.so.arp.naturreservate/rrb/404.pdf'
-            ELSE replace(rechtsvorschrften_dokument.dateipfad, 'G:\documents\ch.so.arp.naturreservate\rrb\', 'https://geo.so.ch/docs/ch.so.arp.naturreservate/rrb/')
+            ELSE replace(replace(rechtsvorschrften_dokument.dateipfad, 'G:\documents\ch.so.arp.naturreservate\', 'https://geo.so.ch/docs/ch.so.arp.naturreservate/'),'\', '/')
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
