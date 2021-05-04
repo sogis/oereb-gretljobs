@@ -11,7 +11,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, "unzip_data")
 def pathToDataZip = Paths.get(pathToTempFolder, "data.zip")
 
-def federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
+def federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
 def federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
 
 def cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
