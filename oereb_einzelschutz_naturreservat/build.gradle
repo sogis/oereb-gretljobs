@@ -22,7 +22,7 @@ ext {
     xtfFileName = einzelschutzNaturreservatDataSet + ".oereb.xtf"
     zipFileName = einzelschutzNaturreservatDataSet + ".oereb_xtf.zip"
 
-    federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
+    federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
     federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
 
     cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"

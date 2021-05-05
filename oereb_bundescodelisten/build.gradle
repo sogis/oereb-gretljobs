@@ -16,7 +16,7 @@ def dbSchemas = ["stage", "live"]
 task download(type: Download) {
     group = GROUP
     description = "Download Bundescodelisten."
-    src "http://models.geo.admin.ch/V_D/OeREB/" + fileName
+    src "http://models.geo.admin.ch/V_D/OeREB/replaced/" + fileName
     dest pathToTempFolder
     overwrite true
 

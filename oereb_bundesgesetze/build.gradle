@@ -25,7 +25,7 @@ task "oereb_DownloadGesetze"(type: Download){
     doLast {
         println "Download beendet: OeREBKRM_V1_1_Gesetze"
     }
-    src "http://models.geo.admin.ch/V_D/OeREB/OeREBKRM_V1_1_Gesetze_20180501.xml"
+    src "http://models.geo.admin.ch/V_D/OeREB/replaced/OeREBKRM_V1_1_Gesetze_20180501.xml"
     dest pathToTempFolder
     overwrite true
 }
