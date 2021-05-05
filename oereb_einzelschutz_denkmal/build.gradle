@@ -222,6 +222,7 @@ task copyPdfToS3Live(type: S3Bucket2Bucket) {
     secretKey = awsSecretAccessKeyAda
     sourceBucket = s3AdaStageBucket
     targetBucket = s3AdaLiveBucket
+    acl = "public-read"
 }
 
 task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
