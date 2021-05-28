@@ -1,0 +1,219 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import java.nio.file.Files
+import de.undercouch.gradle.tasks.download.Download
+
+
+ext {
+    pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+    iliModelVorschriften = "OeREBKRMvs_V1_1"
+    iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
+
+    symbolsWmsBaseUrl = "https://" + geoservicesHostName
+
+    dbSchemaNaturreservatOereb = "arp_naturreservate_oereb"
+    naturreservatDataSet = "ch.so.arp.naturreservat"
+
+    xtfFileName = naturreservatDataSet + ".oereb.xtf"
+    zipFileName = naturreservatDataSet + ".oereb_xtf.zip"
+
+    federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
+    federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
+
+    cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
+    cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
+
+    responsibleOfficesBaseUrl = "https://geo.so.ch/geodata/ch.so.agi.zustaendigestellen.oereb/"
+    responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen"
+
+    wmsLayerList = [
+        ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_Naturschutzgebiete_Flaeche"],
+        ["ch.SO.NutzungsplanungUeberlagernd.Flaeche", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"]
+    ]
+
+    bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) {
+        bucketSuffix = ''
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'development' ) {
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+
+    s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+}
+
+
+task downloadFederalLegalBasis(type: Download, dependsOn: 'deleteFromOereb') {
+    description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
+    src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task importFederalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadFederalLegalBasis') {
+    description = "Import Bundesgesetze ($federalLegalBaseDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelVorschriften
+    dbschema = dbSchemaNaturreservatOereb
+    dataFile = file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml"))
+    dataset = "ch.admin.bk.gesetze"
+}
+
+task downloadCantonalLegalBasis(type: Download, dependsOn: 'deleteFromOereb') {
+    description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
+    src cantonalLegalBasisBaseUrl + cantonalLegalBaseDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task importCantonalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadCantonalLegalBasis') {
+    description = "Import kantonale Gesetze ($cantonalLegalBaseDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelVorschriften
+    dbschema = dbSchemaNaturreservatOereb
+    dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
+    dataset = cantonalLegalBaseDataSet
+}
+
+task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
+    description = "Download zuständige Stellen ($responsibleOfficesDataSet)."
+    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadResponsibleOffices') {
+    description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaNaturreservatOereb
+    dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
+    dataset = naturreservatDataSet
+}
+
+task deleteFromOereb(type: SqlExecutor) {
+    description = "Löscht die Daten aus dem Transferschema."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_oereb_naturreservat_tables.sql"]
+}
+
+task transferData(type: SqlExecutor, dependsOn: ["importFederalLegalBasisToOereb", "importCantonalLegalBasisToOereb", "importResponsibleOfficesToOereb"]) {
+    description = "Führt den Datenumbau in das Transferschema durch."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_oereb_naturreservat_tables.sql"]
+}
+
+wmsLayerList.each { wmsLayer ->
+    def wmsLayerName = wmsLayer.getAt(0)
+    def typeCodeList = wmsLayer.getAt(1)
+    task "updateSymbols_$wmsLayerName"(type: OerebIconizerQgis3) {
+        description = "Erzeugt die Symbole für die einzelnen Legendeneinträge für $wmsLayerName."
+        sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayerName&SLD_VERSION=1.1.0"
+        legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayerName&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        dbQTable = "arp_naturreservate_oereb.transferstruktur_legendeeintrag"
+        typeCodeAttrName = "artcode"
+        typeCodeListAttrName = "artcodeliste"
+        typeCodeListValue = typeCodeList
+        symbolAttrName = "symbol"
+        useCommunalTypeCodes = false
+    }
+}
+
+task updateSymbols(dependsOn: "transferData") {
+    description = "Aggregationstask für das Updaten der Symbole."
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('updateSymbols_') }
+    }
+}
+
+task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
+    description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaNaturreservatOereb
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = naturreservatDataSet
+    disableValidation = true
+}
+
+task replaceWmsServer(dependsOn: "exportData") {
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
+    doLast {
+        ant.replace(
+        file: file(Paths.get("$rootDir", xtfFileName)),
+        token: '${wmsHost}',
+        value: 'https://' + geoservicesHostName,
+        encoding: 'UTF-8')
+    }
+}
+
+task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
+    description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml")),
+                 file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf")),
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
+    allObjectsAccessible = true
+}
+
+task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+    description = "Import des Naturreservat-ÖREB-Datensatz in das Stage-Schema."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    models = iliModelTransferstruktur
+    dbschema = "stage"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = naturreservatDataSet
+}
+
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["update_oerebwms_naturreservat_tables.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
+
+
+
+task importDataToLive(type: Ili2pgReplace) {
+    description = "Import des Naturreservat-ÖREB-Datensatz in das Live-Schema."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    models = iliModelTransferstruktur
+    dbschema = "live"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = naturreservatDataSet
+}
+
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    sqlFiles = ["update_oerebwms_naturreservat_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
+
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das xtf-File mit den Naturreservat-Daten für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName zipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}
