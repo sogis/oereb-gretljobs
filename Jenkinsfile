@@ -13,7 +13,7 @@ pipeline {
     }
     stages {
         stage('Import into staging schema') {
-            agent { label 'gretl-ili2pg4' }
+            agent { label 'gretl' }
             steps {
                 script { currentBuild.description = "${params.buildDescription}" }
                 git url: "${gretlJobRepoUrl}", branch: "${params.BRANCH ?: 'master'}", changelog: false
@@ -36,7 +36,7 @@ pipeline {
             }
         }
         stage('Import into live schema') {
-            agent { label 'gretl-ili2pg4' }
+            agent { label 'gretl' }
             steps {
                 unstash name: "gretljob"
                 dir(env.JOB_BASE_NAME) {
