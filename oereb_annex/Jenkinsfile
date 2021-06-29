@@ -5,7 +5,7 @@ node('master') { // need a few lines of scripted pipeline before the declarative
 }
 
 pipeline {
-    agent { label 'gretl-ili2pg4' }
+    agent { label 'gretl' }
 
     stages {
         stage('GRETL job') {
