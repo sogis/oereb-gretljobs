@@ -18,6 +18,7 @@ services:
     image: sogis/oereb-db
     command: /tmp/override_setupsql.sh /opt/cpm/bin/start.sh
     environment:
+      MODE: postgres
       PG_DATABASE: edit
       PG_LOCALE: de_CH.UTF-8
       PG_PRIMARY_PORT: 5432
@@ -38,6 +39,7 @@ services:
   oereb-db:
     image: sogis/oereb-db
     environment:
+      MODE: postgres
       PG_DATABASE: oereb
       PG_LOCALE: de_CH.UTF-8
       PG_PRIMARY_PORT: 5432
