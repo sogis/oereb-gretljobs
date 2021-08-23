@@ -33,7 +33,7 @@ ext {
 
     wmsLayerList = [
         ["ch.SO.Einzelschutz.Flaeche", "urn:fdc:ilismeta.interlis.ch:2019:Typ_Naturschutzgebiete_Flaeche"],
-        ["ch.SO.NutzungsplanungUeberlagernd.Flaeche", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche"]
+        ["ch.SO.NutzungsplanungUeberlagernd.Flaeche", "urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.Naturreservat_Flaeche"]
     ]
 
     bucketSuffix = '-undefined'
