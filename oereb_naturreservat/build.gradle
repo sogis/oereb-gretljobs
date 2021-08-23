@@ -122,7 +122,6 @@ wmsLayerList.each { wmsLayer ->
         typeCodeListAttrName = "artcodeliste"
         typeCodeListValue = typeCodeList
         symbolAttrName = "symbol"
-        
         if ( wmsLayerName == 'ch.SO.Einzelschutz.Flaeche' ) {
             useCommunalTypeCodes = false
         } else {
