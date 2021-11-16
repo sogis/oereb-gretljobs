@@ -113,3 +113,21 @@ for (jobFile in jobFiles) {
     }
   }
 }
+
+// add a view (tab) for these jobs
+listView('ÖREB-GRETL-Jobs') {
+  jobs {
+    regex(/^oereb_.*/)
+    name('gretl-job-generator-oereb')
+  }
+  columns {
+    status()
+    weather()
+    name()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
+    favoriteColumn()
+  }
+}
