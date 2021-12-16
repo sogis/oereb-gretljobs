@@ -52,6 +52,9 @@ echo "Gradle options: ${gradle_options[@]}"
 echo "gretl_cmd: $gretl_cmd"
 echo "======================================================="
 
+# Create a directory that is going to be mounted as the "GRETL share"
+mkdir -p /tmp/gretl-share
+
 # special run configuration for jenkins-slave based image:
 # 1. use a shell as entry point
 # 2. mount job directory as volume
@@ -65,10 +68,10 @@ echo "======================================================="
 #    b. change to project directory
 #    c. run gradle with given task and parameter using init script from image
 
-docker run -i --rm \
+docker run -i --rm --name gretl \
     --entrypoint="/bin/sh" \
     -v "$job_directory":/home/gradle/project \
-    -v /tmp:/tmp/gretl-share \
+    -v /tmp/gretl-share:/tmp/gretl-share \
      ${envvars_string} \
     --user $UID \
     ${network_string} \
