@@ -1,0 +1,39 @@
+version: '3'
+services:
+  gretl:
+    image: sogis/gretl-local
+    entrypoint: /bin/sh -c
+    command: gretl
+    environment:
+      ORG_GRADLE_PROJECT_dbUriEdit: "jdbc:postgresql://edit-db/edit"
+      ORG_GRADLE_PROJECT_dbUserEdit: gretl
+      ORG_GRADLE_PROJECT_dbPwdEdit: gretl
+      ORG_GRADLE_PROJECT_dbUriOereb: "jdbc:postgresql://oereb-db/oereb"
+      ORG_GRADLE_PROJECT_dbUserOereb: gretl
+      ORG_GRADLE_PROJECT_dbPwdOereb: gretl
+    depends_on:
+      - oereb-db
+      - edit-db
+  edit-db:
+    image: sogis/oereb-db:2
+    environment:
+      POSTGRES_DB: edit
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_HOST_AUTH_METHOD: md5
+      PG_WRITE_PWD: ddluser
+      PG_READ_PWD: dmluser
+      PG_GRETL_PWD: gretl
+
+    ports:
+      - "54321:5432"
+  oereb-db:
+    image: sogis/oereb-db:2
+    environment:
+      POSTGRES_DB: oereb
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_HOST_AUTH_METHOD: md5
+      PG_WRITE_PWD: ddluser
+      PG_READ_PWD: dmluser
+      PG_GRETL_PWD: gretl
+    ports:
+      - "54323:5432"

@@ -1,0 +1,235 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+
+ext {
+    pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+    iliModelBasis = "OeREBKRM_V2_0"
+    //iliModelKonfiguration = "OeREBKRMkvs_V2_0"
+    iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+
+    // symbolsWmsBaseUrl = "https://" + geoservicesHostName
+
+    dbSchemaStaticForestPerimeterOereb = "awjf_statische_waldgrenzen_oereb"
+    staticForestPerimeterDataSet = "ch.so.awjf.waldgrenzen"
+    
+    xtfFileName = staticForestPerimeterDataSet + ".oereb.xtf"
+    zipFileName = staticForestPerimeterDataSet + ".oereb_xtf.zip"
+
+    // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
+    // federalLegalBaseDataSet = "OeREBKRM_V2_0_Gesetze_20210414"
+
+    // federalThemesBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/"
+    // federalThemesDataSet = "OeREBKRM_V2_0_Themen_20210915"
+
+    // cantonalLegalBasisBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"
+    // cantonalLegalBaseDataSet = "ch.so.sk.gesetze_V2_0"
+
+    responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"
+    responsibleOfficesDataSet = "ch.so.agi.zustaendigestellen_V2.0"
+
+    // wmsLayerList = [
+    //     ["ch.SO.Waldgrenzen", "urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen"]
+    // ]    
+
+    bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) {
+        bucketSuffix = ''
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+    s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+}
+
+task deleteFromOereb(type: SqlExecutor) {
+    description = "Löscht die Daten aus dem Transferschema."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_oereb_static_forestperimeter_tables.sql"]
+}
+
+// task downloadFederalLegalBasis(type: Download) {
+//     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
+//     src federalLegalBasisBaseUrl + federalLegalBaseDataSet + ".xml"
+//     dest pathToTempFolder
+//     overwrite true      
+// }
+
+// TODO delete
+// task importFederalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadFederalLegalBasis') {
+//     description = "Import Bundesgesetze ($federalLegalBaseDataSet)."
+//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     models = iliModelVorschriften
+//     dbschema = dbSchemaStaticForestPerimeterOereb
+//     dataFile = file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml"))
+//     dataset = "ch.admin.bk.gesetze" 
+// }
+
+// task downloadCantonalLegalBasis(type: Download, dependsOn: 'deleteFromOereb') {
+//     description = "Download kantonale Gesetze ($cantonalLegalBaseDataSet)."
+//     src cantonalLegalBasisBaseUrl + cantonalLegalBaseDataSet + ".xtf"
+//     dest pathToTempFolder
+//     overwrite true    
+// }
+
+// TODO delete
+// task importCantonalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadCantonalLegalBasis') {
+//     description = "Import kantonale Gesetze ($cantonalLegalBaseDataSet)."
+//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//     models = iliModelVorschriften
+//     dbschema = dbSchemaStaticForestPerimeterOereb
+//     dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))
+//     dataset = cantonalLegalBaseDataSet 
+// }
+
+task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
+    doFirst {
+        println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    }
+    description = "Download zuständige Stellen ($responsibleOfficesDataSet)."
+    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadResponsibleOffices') {
+    description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelBasis
+    dbschema = dbSchemaStaticForestPerimeterOereb
+    dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
+    importBid = true
+    dataset = responsibleOfficesDataSet
+}
+
+// Damit werden die notwendigen Datasets- und Basketrecords in der DB erstellt.
+task importEmptyStaticForestPerimeterToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
+    description = "Import leere Waldgrenzen-Basket ($responsibleOfficesDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaStaticForestPerimeterOereb
+    dataFile = file(Paths.get(staticForestPerimeterDataSet + ".oereb.empty.xtf"))
+    importBid = true
+    dataset = staticForestPerimeterDataSet
+}
+
+task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importEmptyStaticForestPerimeterToOereb"]) {
+//task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "downloadFederalLegalBasis", "downloadCantonalLegalBasis"]) {
+    description = "Führt den Datenumbau in das Transferschema durch."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_oereb_static_forestperimeter_tables.sql"]
+}
+
+// wmsLayerList.each { wmsLayer ->
+//     def wmsLayerName = wmsLayer.getAt(0)
+//     def typeCodeList = wmsLayer.getAt(1)
+//     task "updateSymbols_$wmsLayerName"(type: OerebIconizerQgis3) {
+//         description = "Erzeugt die Symbole für die einzelnen Legendeneinträge für $wmsLayerName."
+//         sldUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?&SERVICE=WMS&REQUEST=GetStyles&LAYERS=$wmsLayerName&SLD_VERSION=1.1.0"
+//         legendGraphicUrl = "$symbolsWmsBaseUrl/wms/oereb-symbols?SERVICE=WMS&REQUEST=GetLegendGraphic&LAYER=$wmsLayerName&FORMAT=image/png&RULELABEL=false&LAYERTITLE=false&HEIGHT=35&WIDTH=70&SYMBOLHEIGHT=3&SYMBOLWIDTH=6&DPI=300"
+//         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+//         dbQTable = "awjf_statische_waldgrenzen_oereb.transferstruktur_legendeeintrag"
+//         typeCodeAttrName = "artcode"
+//         typeCodeListAttrName = "artcodeliste"
+//         typeCodeListValue = typeCodeList
+//         symbolAttrName = "symbol"
+//         useCommunalTypeCodes = false
+//     }
+// }
+
+// task updateSymbols(dependsOn: "transferData") {
+//     description = "Aggregationstask für das Updaten der Symbole."
+//     dependsOn {
+//         tasks.findAll { task -> task.name.startsWith('updateSymbols_') }
+//     }
+// }
+
+//task exportData(type: Ili2pgExport, dependsOn: "updateSymbols") {
+task exportData(type: Ili2pgExport, dependsOn: "transferData") {
+    description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaStaticForestPerimeterOereb
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    //ataset = staticForestPerimeterDataSet
+    disableValidation = true
+}
+
+task replaceWmsServer(dependsOn: "exportData") {
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
+    doLast {
+        ant.replace(
+        file: file(Paths.get("$rootDir", xtfFileName)),
+        token: '${wmsHost}',
+        value: 'https://' + geoservicesHostName,
+        encoding: 'UTF-8')
+    }
+}
+
+task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
+    description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf")), 
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = true
+}
+
+// task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+//     description = "Import des Waldgrenzen-ÖREB-Datensatz in das Stage-Schema."
+//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     models = iliModelTransferstruktur
+//     dbschema = "stage"
+//     dataFile = file(Paths.get("$rootDir", xtfFileName))
+//     dataset = staticForestPerimeterDataSet 
+// }
+
+// task refreshOerebWMSTablesStage(type: SqlExecutor) {
+//     description = "Aktualisiert OEREB WMS Tabellen."
+//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
+//     sqlParameters = [dbSchema: 'stage']
+// }
+
+// task importDataToLive(type: Ili2pgReplace) {
+//     description = "Import des Waldgrenzen-ÖREB-Datensatz in das Live-Schema."
+//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     models = iliModelTransferstruktur
+//     dbschema = "live"
+//     dataFile = file(Paths.get("$rootDir", xtfFileName))
+//     dataset = staticForestPerimeterDataSet 
+// }
+
+// task refreshOerebWMSTablesLive(type: SqlExecutor) {
+//     description = "Aktualisiert OEREB WMS Tabellen."
+//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
+//     sqlParameters = [dbSchema: 'live']
+// }
+
+// task zipXtfFile(type: Zip) {
+//     description = "Zipt das xtf-File mit den Waldgrenzen für den Upload nach S3"
+//     from "$rootDir"
+//     include xtfFileName
+//     archiveName zipFileName
+//     destinationDir(file("$rootDir"))
+// }
+
+// task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+//     description = "Xtf-File nach S3 hochladen."
+//     accessKey = awsAccessKeyAgi
+//     secretKey = awsSecretAccessKeyAgi
+//     sourceFile = file(Paths.get("$rootDir", zipFileName))
+//     endPoint = "https://s3.eu-central-1.amazonaws.com"
+//     region = "eu-central-1"
+//     bucketName = s3AgiTargetBucket
+//     acl = "public-read"
+// }

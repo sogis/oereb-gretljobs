@@ -11,7 +11,7 @@ If you want to set up development databases for developing new GRETL jobs, use t
 Start two DBs ("oereb" and "edit"), import data required for the data transformation (the so called legal basis data and some more files) into the "oereb" DB, and import demo data into the "edit" DB.
 
 **TODO:** Ist das immer noch so?! Wahrscheinlich wegen geschützten Daten im Thema?!
-XTF files that are not available on https://gitlab.com/sogis/oereb-v2/oereb-gretljobs/-/tree/main/development_dbs should be directly exported from the database into the GRETL-Job directory (development_dbs):
+XTF files that are not available on https://github.com/sogis-oereb/oereb-gretljobs should be directly exported from the database into the GRETL-Job directory (development_dbs):
 
 Denkmalschutz:
 ```
@@ -29,6 +29,8 @@ When working on other OEREB topics, replace `createSchemaLandUsePlans replaceDat
 docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
 docker-compose run --rm --user $UID -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceDataLandUsePlans"
 ```
+
+When using `sogis/gretl-local` (see `docker-compose.yml`) do not use `--user $UID` as it will not work.
 
 Set environment variables containing the DB connection parameters åand names of other resources:
 ```

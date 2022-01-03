@@ -32,8 +32,8 @@ ext {
 
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
-    staticForestPerimetersDataFile = "awjf_statische_waldgrenze.xtf"
-    staticForestPerimetersBaseUrl = "https://gitlab.com/sogis/oereb-v2/oereb-gretljobs/-/raw/main/development_dbs/"
+    staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
+    staticForestPerimetersBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
     
     // iliModelEinzelschutzDenkmal = "SO_ADA_Denkmal_20191128"
     // dbSchemaEinzelschutzDenkmal = "ada_denkmalschutz"
@@ -123,6 +123,7 @@ task createSchemaStaticForestPerimeters(type: SqlExecutor){
     sqlFiles = ['awjf_statische_waldgrenze.sql', 'awjf_statische_waldgrenze_grants.sql']
 }
 */
+/*
 task createSchemaStaticForestPerimeters(type: Ili2pgImportSchema) {
     database = [dbUriEdit, "admin", "admin"]
     models = iliModelStaticForestPerimeters
@@ -137,7 +138,7 @@ task createSchemaStaticForestPerimeters(type: Ili2pgImportSchema) {
     nameByTopic = true
     postScript = file("awjf_statische_waldgrenze_grants.sql")
 }
-
+*/
 task downloadDataStaticForestPerimeters(type: Download) {
     src staticForestPerimetersBaseUrl + staticForestPerimetersDataFile
     dest pathToTempFolder
