@@ -10,8 +10,7 @@ If you want to set up development databases for developing new GRETL jobs, use t
 
 Start two DBs ("oereb" and "edit"), import data required for the data transformation (the so called legal basis data and some more files) into the "oereb" DB, and import demo data into the "edit" DB.
 
-**TODO:** Ist das immer noch so?! Wahrscheinlich wegen geschützten Daten im Thema?!
-XTF files that are not available on https://github.com/sogis-oereb/oereb-gretljobs should be directly exported from the database into the GRETL-Job directory (development_dbs):
+XTF files that are not available in this repo should be directly exported from the database into the GRETL-Job directory (development_dbs):
 
 Denkmalschutz:
 ```
@@ -23,14 +22,22 @@ Geotope:
 java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar --export --dbhost geodb.rootso.org --dbdatabase edit --dbusr $USER --dbpwd $(awk -v dbhost=$DBHOST -F ':' '$1~dbhost{print $5}' ~/.pgpass) --disableValidation --models SO_AFU_Geotope_20200312 --dbschema afu_geotope afu_geotope.xtf
 ```
 
-**TODO**: Fix gretl task names
-When working on other OEREB topics, replace `createSchemaLandUsePlans replaceDataLandUsePlans` with the Gradle task names that handle your current OEREB topic:
+Setup development environment for the various themes:
+
+Statische Waldgrenzen:
 ``` 
 docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
-docker-compose run --rm --user $UID -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importFederalLegalBasisToOereb importCantonalLegalBasisToOereb createSchemaLandUsePlans replaceDataLandUsePlans"
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataStaticForestPerimeters"
 ```
 
-When using `sogis/gretl-local` (see `docker-compose.yml`) do not use `--user $UID` as it will not work.
+(When using `sogis/gretl-local` (see `docker-compose.yml`) do not use `--user $UID` as it will not work.)
+
+You also need to import the responsible office into the oereb db if you want to import the generated data into the oereb db:
+```
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importResponsibleOfficesToOereb"
+```
+
+You will need to import much more files / data if you want to use the oereb db for the oereb-web-service (not covered here).
 
 Set environment variables containing the DB connection parameters åand names of other resources:
 ```
@@ -47,6 +54,7 @@ export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi="yx"
 ```
 
 Start the GRETL job (use the --job-directory option to point to the desired GRETL job; find out the names of your Docker networks by running `docker network ls`):
+
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_nutzungsplanung/ importDataToStage refreshOerebWMSTablesStage
+./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ importDataToStage refreshOerebWMSTablesStage
 ```

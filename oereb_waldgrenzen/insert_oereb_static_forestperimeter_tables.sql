@@ -2,7 +2,7 @@
  * Als erstes wird der Darstellungsdienst umgebaut. 
  * 
  * (1) Eigentumsbeschränkung verweist auf Darstellungsdienst und Legendeneintrag. Aus
- * diesem Grund kann nicht zuerst die Eigenstumsbeschränkung umgebaut werden.
+ * diesem Grund kann nicht zuerst die Eigentumsbeschränkung umgebaut werden.
  * 
  * (2) Für Nutzungsplanung wird die Query wahrscheinlich leicht komplizierter wegen
  * der verschiedenen Themen und Subthemen. Auch bei anderen Datensätzen mit gleicher
@@ -28,7 +28,7 @@ WITH darstellungsdienst AS
         FROM
             awjf_statische_waldgrenzen_oereb.t_ili2db_basket
         WHERE
-            t_ili_tid = 'ch.so.awjf.waldgrenzen' 
+            t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
     ) AS basket
     RETURNING *
 )
@@ -74,19 +74,26 @@ FROM
 /* 
  * Eigentumsbeschränkungen und Legendeneinträge
  * 
- * (1) Müssen in einem CTE-Block gemeinsam abgehandlet werden, weil die Eigentumsbeschränkungen
+ * (0) Müssen in einem CTE-Block gemeinsam abgehandlet werden, weil die Eigentumsbeschränkungen
  * auf die Legendeneinträge verweisen aber man die Legendeinträge nur erstellen kann, wenn man
  * weiss, welche Eigentumsbeschränkungen es gibt. Benötigt werden ebenfalls noch die Darstellungsdienste
  * aus dem ersten CTE-Block damit man den Legendeneintrag via Thema dem richtigen Darstellungsdient
  * zuweisen kann.
+ *
+ * (1) Die Dreiecksbeziehung gibt es weil man so eine vollständige Legende erstellen können, was aber
+ * gemäss Weisung nicht mehr verlangt wird. Mit unserem jetzigen Ansatz ginge das nicht, weil wir pro
+ * Thema anhand der vorhandenen Daten nicht wissen welche Legendeeinträge es geben kann. Ein Legendeneintrag
+ * ist in V_2.0 mehr als bloss das Symbol und eine aggregierte Beschreibung des Symbols. Sondern der
+ * Legendetext entspricht der früheren Aussage und ist z.B. bei Nutzungsplanung unterschiedlich von 
+ * Gemeinde zu Gemeinde.
  * 
  * (2) "geobasisdaten_typ IN" (etc.) filtern Eigentumsbeschränkungen weg, die mit keinem Dokument verknüpft sind.
  * Sind solche Objekte vorhanden, handelt es sich in der Regel um einen Datenfehler in den Ursprungsdaten.
- * 'publiziertab IS NOT NULL' filtert Objekte raus, die kein Publikationsdatum haben (Mandatory im Rahmenmodell.)
+ * 'publiziertab' ist im Ausgangsmodell MANDATORY und muss nicht geprüft werden.
  *
- * (3) rechtsstatus = "inKraft": Die Bedingung hier reicht nicht, damit (später) auch nur die Geometrien verwendet
+ * (3) rechtsstatus = "inKraft": Die Bedingung hier alleine reicht nicht, damit (später) auch nur die Geometrien verwendet
  * werden, die "inKraft" sind. Grund dafür ist, dass es nicht "inKraft" Geometrien geben kann, die auf einen
- * Typ zeigen, dem Geometrien zugewiesen sind, die "inKraft" sind. Nur solche Typen, dem gar keine "inKraft"
+ * Typ zeigen, dem Geometrien zugewiesen sind, die "inKraft" sind. Nur solche Typen, denen gar keine "inKraft"
  * Geometrien zugewiesen sind, werden hier rausgefiltert. Darum muss auch mit den Geometrien gejoined werden,
  * was wiederum zu Verdoppelung des Typs führt und mit DISTINCT bereinigt werden muss.
  *
@@ -95,7 +102,7 @@ FROM
  * inKraft-Dokumente angehängt, wird korrekterweise der Typ trotzdem verwendet. Bei den Dokumenten muss der
  * Filter nochmals gesetzt werden. 
  * 
- * (5) Zu prüfen, ob bei der Einführung von Vorwirkung (4) noch gilt. 
+ * (5) Zu prüfen, ob bei der Einführung von Vorwirkung (3,4) noch gilt. 
  * 
  * (6) Die richtigen Symbole werden erst nachträglich mit einem anderen Gretl-Task korrekt abgefüllt. Hier wird
  * ein Dummy-Symbol gespeichert.
@@ -125,8 +132,6 @@ eigentumsbeschraenkung AS (
         waldgrenze.publiziert_ab AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
         amt.amt_t_id AS zustaendigestelle,
-        --nextval('awjf_statische_waldgrenzen_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
-        --decode('iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAYAAAApF3xtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAD8AAAA/AB2OVKxAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAOoSURBVGiB7ZpfaM1hGMc/PzvGjFLDzGwixVD+xOnsQmOrlcTGldquFq2RzJ+yG5KUpYw0t65WxtXcUGwXXJhIys1xQZSNkWSOzUp6XDzO3vM6e4/fjB3yfuvtfd7v+zzv+zvfnvfP+Z0TCAgeaZiS7Qf4W+GFcSBitYqKIBbL0qNkGffuwevXpi0go6WmRv5b1NRIqhZ+KTnghXHAC+OAF8YBL4wDXhgH3MK8fAnr19tlwwbYtg3a2+HzZ+P76JHxOXvWHqe2VvnNmw0XiylXWQmJhO1//rwZ6+pV5To6DHfxou3/4QNs2qR9Gzcqd+uW8T9xwvY/dsz0dXe7lXHeY+Jx61xPK2VlIm/fqm9Pj+H37bPvB4sWKZ+fb7ggMP4tLYZ//lwkL8/0tbUp39pquPx8kb4+E9PcbPqmTVNuaEikoEC5mTNFEgnlBwc1HkTmzhUZHp7gPWbFCmhthePHYdky5eJxaGkJFZ4R587Bs2dqHzliZ+JYGBoy88bj6RkEMGMGNDaq/ekTXLmidmenxgM0NUFennueUBmzc6fhX70SiUSULymZeMaASG2tPUamjAGN7+0Vqa62+WTGiIj094vk5ipfXq5cNKrt6dNF3ryxn3PCN9+iIi0A79+PO9xCEGjd1QV1dTaXKUYEduyAmzfdMQsWwK5davf2wuXLcP++tuvrYd68jNP82qk05TcdZsuX6wYMMDCg4yaXgAtNTSrEwIC2q6thyZKxfQ8eNPbu3VoHgc07kP3juq0NcnLUbmiAdesy+0ejJrsikfRTMBVr1hjhh4e13rJF98yfIPvCrF4Ne/dCaSmcOhUu5vRpKC6Gw4dh1arMvj9mx6FDoaaI/NxlEnDhgpawWLgQ+vrC+W7dCrNm6X1pzhyoqgoV9msZkzzykntNbq7p+/LF9k22U30mE0GgSw5g6tTQYeMX5to1ePdO7dJSrRcvNifDnTswMqL248fmrdjSpeOeKpsIt5R6evQKnUjA06eGT+70xcW6qV2/Dk+eQFkZrFwJt2/r0QqwZ89vfvQ/i3DCDA7Cw4emnZOjG9+BA4a7dEm/Rz14AC9eaAHNpP37jYj/CNzCzJ+vXwNSEQTKV1VplqSisBDu3oUbNzRTPn5Un+3bYe1a2/fMGfj6dexLVixm5q2o0Lqy0nDRaHrM0aN62XTtYydP6r44e7bz46bBvwz/Dv8yPBy8MA54YRzwwjjghXEgsP4G4n+7Hm3awniMwi8lB7wwDnwD/bFRBvNxDWsAAAAASUVORK5CYII=', 'base64') AS symbol,        
         CASE
             WHEN geobasisdaten_typ.art = 'Nutzungsplanung_in_Bauzonen' THEN 'in Bauzonen'
             ELSE 'ausserhalb Bauzonen'
@@ -189,19 +194,20 @@ legendeneintrag AS (
             darstellungsdienst    
         )
     SELECT 
-        -- Eigentlich noch legendetext aber nicht bei Nutzungsplanung, da wir dort aggregierte Symbole verwenden.
         DISTINCT ON (artcode, artcodeliste)
         nextval('awjf_statische_waldgrenzen_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
-        decode('iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAYAAAApF3xtAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAD8AAAA/AB2OVKxAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAOoSURBVGiB7ZpfaM1hGMc/PzvGjFLDzGwixVD+xOnsQmOrlcTGldquFq2RzJ+yG5KUpYw0t65WxtXcUGwXXJhIys1xQZSNkWSOzUp6XDzO3vM6e4/fjB3yfuvtfd7v+zzv+zvfnvfP+Z0TCAgeaZiS7Qf4W+GFcSBitYqKIBbL0qNkGffuwevXpi0go6WmRv5b1NRIqhZ+KTnghXHAC+OAF8YBL4wDXhgH3MK8fAnr19tlwwbYtg3a2+HzZ+P76JHxOXvWHqe2VvnNmw0XiylXWQmJhO1//rwZ6+pV5To6DHfxou3/4QNs2qR9Gzcqd+uW8T9xwvY/dsz0dXe7lXHeY+Jx61xPK2VlIm/fqm9Pj+H37bPvB4sWKZ+fb7ggMP4tLYZ//lwkL8/0tbUp39pquPx8kb4+E9PcbPqmTVNuaEikoEC5mTNFEgnlBwc1HkTmzhUZHp7gPWbFCmhthePHYdky5eJxaGkJFZ4R587Bs2dqHzliZ+JYGBoy88bj6RkEMGMGNDaq/ekTXLmidmenxgM0NUFennueUBmzc6fhX70SiUSULymZeMaASG2tPUamjAGN7+0Vqa62+WTGiIj094vk5ipfXq5cNKrt6dNF3ryxn3PCN9+iIi0A79+PO9xCEGjd1QV1dTaXKUYEduyAmzfdMQsWwK5davf2wuXLcP++tuvrYd68jNP82qk05TcdZsuX6wYMMDCg4yaXgAtNTSrEwIC2q6thyZKxfQ8eNPbu3VoHgc07kP3juq0NcnLUbmiAdesy+0ejJrsikfRTMBVr1hjhh4e13rJF98yfIPvCrF4Ne/dCaSmcOhUu5vRpKC6Gw4dh1arMvj9mx6FDoaaI/NxlEnDhgpawWLgQ+vrC+W7dCrNm6X1pzhyoqgoV9msZkzzykntNbq7p+/LF9k22U30mE0GgSw5g6tTQYeMX5to1ePdO7dJSrRcvNifDnTswMqL248fmrdjSpeOeKpsIt5R6evQKnUjA06eGT+70xcW6qV2/Dk+eQFkZrFwJt2/r0QqwZ89vfvQ/i3DCDA7Cw4emnZOjG9+BA4a7dEm/Rz14AC9eaAHNpP37jYj/CNzCzJ+vXwNSEQTKV1VplqSisBDu3oUbNzRTPn5Un+3bYe1a2/fMGfj6dexLVixm5q2o0Lqy0nDRaHrM0aN62XTtYydP6r44e7bz46bBvwz/Dv8yPBy8MA54YRzwwjjghXEgsP4G4n+7Hm3awniMwi8lB7wwDnwD/bFRBvNxDWsAAAAASUVORK5CYII=', 'base64') AS symbol,
+        eintrag.symbol,
         legendetext_de,
-        artcode,
-        artcodeliste,
-        thema,
+        eigentumsbeschraenkung.artcode,
+        eigentumsbeschraenkung.artcodeliste,
+        eigentumsbeschraenkung.thema,
         darstellungsdienst
     FROM 
-        eigentumsbeschraenkung      
+        eigentumsbeschraenkung 
+        LEFT JOIN awjf_statische_waldgrenzen_oereb.legendeneintraege_legendeneintrag AS eintrag
+        ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
     RETURNING *
 )
 INSERT INTO
@@ -242,7 +248,11 @@ FROM
  * 
  * (4) Die TID ist vom Typ OID AS OEREBOID = OID TEXT*255 und muss somit
  * mit einem Buchstaben beginnen.
-*/
+ * 
+ * (5) AuszugIndex spielt (??) keine Rolle, da man ja zuerst nach dem Typ
+ * filtert resp. gruppiert (GesetzGrundl als Gruppe und Rechtsvorschriften
+ * als Gruppe.)
+ */
 
 WITH basket AS (
     SELECT
@@ -250,7 +260,7 @@ WITH basket AS (
     FROM
         awjf_statische_waldgrenzen_oereb.t_ili2db_basket
     WHERE
-        t_ili_tid = 'ch.so.awjf.waldgrenzen' 
+        t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
 )
 ,
 hinweisvorschrift AS (
@@ -312,7 +322,10 @@ dokumente_dokument AS
         dokument.offiziellertitel AS titel_de,
         dokument.abkuerzung AS abkuerzung_de,
         dokument.offiziellenr AS offiziellenr_de,
-        CAST(500 AS int4) AS auszugindex,
+        CASE
+            WHEN dokument.typ <> 'Bericht' THEN CAST(999 AS int4) 
+            ELSE CAST(998 AS int4)
+        END as auzugindex,
         dokument.rechtsstatus AS rechtsstatus,
         dokument.publiziert_ab AS publiziertab,
         CASE
@@ -364,7 +377,7 @@ FROM
 
 /*
  * Datenumbau der Links auf die Dokumente, die im Rahmenmodell 'multilingual' sind und daher eher
- * mühsam normalisert sind.
+ * mühsam normalisiert sind.
  * 
  */
 
@@ -391,7 +404,7 @@ WITH multilingualuri AS
             FROM
                 awjf_statische_waldgrenzen_oereb.t_ili2db_basket
             WHERE
-                t_ili_tid = 'ch.so.awjf.waldgrenzen' 
+                t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
         ) AS basket
     RETURNING *
 )
@@ -415,7 +428,7 @@ localiseduri AS
             FROM
                 awjf_statische_waldgrenzen_oereb.t_ili2db_basket
             WHERE
-                t_ili_tid = 'ch.so.awjf.waldgrenzen' 
+                t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
         ) AS basket
 )
 INSERT INTO
@@ -454,7 +467,7 @@ INSERT INTO
     )
 SELECT
     basket.t_id AS t_basket,
-    ST_MakeValid(ST_RemoveRepeatedPoints(ST_SnapToGrid(waldgrenze.geometrie, 0.001))) AS linie,
+    ST_ReducePrecision(waldgrenze.geometrie, 0.001) AS linie,
     waldgrenze.rechtsstatus,
     waldgrenze.publiziert_ab AS publiziertab,
     eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung
@@ -468,7 +481,7 @@ FROM
         FROM
             awjf_statische_waldgrenzen_oereb.t_ili2db_basket
         WHERE
-            t_ili_tid = 'ch.so.awjf.waldgrenzen' 
+            t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
     ) AS basket
 WHERE
     waldgrenze.rechtsstatus = 'inKraft'

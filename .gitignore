@@ -1,3 +1,7 @@
+**/.gradle
+**/?
+**/*.zip
+**/*.log
 development_dbs/.gradle/
 ./gradle
 .DS_Store

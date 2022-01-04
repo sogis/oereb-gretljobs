@@ -10,14 +10,7 @@ ext {
     pathToTempFolder = System.getProperty("java.io.tmpdir")
     pathToUserFolder = System.getProperty("user.dir")
 
-    // iliModelVorschriften = "OeREBKRMvs_V1_1"
-    // iliModelTransferstruktur = "OeREBKRMtrsfr_V1_1"
-
-    // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
-    // federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
-
-    // cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
-    // cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
+    /* Edit-DB */
 
     // iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
     // dbSchemaLandUsePlans = "arp_npl"
@@ -44,6 +37,22 @@ ext {
     // dbSchemaEinzelschutzGeotop = "afu_geotope"
     // einzelschutzGeotopDataFile = "afu_geotope.xtf"
     // einzelschutzGeotopBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+
+    /* OEREB-DB */
+
+    iliModelBasis = "OeREBKRM_V2_0"
+    iliModelKonfiguration = "OeREBKRMkvs_V2_0"
+    iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+
+    responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.tmp/"
+    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_v2_0"
+
+    // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
+    // federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
+
+    // cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
+    // cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
+
 }    
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 
@@ -203,6 +212,43 @@ task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadD
 //     deleteData = true
 //     disableValidation = true
 // }
+
+/* OEREB-DB */
+
+def dbSchemas = ["stage", "live"]
+
+task downloadResponsibleOffices(type: Download) {
+    doFirst {
+        println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    }
+    description = "Download zuständige, kantonale Stellen."
+    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+dbSchemas.each { dbSchema ->
+    def schema = dbSchema.toString()
+
+    task "importResponsibleOfficesToOereb_$schema"(type: Ili2pgReplace, dependsOn: "downloadResponsibleOffices"){
+        description = "Import zuständige, kantonale Stellen in das Schema $schema"
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        dbschema = schema
+        dataset = responsibleOfficesDataSet
+        importBid = true
+        models = iliModelBasis
+        dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
+        strokeArcs = true
+    }
+}
+
+task importResponsibleOfficesToOereb() {
+    description = "Import zuständige, kantonale Stellen in beide Schemas."
+}
+
+importResponsibleOfficesToOereb.dependsOn {
+    tasks.findAll { task -> task.name.startsWith('importResponsibleOfficesToOereb_') }
+}
 
 
 // task downloadFederalLegalBasis(type: Download) {
