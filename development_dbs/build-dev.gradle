@@ -214,6 +214,8 @@ task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadD
 // }
 
 /* OEREB-DB */
+// Zum Testen der GRETL-Jobs werden nur die zuständigen Stellen benötigt.
+// 
 
 def dbSchemas = ["stage", "live"]
 

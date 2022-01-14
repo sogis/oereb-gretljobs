@@ -55,6 +55,18 @@ export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi="yx"
 
 Start the GRETL job (use the --job-directory option to point to the desired GRETL job; find out the names of your Docker networks by running `docker network ls`):
 
+Waldgrenzen:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData validateData importDataToStage importDataToLive zipXtfFile uploadXtfToS3Geodata
+```
+
+KbS:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_belastete_standorte/ unzipData 
+
+```
+
+
 ```
 ./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ importDataToStage refreshOerebWMSTablesStage
 ```

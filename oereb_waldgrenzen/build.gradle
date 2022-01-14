@@ -7,36 +7,35 @@ import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
 
-ext {
-    pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-    iliModelBasis = "OeREBKRM_V2_0"
-    iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
-    iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
-    dbSchemaStaticForestPerimeterOereb = "awjf_statische_waldgrenzen_oereb"
+def iliModelBasis = "OeREBKRM_V2_0"
+def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
+
+def dbSchemaStaticForestPerimeterOereb = "awjf_statische_waldgrenzen_oereb"
     
-    staticForestPerimeterDataSet = "ch.so.awjf.oereb_statische_waldgrenzen"
-    symbolsDataSet = staticForestPerimeterDataSet + ".symbole" 
+def staticForestPerimeterDataSet = "ch.so.awjf.oereb_statische_waldgrenzen"
+def symbolsDataSet = staticForestPerimeterDataSet + ".symbole" 
 
-    symbolsFileName = symbolsDataSet + ".xtf"    
-    xtfFileName = staticForestPerimeterDataSet + ".xtf"
-    zipFileName = staticForestPerimeterDataSet + "_V2_0_xtf.zip"
-    emptyTransferFile = "ch.so.awjf.oereb_statische_waldgrenzen.empty.xtf"
+def symbolsFileName = symbolsDataSet + ".xtf"    
+def xtfFileName = staticForestPerimeterDataSet + ".xtf"
+def zipFileName = staticForestPerimeterDataSet + "_V2_0_xtf.zip"
+def emptyTransferFile = "ch.so.awjf.oereb_statische_waldgrenzen.empty.xtf"
 
-    responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.tmp/"
-    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_v2_0"
+def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.tmp/"
+def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_v2_0"
 
-    bucketSuffix = '-undefined'
-    if ( gretlEnvironment == 'production' ) {
-        bucketSuffix = ''
-    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
-        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
-    } else {
-        bucketSuffix = '-' + gretlEnvironment
-    }
-    s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
 }
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 task deleteFromOereb(type: SqlExecutor) {
     description = "Löscht die Daten aus dem Transferschema."
@@ -129,6 +128,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet 
     importBid = true
+    disableValidation = true
 }
 
 // task refreshOerebWMSTablesStage(type: SqlExecutor) {
@@ -146,6 +146,7 @@ task importDataToLive(type: Ili2pgReplace) {
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet 
     importBid = true
+    disableValidation = true
 }
 
 // task refreshOerebWMSTablesLive(type: SqlExecutor) {
