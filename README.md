@@ -62,11 +62,10 @@ Waldgrenzen:
 
 KbS:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_belastete_standorte/ unzipData 
-
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_belastete_standorte/ unzipData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
 ```
 
-
+PLZ/Ortschaft:
 ```
-./start-gretl.sh --docker-image sogis/gretl-runtime:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ importDataToStage refreshOerebWMSTablesStage
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_plzo/ unzipData 
 ```
