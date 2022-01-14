@@ -27,14 +27,14 @@ Setup development environment for the various themes:
 Statische Waldgrenzen:
 ``` 
 docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
-docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataStaticForestPerimeters"
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle replaceDataStaticForestPerimeters"
 ```
 
 (When using `sogis/gretl-local` (see `docker-compose.yml`) do not use `--user $UID` as it will not work.)
 
 You also need to import the responsible office into the oereb db if you want to import the generated data into the oereb db:
 ```
-docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importResponsibleOfficesToOereb"
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importResponsibleOfficesToOereb"
 ```
 
 You will need to import much more files / data if you want to use the oereb db for the oereb-web-service (not covered here).

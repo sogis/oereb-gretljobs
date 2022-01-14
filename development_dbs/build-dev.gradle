@@ -26,13 +26,20 @@ ext {
     iliModelKonfiguration = "OeREBKRMkvs_V2_0"
     dbSchemaKonfiguration = "agi_oereb_konfiguration"
 
-    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
-    lawsDataSet = "ch.so.sk.oereb_gesetze_V2_0"
-    themesDataSet = "ch.so.agi.oereb_themen_V2_0"
-    logosDataSet = "ch.so.agi.oereb_logo_V2_0"
-    textDataSet = "ch.so.agi.oereb_text_V2_0"
-    availabilityDataSet = "ch.so.agi.oereb_verfuegbarkeit_V2_0"
-    subunitOfLandRegisterDataSet = "ch.so.agi.oereb_grundbuchkreis_V2_0"
+    responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
+    responsibleOfficesDataSet = "ch.so.agi.konfiguration.oereb.zustaendigestellen"
+    cantonalLegalBasisDataFile = "ch.so.sk.oereb_gesetze_V2_0.xtf"
+    cantonalLegalBasisDataSet = "ch.so.agi.konfiguration.oereb.gesetze"
+    themesDataFile = "ch.so.agi.oereb_themen_V2_0.xtf"
+    themesDataSet = "ch.so.agi.konfiguration.oereb.themen"
+    logosDataFile = "ch.so.agi.oereb_logo_V2_0.xtf"
+    logosDataSet = "ch.so.agi.konfiguration.oereb.logo"
+    textDataFile = "ch.so.agi.oereb_text_V2_0.xtf"
+    textDataSet = "ch.so.agi.konfiguration.oereb.text"
+    availabilityDataFile = "ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
+    availabilityDataSet = "ch.so.agi.konfiguration.oereb.verfuegbarkeit"
+    subunitOfLandRegisterDataSet = "ch.so.agi.oereb_grundbuchkreis_V2_0.xtf"
+    subunitOfLandRegisterDataSet = "ch.so.agi.konfiguration.oereb.grundbuchkreis"
 
     konfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
 
@@ -78,10 +85,10 @@ ext {
 
 task downloadResponsibleOfficesEdit(type: Download) {
     doFirst {
-        println konfigurationBaseUrl + responsibleOfficesDataSet + ".xtf"
+        println konfigurationBaseUrl + responsibleOfficesDataFile
     }
     description = "Download zuständige, kantonale Stellen."
-    src responsibleOffickonfigurationBaseUrlesDataSet + responsibleOfficesDataSet + ".xtf"
+    src konfigurationBaseUrl + responsibleOfficesDataFile
     dest pathToTempFolder
     overwrite true
 }
@@ -90,11 +97,33 @@ task replaceResponsibleOfficesToEdit(type: Ili2pgImport, dependsOn: "downloadRes
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
-    dataFile = file(Paths.get(pathToTempFolder.toString(), staticForestPerimetersDataFile))
+    dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataFile))
     disableValidation = true
     dataset = responsibleOfficesDataSet
     importBid = true
 }
+
+task downloadCantonalLegalBasisEdit(type: Download) {
+    doFirst {
+        println konfigurationBaseUrl + cantonalLegalBasisDataFile
+    }
+    description = "Download kantonale Gesetze und Verordnungen."
+    src konfigurationBaseUrl + cantonalLegalBasisDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceCantonalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalLegalBasisEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBasisDataFile))
+    disableValidation = true
+    dataset = cantonalLegalBasisDataSet
+    importBid = true
+}
+
+
 
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 
@@ -262,10 +291,10 @@ def dbSchemas = ["stage", "live"]
 
 task downloadResponsibleOfficesOereb(type: Download) {
     doFirst {
-        println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+        println responsibleOfficesBaseUrl + responsibleOfficesDataFile
     }
     description = "Download zuständige, kantonale Stellen."
-    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    src responsibleOfficesBaseUrl + responsibleOfficesDataFile
     dest pathToTempFolder
     overwrite true
 }
@@ -280,7 +309,7 @@ dbSchemas.each { dbSchema ->
         dataset = responsibleOfficesDataSet
         importBid = true
         models = iliModelBasis
-        dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
+        dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataFile))
         strokeArcs = true
     }
 }
