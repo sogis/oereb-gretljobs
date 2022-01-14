@@ -1,7 +1,7 @@
 version: '3'
 services:
   gretl:
-    image: sogis/gretl-local
+    image: sogis/gretl-local:latest
     entrypoint: /bin/sh -c
     command: gretl
     environment:

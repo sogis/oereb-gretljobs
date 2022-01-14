@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION SENDER="ili2pg-4.3.1-23b1f79e8ad644414773bb9bd1a97c8c265c5082" VERSION="2.3">
+    <MODELS>
+      <MODEL NAME="InternationalCodes_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Localisation_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="LocalisationCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Dictionaries_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="DictionariesCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="CHAdminCodes_V1" VERSION="2018-02-19" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnits_V1" VERSION="2020-08-25" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnitsCH_V1" VERSION="2020-04-24" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="OeREBKRM_V2_0" VERSION="2021-04-14" URI="https://models.geo.admin.ch/V_D/OeREB/"/>
+      <MODEL NAME="OeREBKRMkvs_V2_0" VERSION="2021-04-14" URI="https://models.geo.admin.ch/V_D/OeREB/"/>
+    </MODELS>
+  </HEADERSECTION>
+  <DATASECTION>
+    <OeREBKRMkvs_V2_0.Thema BID="ch.so.agi.konfiguration.oereb.themen">
+      <OeREBKRMkvs_V2_0.Thema.Thema TID="ch.SO.NutzungsplanungGrundnutzung">
+        <Code>ch.Nutzungsplanung</Code>
+        <SubCode>ch.SO.NutzungsplanungGrundnutzung</SubCode>
+        <Titel>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Nutzungsplanung Grundnutzung</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Titel>
+        <AuszugIndex>22</AuszugIndex>
+      </OeREBKRMkvs_V2_0.Thema.Thema>
+      <OeREBKRMkvs_V2_0.Thema.Thema TID="ch.SO.NutzungsplanungUeberlagernd">
+        <Code>ch.Nutzungsplanung</Code>
+        <SubCode>ch.SO.NutzungsplanungUeberlagernd</SubCode>
+        <Titel>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Nutzungsplanung überlagernd</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Titel>
+        <AuszugIndex>24</AuszugIndex>
+      </OeREBKRMkvs_V2_0.Thema.Thema>
+      <OeREBKRMkvs_V2_0.Thema.Thema TID="ch.SO.Baulinien">
+        <Code>ch.Nutzungsplanung</Code>
+        <SubCode>ch.SO.Baulinien</SubCode>
+        <Titel>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Baulinien (kantonal/kommunal)</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Titel>
+        <AuszugIndex>28</AuszugIndex>
+      </OeREBKRMkvs_V2_0.Thema.Thema>
+      <OeREBKRMkvs_V2_0.Thema.Thema TID="ch.SO.NutzungsplanungSondernutzungsplaene">
+        <Code>ch.Nutzungsplanung</Code>
+        <SubCode>ch.SO.NutzungsplanungSondernutzungsplaene</SubCode>
+        <Titel>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Sondernutzungspläne</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Titel>
+        <AuszugIndex>26</AuszugIndex>
+      </OeREBKRMkvs_V2_0.Thema.Thema>
+      <OeREBKRMkvs_V2_0.Thema.Thema TID="ch.SO.Einzelschutz">
+        <Code>ch.SO.Einzelschutz</Code>
+        <Titel>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Einzelschutz</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Titel>
+        <AuszugIndex>990</AuszugIndex>
+      </OeREBKRMkvs_V2_0.Thema.Thema>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Laermempfindlichkeitsstufen"/>
+        <Gesetz REF="ch.so.sk.bgs.711.1"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Laermempfindlichkeitsstufen"/>
+        <Gesetz REF="ch.so.sk.bgs.711.61"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Grundwasserschutzareale"/>
+        <Gesetz REF="ch.so.sk.bgs.712.15"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Grundwasserschutzareale"/>
+        <Gesetz REF="ch.so.sk.bgs.712.16"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Grundwasserschutzzonen"/>
+        <Gesetz REF="ch.so.sk.bgs.712.15"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Grundwasserschutzzonen"/>
+        <Gesetz REF="ch.so.sk.bgs.712.16"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.BelasteteStandorte"/>
+        <Gesetz REF="ch.so.sk.bgs.712.15"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.BelasteteStandorte"/>
+        <Gesetz REF="ch.so.sk.bgs.712.16"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Planungszonen"/>
+        <Gesetz REF="ch.so.sk.bgs.711.1"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Planungszonen"/>
+        <Gesetz REF="ch.so.sk.bgs.711.61"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.StatischeWaldgrenzen"/>
+        <Gesetz REF="ch.so.sk.bgs.931.72"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.StatischeWaldgrenzen"/>
+        <Gesetz REF="ch.so.sk.bgs.931.12"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.StatischeWaldgrenzen"/>
+        <Gesetz REF="ch.so.sk.bgs.931.11"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Waldabstandslinien"/>
+        <Gesetz REF="ch.so.sk.bgs.711.1"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Waldabstandslinien"/>
+        <Gesetz REF="ch.so.sk.bgs.711.61"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.SO.Einzelschutz"/>
+        <Gesetz REF="ch.so.sk.bgs.435.141"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.SO.Einzelschutz"/>
+        <Gesetz REF="ch.so.sk.bgs.436.11"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Nutzungsplanung"/>
+        <Gesetz REF="ch.so.sk.bgs.711.1"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+      <OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+        <Thema REF="ch.Nutzungsplanung"/>
+        <Gesetz REF="ch.so.sk.bgs.711.61"/>
+      </OeREBKRMkvs_V2_0.Thema.ThemaGesetz>
+    </OeREBKRMkvs_V2_0.Thema>
+  </DATASECTION>
+</TRANSFER>

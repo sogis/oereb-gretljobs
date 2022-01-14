@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION SENDER="ili2pg-4.3.1-23b1f79e8ad644414773bb9bd1a97c8c265c5082" VERSION="2.3">
+    <MODELS>
+      <MODEL NAME="InternationalCodes_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Localisation_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="LocalisationCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Dictionaries_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="DictionariesCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="CHAdminCodes_V1" VERSION="2018-02-19" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnits_V1" VERSION="2020-08-25" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnitsCH_V1" VERSION="2020-04-24" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="OeREBKRM_V2_0" VERSION="2021-04-14" URI="https://models.geo.admin.ch/V_D/OeREB/"/>
+      <MODEL NAME="OeREBKRMkvs_V2_0" VERSION="2021-04-14" URI="https://models.geo.admin.ch/V_D/OeREB/"/>
+    </MODELS>
+  </HEADERSECTION>
+  <DATASECTION>
+    <OeREBKRMkvs_V2_0.Konfiguration BID="ch.so.agi.konfiguration.oereb.text">
+      <OeREBKRMkvs_V2_0.Konfiguration.Glossar TID="200">
+        <Titel>
+          <LocalisationCH_V1.MultilingualText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedText>
+                <Language>de</Language>
+                <Text>Einzelschutz</Text>
+              </LocalisationCH_V1.LocalisedText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualText>
+        </Titel>
+        <Inhalt>
+          <LocalisationCH_V1.MultilingualMText>
+            <LocalisedText>
+              <LocalisationCH_V1.LocalisedMText>
+                <Language>de</Language>
+                <Text>Für historische Kulturdenkmäler, Naturschutzgebiete oder Geotope (geowissenschaftlich schützenswerte Objekte) werden Schutzverfügungen vom Regierungsrat oder Gemeinderat erlassen. Ziel ist es diese Objekte zu Schützen und zu Erhalten. Schutzmassnahmen sind Bau-, Abbruch- oder Veränderungsverboten, Gestaltungsvorschriften, Nutzungsbeschränkungen, Nutzungsvorschriften, Duldungs- oder Leistungspflichten.</Text>
+              </LocalisationCH_V1.LocalisedMText>
+            </LocalisedText>
+          </LocalisationCH_V1.MultilingualMText>
+        </Inhalt>
+      </OeREBKRMkvs_V2_0.Konfiguration.Glossar>
+    </OeREBKRMkvs_V2_0.Konfiguration>
+  </DATASECTION>
+</TRANSFER>

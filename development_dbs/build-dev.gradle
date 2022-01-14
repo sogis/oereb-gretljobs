@@ -23,6 +23,19 @@ ext {
     // groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
     // groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
+    iliModelKonfiguration = "OeREBKRMkvs_V2_0"
+    dbSchemaKonfiguration = "agi_oereb_konfiguration"
+
+    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
+    lawsDataSet = "ch.so.sk.oereb_gesetze_V2_0"
+    themesDataSet = "ch.so.agi.oereb_themen_V2_0"
+    logosDataSet = "ch.so.agi.oereb_logo_V2_0"
+    textDataSet = "ch.so.agi.oereb_text_V2_0"
+    availabilityDataSet = "ch.so.agi.oereb_verfuegbarkeit_V2_0"
+    subunitOfLandRegisterDataSet = "ch.so.agi.oereb_grundbuchkreis_V2_0"
+
+    konfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
@@ -44,8 +57,8 @@ ext {
     iliModelKonfiguration = "OeREBKRMkvs_V2_0"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 
-    responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.tmp/"
-    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_v2_0"
+    responsibleOfficesBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
 
     // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
     // federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
@@ -54,6 +67,35 @@ ext {
     // cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
 
 }    
+
+/* Edit-DB */
+// Basis: zustaendigeStelle <- Gesetze
+// Konfiguration: (Gesetze) <- Themen
+// Konfiguration: Logo
+// Konfiguration: Text
+// Konfiguration: Verfuegbarkeit
+// Konfiguration: Grundbuchkreis
+
+task downloadResponsibleOfficesEdit(type: Download) {
+    doFirst {
+        println konfigurationBaseUrl + responsibleOfficesDataSet + ".xtf"
+    }
+    description = "Download zuständige, kantonale Stellen."
+    src responsibleOffickonfigurationBaseUrlesDataSet + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceResponsibleOfficesToEdit(type: Ili2pgImport, dependsOn: "downloadResponsibleOfficesEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), staticForestPerimetersDataFile))
+    disableValidation = true
+    dataset = responsibleOfficesDataSet
+    importBid = true
+}
+
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 
 // task createSchemaLandUsePlans(type: SqlExecutor){
@@ -148,7 +190,7 @@ task createSchemaStaticForestPerimeters(type: Ili2pgImportSchema) {
     postScript = file("awjf_statische_waldgrenze_grants.sql")
 }
 */
-task downloadDataStaticForestPerimeters(type: Download) {
+task downloadDataStaticForestPerimetersEdit(type: Download) {
     src staticForestPerimetersBaseUrl + staticForestPerimetersDataFile
     dest pathToTempFolder
     overwrite true
@@ -157,7 +199,7 @@ task downloadDataStaticForestPerimeters(type: Download) {
     }
 }
 
-task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadDataStaticForestPerimeters") {
+task replaceDataStaticForestPerimetersToEdit(type: Ili2pgImport, dependsOn: "downloadDataStaticForestPerimetersEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelStaticForestPerimeters
     dbschema = dbSchemaStaticForestPerimeters
@@ -215,11 +257,10 @@ task replaceDataStaticForestPerimeters(type: Ili2pgImport, dependsOn: "downloadD
 
 /* OEREB-DB */
 // Zum Testen der GRETL-Jobs werden nur die zuständigen Stellen benötigt.
-// 
 
 def dbSchemas = ["stage", "live"]
 
-task downloadResponsibleOffices(type: Download) {
+task downloadResponsibleOfficesOereb(type: Download) {
     doFirst {
         println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
     }
@@ -232,7 +273,7 @@ task downloadResponsibleOffices(type: Download) {
 dbSchemas.each { dbSchema ->
     def schema = dbSchema.toString()
 
-    task "importResponsibleOfficesToOereb_$schema"(type: Ili2pgReplace, dependsOn: "downloadResponsibleOffices"){
+    task "importResponsibleOfficesToOereb_$schema"(type: Ili2pgReplace, dependsOn: "downloadResponsibleOfficesOereb"){
         description = "Import zuständige, kantonale Stellen in das Schema $schema"
         database = [dbUriOereb, dbUserOereb, dbPwdOereb]
         dbschema = schema

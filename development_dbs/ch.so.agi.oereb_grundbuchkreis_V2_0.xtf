@@ -1,0 +1,813 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+  <HEADERSECTION SENDER="ili2pg-4.3.1-23b1f79e8ad644414773bb9bd1a97c8c265c5082" VERSION="2.3">
+    <MODELS>
+      <MODEL NAME="InternationalCodes_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Localisation_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="LocalisationCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="Dictionaries_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="DictionariesCH_V1" VERSION="2011-08-30" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="CHAdminCodes_V1" VERSION="2018-02-19" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnits_V1" VERSION="2020-08-25" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="AdministrativeUnitsCH_V1" VERSION="2020-04-24" URI="http://www.geo.admin.ch"/>
+      <MODEL NAME="OeREBKRM_V2_0" VERSION="2021-04-14" URI="https://models.geo.admin.ch/V_D/OeREB/"/>
+      <MODEL NAME="OeREBKRMkvs_V2_0" VERSION="2021-04-14" URI="https://models.geo.admin.ch/V_D/OeREB/"/>
+    </MODELS>
+  </HEADERSECTION>
+  <DATASECTION>
+    <OeREBKRMkvs_V2_0.Konfiguration BID="ch.so.agi.konfiguration.oereb.grundbuchkreis">
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002460">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2457</Gemeinde>
+        <NBIdent>SO0200002460</NBIdent>
+        <Name>Oberramsern</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002446">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002446</NBIdent>
+        <Name>Brügglen</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002531">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2511</Gemeinde>
+        <NBIdent>SO0200002531</NBIdent>
+        <Name>Steinhof</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002448">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2456</Gemeinde>
+        <NBIdent>SO0200002448</NBIdent>
+        <Name>Gächliwil</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002552">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2554</Gemeinde>
+        <NBIdent>SO0200002552</NBIdent>
+        <Name>Niederwil</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002494">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2503</Gemeinde>
+        <NBIdent>SO0200002494</NBIdent>
+        <Name>Niedererlinsbach</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002459">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2464</Gemeinde>
+        <NBIdent>SO0200002459</NBIdent>
+        <Name>Nennigkofen</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002522">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2535</Gemeinde>
+        <NBIdent>SO0200002522</NBIdent>
+        <Name>Hersiwil</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002521">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2535</Gemeinde>
+        <NBIdent>SO0200002521</NBIdent>
+        <Name>Heinrichswil-Winistorf</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002453">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002453</NBIdent>
+        <Name>Kyburg-Buchegg</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002454">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2464</Gemeinde>
+        <NBIdent>SO0200002454</NBIdent>
+        <Name>Lüsslingen</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002496">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2503</Gemeinde>
+        <NBIdent>SO0200002496</NBIdent>
+        <Name>Obererlinsbach</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002554">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2554</Gemeinde>
+        <NBIdent>SO0200002554</NBIdent>
+        <Name>Riedholz</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002511">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2511</Gemeinde>
+        <NBIdent>SO0200002511</NBIdent>
+        <Name>Aeschi</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002456">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2456</Gemeinde>
+        <NBIdent>SO0200002456</NBIdent>
+        <Name>Lüterswil</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002447">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2457</Gemeinde>
+        <NBIdent>SO0200002447</NBIdent>
+        <Name>Brunnenthal</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002444">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002444</NBIdent>
+        <Name>Bibern</Name>
+        <eGRIS_SubKreis>3</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002443">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2457</Gemeinde>
+        <NBIdent>SO0200002443</NBIdent>
+        <Name>Balm bei Messen</Name>
+        <eGRIS_SubKreis>3</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002457">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2457</Gemeinde>
+        <NBIdent>SO0200002457</NBIdent>
+        <Name>Messen</Name>
+        <eGRIS_SubKreis>4</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002458">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002458</NBIdent>
+        <Name>Mühledorf</Name>
+        <eGRIS_SubKreis>4</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002450">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002450</NBIdent>
+        <Name>Hessigkofen</Name>
+        <eGRIS_SubKreis>5</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002452">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002452</NBIdent>
+        <Name>Küttigkofen</Name>
+        <eGRIS_SubKreis>6</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002449">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002449</NBIdent>
+        <Name>Gossliwil</Name>
+        <eGRIS_SubKreis>7</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002462">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002462</NBIdent>
+        <Name>Tscheppach</Name>
+        <eGRIS_SubKreis>8</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002442">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002442</NBIdent>
+        <Name>Aetingen</Name>
+        <eGRIS_SubKreis>9</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002441">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2465</Gemeinde>
+        <NBIdent>SO0200002441</NBIdent>
+        <Name>Aetigkofen</Name>
+        <eGRIS_SubKreis>10</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002613">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2613</Gemeinde>
+        <NBIdent>SO0200002613</NBIdent>
+        <Name>Breitenbach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002618">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2618</Gemeinde>
+        <NBIdent>SO0200002618</NBIdent>
+        <Name>Himmelried</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002617">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2617</Gemeinde>
+        <NBIdent>SO0200002617</NBIdent>
+        <Name>Grindel</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002615">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2615</Gemeinde>
+        <NBIdent>SO0200002615</NBIdent>
+        <Name>Erschwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002611">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2611</Gemeinde>
+        <NBIdent>SO0200002611</NBIdent>
+        <Name>Bärschwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002479">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2479</Gemeinde>
+        <NBIdent>SO0200002479</NBIdent>
+        <Name>Rodersdorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002473">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2473</Gemeinde>
+        <NBIdent>SO0200002473</NBIdent>
+        <Name>Dornach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002478">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2478</Gemeinde>
+        <NBIdent>SO0200002478</NBIdent>
+        <Name>Nuglar-St. Pantaleon</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002477">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2477</Gemeinde>
+        <NBIdent>SO0200002477</NBIdent>
+        <Name>Metzerlen-Mariastein</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002471">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2471</Gemeinde>
+        <NBIdent>SO0200002471</NBIdent>
+        <Name>Bättwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002543">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2543</Gemeinde>
+        <NBIdent>SO0200002543</NBIdent>
+        <Name>Bettlach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002546">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2546</Gemeinde>
+        <NBIdent>SO0200002546</NBIdent>
+        <Name>Grenchen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002551">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2551</Gemeinde>
+        <NBIdent>SO0200002551</NBIdent>
+        <Name>Lommiswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002524">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2524</Gemeinde>
+        <NBIdent>SO0200002524</NBIdent>
+        <Name>Hüniken</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002530">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2530</Gemeinde>
+        <NBIdent>SO0200002530</NBIdent>
+        <Name>Recherswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002405">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2405</Gemeinde>
+        <NBIdent>SO0200002405</NBIdent>
+        <Name>Niederbuchsiten</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002402">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2402</Gemeinde>
+        <NBIdent>SO0200002402</NBIdent>
+        <Name>Härkingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002408">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2408</Gemeinde>
+        <NBIdent>SO0200002408</NBIdent>
+        <Name>Wolfwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002586">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2586</Gemeinde>
+        <NBIdent>SO0200002586</NBIdent>
+        <Name>Wangen bei Olten</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002404">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2404</Gemeinde>
+        <NBIdent>SO0200002404</NBIdent>
+        <Name>Neuendorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002403">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2403</Gemeinde>
+        <NBIdent>SO0200002403</NBIdent>
+        <Name>Kestenholz</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002463">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2463</Gemeinde>
+        <NBIdent>SO0200002463</NBIdent>
+        <Name>Unterramsern</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002426">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2426</Gemeinde>
+        <NBIdent>SO0200002426</NBIdent>
+        <Name>Laupersdorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002424">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2424</Gemeinde>
+        <NBIdent>SO0200002424</NBIdent>
+        <Name>Herbetswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002425">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2425</Gemeinde>
+        <NBIdent>SO0200002425</NBIdent>
+        <Name>Holderbank</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002406">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2406</Gemeinde>
+        <NBIdent>SO0200002406</NBIdent>
+        <Name>Oberbuchsiten</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002549">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2549</Gemeinde>
+        <NBIdent>SO0200002549</NBIdent>
+        <Name>Kammersrohr</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002407">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2407</Gemeinde>
+        <NBIdent>SO0200002407</NBIdent>
+        <Name>Oensingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002527">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2527</Gemeinde>
+        <NBIdent>SO0200002527</NBIdent>
+        <Name>Luterbach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002520">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2520</Gemeinde>
+        <NBIdent>SO0200002520</NBIdent>
+        <Name>Halten</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002528">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2528</Gemeinde>
+        <NBIdent>SO0200002528</NBIdent>
+        <Name>Obergerlafingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002529">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2529</Gemeinde>
+        <NBIdent>SO0200002529</NBIdent>
+        <Name>Oekingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002516">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2516</Gemeinde>
+        <NBIdent>SO0200002516</NBIdent>
+        <Name>Deitingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002517">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2517</Gemeinde>
+        <NBIdent>SO0200002517</NBIdent>
+        <Name>Derendingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002445">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2445</Gemeinde>
+        <NBIdent>SO0200002445</NBIdent>
+        <Name>Biezwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002514">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2514</Gemeinde>
+        <NBIdent>SO0200002514</NBIdent>
+        <Name>Bolken</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002620">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2620</Gemeinde>
+        <NBIdent>SO0200002620</NBIdent>
+        <Name>Meltingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002461">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2461</Gemeinde>
+        <NBIdent>SO0200002461</NBIdent>
+        <Name>Schnottwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002553">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2553</Gemeinde>
+        <NBIdent>SO0200002553</NBIdent>
+        <Name>Oberdorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002548">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2548</Gemeinde>
+        <NBIdent>SO0200002548</NBIdent>
+        <Name>Hubersdorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002526">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2526</Gemeinde>
+        <NBIdent>SO0200002526</NBIdent>
+        <Name>Lohn-Ammannsegg</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002532">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2532</Gemeinde>
+        <NBIdent>SO0200002532</NBIdent>
+        <Name>Subingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002455">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2455</Gemeinde>
+        <NBIdent>SO0200002455</NBIdent>
+        <Name>Lüterkofen-Ichertswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002525">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2525</Gemeinde>
+        <NBIdent>SO0200002525</NBIdent>
+        <Name>Kriegstetten</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002547">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2547</Gemeinde>
+        <NBIdent>SO0200002547</NBIdent>
+        <Name>Günsberg</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002523">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2523</Gemeinde>
+        <NBIdent>SO0200002523</NBIdent>
+        <Name>Horriwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002545">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2545</Gemeinde>
+        <NBIdent>SO0200002545</NBIdent>
+        <Name>Flumenthal</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002541">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2541</Gemeinde>
+        <NBIdent>SO0200002541</NBIdent>
+        <Name>Balm bei Günsberg</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002428">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2428</Gemeinde>
+        <NBIdent>SO0200002428</NBIdent>
+        <Name>Mümliswil-Ramiswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002584">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2584</Gemeinde>
+        <NBIdent>SO0200002584</NBIdent>
+        <Name>Starrkirch-Wil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002480">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2480</Gemeinde>
+        <NBIdent>SO0200002480</NBIdent>
+        <Name>Seewen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002501">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2501</Gemeinde>
+        <NBIdent>SO0200002501</NBIdent>
+        <Name>Winznau</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002493">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2493</Gemeinde>
+        <NBIdent>SO0200002493</NBIdent>
+        <Name>Lostorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002502">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2502</Gemeinde>
+        <NBIdent>SO0200002502</NBIdent>
+        <Name>Wisen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002583">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2583</Gemeinde>
+        <NBIdent>SO0200002583</NBIdent>
+        <Name>Schönenwerd</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002495">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2495</Gemeinde>
+        <NBIdent>SO0200002495</NBIdent>
+        <Name>Niedergösgen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002499">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2499</Gemeinde>
+        <NBIdent>SO0200002499</NBIdent>
+        <Name>Stüsslingen</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002585">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2585</Gemeinde>
+        <NBIdent>SO0200002585</NBIdent>
+        <Name>Walterswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002580">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2580</Gemeinde>
+        <NBIdent>SO0200002580</NBIdent>
+        <Name>Kappel</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002582">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2582</Gemeinde>
+        <NBIdent>SO0200002582</NBIdent>
+        <Name>Rickenbach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002573">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2573</Gemeinde>
+        <NBIdent>SO0200002573</NBIdent>
+        <Name>Dulliken</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002614">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2614</Gemeinde>
+        <NBIdent>SO0200002614</NBIdent>
+        <Name>Büsserach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002616">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2616</Gemeinde>
+        <NBIdent>SO0200002616</NBIdent>
+        <Name>Fehren</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002475">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2475</Gemeinde>
+        <NBIdent>SO0200002475</NBIdent>
+        <Name>Hochwald</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002472">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2472</Gemeinde>
+        <NBIdent>SO0200002472</NBIdent>
+        <Name>Büren</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002481">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2481</Gemeinde>
+        <NBIdent>SO0200002481</NBIdent>
+        <Name>Witterswil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002476">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2476</Gemeinde>
+        <NBIdent>SO0200002476</NBIdent>
+        <Name>Hofstetten-Flüh</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002474">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2474</Gemeinde>
+        <NBIdent>SO0200002474</NBIdent>
+        <Name>Gempen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002498">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2499</Gemeinde>
+        <NBIdent>SO0200002498</NBIdent>
+        <Name>Rohr</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002429">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2430</Gemeinde>
+        <NBIdent>SO0200002429</NBIdent>
+        <Name>Welschenrohr</Name>
+        <eGRIS_SubKreis>1</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002423">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2430</Gemeinde>
+        <NBIdent>SO0200002423</NBIdent>
+        <Name>Gänsbrunnen</Name>
+        <eGRIS_SubKreis>2</eGRIS_SubKreis>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002622">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2622</Gemeinde>
+        <NBIdent>SO0200002622</NBIdent>
+        <Name>Zullwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002621">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2621</Gemeinde>
+        <NBIdent>SO0200002621</NBIdent>
+        <Name>Nunningen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002619">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2619</Gemeinde>
+        <NBIdent>SO0200002619</NBIdent>
+        <Name>Kleinlützel</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002612">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2612</Gemeinde>
+        <NBIdent>SO0200002612</NBIdent>
+        <Name>Beinwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002574">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2574</Gemeinde>
+        <NBIdent>SO0200002574</NBIdent>
+        <Name>Eppenberg-Wöschnau</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002601">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2601</Gemeinde>
+        <NBIdent>SO0200002601</NBIdent>
+        <Name>Solothurn</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002550">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2550</Gemeinde>
+        <NBIdent>SO0200002550</NBIdent>
+        <Name>Langendorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002427">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2427</Gemeinde>
+        <NBIdent>SO0200002427</NBIdent>
+        <Name>Matzendorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002422">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2422</Gemeinde>
+        <NBIdent>SO0200002422</NBIdent>
+        <Name>Balsthal</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002401">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2401</Gemeinde>
+        <NBIdent>SO0200002401</NBIdent>
+        <Name>Egerkingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002421">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2421</Gemeinde>
+        <NBIdent>SO0200002421</NBIdent>
+        <Name>Aedermannsdorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002518">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2518</Gemeinde>
+        <NBIdent>SO0200002518</NBIdent>
+        <Name>Etziken</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002519">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2519</Gemeinde>
+        <NBIdent>SO0200002519</NBIdent>
+        <Name>Gerlafingen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002544">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2544</Gemeinde>
+        <NBIdent>SO0200002544</NBIdent>
+        <Name>Feldbrunnen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002555">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2555</Gemeinde>
+        <NBIdent>SO0200002555</NBIdent>
+        <Name>Rüttenen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002534">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2534</Gemeinde>
+        <NBIdent>SO0200002534</NBIdent>
+        <Name>Zuchwil</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002513">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2513</Gemeinde>
+        <NBIdent>SO0200002513</NBIdent>
+        <Name>Biberist</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002556">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2556</Gemeinde>
+        <NBIdent>SO0200002556</NBIdent>
+        <Name>Selzach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002542">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2542</Gemeinde>
+        <NBIdent>SO0200002542</NBIdent>
+        <Name>Bellach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002497">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2497</Gemeinde>
+        <NBIdent>SO0200002497</NBIdent>
+        <Name>Obergösgen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002492">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2492</Gemeinde>
+        <NBIdent>SO0200002492</NBIdent>
+        <Name>Kienberg</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002576">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2576</Gemeinde>
+        <NBIdent>SO0200002576</NBIdent>
+        <Name>Gretzenbach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002572">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2572</Gemeinde>
+        <NBIdent>SO0200002572</NBIdent>
+        <Name>Däniken</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002579">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2579</Gemeinde>
+        <NBIdent>SO0200002579</NBIdent>
+        <Name>Hägendorf</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002575">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2575</Gemeinde>
+        <NBIdent>SO0200002575</NBIdent>
+        <Name>Fulenbach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002578">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2578</Gemeinde>
+        <NBIdent>SO0200002578</NBIdent>
+        <Name>Gunzgen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002571">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2571</Gemeinde>
+        <NBIdent>SO0200002571</NBIdent>
+        <Name>Boningen</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002581">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2581</Gemeinde>
+        <NBIdent>SO0200002581</NBIdent>
+        <Name>Olten</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002500">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2500</Gemeinde>
+        <NBIdent>SO0200002500</NBIdent>
+        <Name>Trimbach</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+      <OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis TID="SO0200002491">
+        <Kanton>SO</Kanton>
+        <Gemeinde>2491</Gemeinde>
+        <NBIdent>SO0200002491</NBIdent>
+        <Name>Hauenstein-Ifenthal</Name>
+      </OeREBKRMkvs_V2_0.Konfiguration.GrundbuchKreis>
+    </OeREBKRMkvs_V2_0.Konfiguration>
+  </DATASECTION>
+</TRANSFER>
