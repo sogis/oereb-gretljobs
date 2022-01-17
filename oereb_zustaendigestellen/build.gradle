@@ -1,0 +1,110 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelBasis = "OeREBKRM_V2_0"
+
+def dbSchemaKonfiguration = "agi_oereb_konfiguration"
+
+def xtfFileName = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
+def zipFileName = "ch.so.agi.oereb_zustaendigestellen_V2_0_xtf.zip"
+def dataSet = "zustaendigestellen"
+
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+task exportData(type: Ili2pgExport) {
+    description = "Exportiert die zuständigen Stellen."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelBasis
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = dataSet
+    disableValidation = true
+}
+
+task validateData(type: IliValidator, dependsOn: "exportData") {
+    description = "Validiert die exportierten Daten."
+    dataFiles = [
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = true
+}
+
+task importDataToStage(type: Ili2pgUpdate, dependsOn: "validateData") {
+    description = "Import der zuständigen Stellen in das Stage-Schema."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    models = iliModelBasis
+    dbschema = "stage"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = dataSet 
+    importBid = true
+    importTid = true
+    disableValidation = true
+}
+
+// Müssen/sollen die WMS-Tabellen gerefreshed werden?
+
+// task refreshOerebWMSTablesStage(type: SqlExecutor) {
+//     description = "Aktualisiert OEREB WMS Tabellen."
+//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
+//     sqlParameters = [dbSchema: 'stage']
+// }
+
+task importDataToLive(type: Ili2pgUpdate, dependsOn: "validateData") {
+    description = "Import der zuständigen Stellen in das Live-Schema."
+    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    models = iliModelBasis
+    dbschema = "live"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = dataSet 
+    importBid = true
+    importTid = true
+    disableValidation = true
+}
+
+// task refreshOerebWMSTablesLive(type: SqlExecutor) {
+//     description = "Aktualisiert OEREB WMS Tabellen."
+//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
+//     sqlParameters = [dbSchema: 'live']
+// }
+
+// Hängt noch ein wenig davon ab, wo die zuständigen Stellen platziert werden.
+// Diese werden ja auch gebraucht, um die Transferstruktur nach dem Export
+// zu prüfen. 
+/*
+task zipXtfFile(type: Zip) {
+    description = "Zipt das XTF-File mit den Waldgrenzen für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName zipFileName
+    destinationDir(file("$rootDir"))
+}
+ */
+
+task uploadXtfToS3Geodata(type: S3Upload) {
+    description = "XTF-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", xtfFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}

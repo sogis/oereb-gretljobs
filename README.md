@@ -33,6 +33,8 @@ docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "slee
 (When using `sogis/gretl-local` (see `docker-compose.yml`) do not use `--user $UID` as it will not work.)
 
 You also need to import the responsible office into the oereb db if you want to import the generated data into the oereb db:
+
+Konfiguration:
 ```
 docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
 ```
@@ -54,6 +56,13 @@ export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi="yx"
 ```
 
 Start the GRETL job (use the --job-directory option to point to the desired GRETL job; find out the names of your Docker networks by running `docker network ls`):
+
+Zuständige Stellen:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+
+```
+
 
 Waldgrenzen:
 ```

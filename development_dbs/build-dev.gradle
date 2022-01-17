@@ -12,34 +12,23 @@ ext {
 
     /* Edit-DB */
 
-    // iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
-    // dbSchemaLandUsePlans = "arp_npl"
-    // landUsePlansDataSets = ["2401", "2403", "2405", "2407", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2479",  "2491", "2498", "2501", "2502", "2514", "2551", "2573", "2580", "2613", "2614", "2615", "2616"]
-    // //landUsePlansDataSets = ["2502"]
-    // landUsePlansBaseUrl = "https://geo.so.ch/geodata/ch.so.arp.nutzungsplanung/"
-    
-    // iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
-    // dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
-    // groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
-    // groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
-
     iliModelKonfiguration = "OeREBKRMkvs_V2_0"
     dbSchemaKonfiguration = "agi_oereb_konfiguration"
 
     responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
-    responsibleOfficesDataSet = "ch.so.agi.konfiguration.oereb.zustaendigestellen"
+    responsibleOfficesDataSet = "zustaendigestellen"
     cantonalLegalBasisDataFile = "ch.so.sk.oereb_gesetze_V2_0.xtf"
-    cantonalLegalBasisDataSet = "ch.so.agi.konfiguration.oereb.gesetze"
+    cantonalLegalBasisDataSet = "gesetze"
     cantonalThemesDataFile = "ch.so.agi.oereb_themen_V2_0.xtf"
-    cantonalThemesDataSet = "ch.so.agi.konfiguration.oereb.themen"
+    cantonalThemesDataSet = "themen"
     cantonalLogosDataFile = "ch.so.agi.oereb_logo_V2_0.xtf"
-    cantonalLogosDataSet = "ch.so.agi.konfiguration.oereb.logo"
+    cantonalLogosDataSet = "logo"
     cantonalTextDataFile = "ch.so.agi.oereb_text_V2_0.xtf"
-    cantonalTextDataSet = "ch.so.agi.konfiguration.oereb.text"
+    cantonalTextDataSet = "text"
     availabilityDataFile = "ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
-    availabilityDataSet = "ch.so.agi.konfiguration.oereb.verfuegbarkeit"
+    availabilityDataSet = "verfuegbarkeit"
     subunitOfLandRegisterDataFile = "ch.so.agi.oereb_grundbuchkreis_V2_0.xtf"
-    subunitOfLandRegisterDataSet = "ch.so.agi.konfiguration.oereb.grundbuchkreis"
+    subunitOfLandRegisterDataSet = "grundbuchkreis"
 
     federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
     federalLegalBasisDataSet = "OeREBKRM_V2_0_Gesetze_20210414"
@@ -64,6 +53,20 @@ ext {
     // einzelschutzGeotopDataFile = "afu_geotope.xtf"
     // einzelschutzGeotopBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
+    // iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
+    // dbSchemaLandUsePlans = "arp_npl"
+    // landUsePlansDataSets = ["2401", "2403", "2405", "2407", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2479",  "2491", "2498", "2501", "2502", "2514", "2551", "2573", "2580", "2613", "2614", "2615", "2616"]
+    // //landUsePlansDataSets = ["2502"]
+    // landUsePlansBaseUrl = "https://geo.so.ch/geodata/ch.so.arp.nutzungsplanung/"
+    
+    // iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
+    // dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
+    // groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
+    // groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
+
+
+
+
     /* OEREB-DB */
 
     iliModelBasis = "OeREBKRM_V2_0"
@@ -71,7 +74,7 @@ ext {
     iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 
     responsibleOfficesBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
-    responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
+    //responsibleOfficesDataSet = "zustaendigestellen" Bereits für Edit-DB definiert.
 
     // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
     // federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
@@ -99,9 +102,9 @@ task downloadResponsibleOfficesEdit(type: Download) {
     overwrite true
 }
 
-task replaceResponsibleOfficesToEdit(type: Ili2pgReplace, dependsOn: "downloadResponsibleOfficesEdit") {
+task replaceResponsibleOfficesToEdit(type: Ili2pgImport, dependsOn: "downloadResponsibleOfficesEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = iliModelKonfiguration
+    models = iliModelBasis
     dbschema = dbSchemaKonfiguration
     dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataFile))
     disableValidation = true
@@ -120,9 +123,9 @@ task downloadCantonalLegalBasisEdit(type: Download) {
     overwrite true
 }
 
-task replaceCantonalLegalBasisToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalLegalBasisEdit") {
+task replaceCantonalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalLegalBasisEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = iliModelKonfiguration
+    models = iliModelBasis
     dbschema = dbSchemaKonfiguration
     dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBasisDataFile))
     disableValidation = true
@@ -141,7 +144,7 @@ task downloadFederalLegalBasisEdit(type: Download) {
     overwrite true
 }
 
-task replaceFederalLegalBasisToEdit(type: Ili2pgReplace, dependsOn: "downloadFederalLegalBasisEdit") {
+task replaceFederalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadFederalLegalBasisEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -162,7 +165,7 @@ task downloadFederalThemesEdit(type: Download, dependsOn: "replaceFederalLegalBa
     overwrite true
 }
 
-task replaceFederalThemesToEdit(type: Ili2pgReplace, dependsOn: "downloadFederalThemesEdit") {
+task replaceFederalThemesToEdit(type: Ili2pgImport, dependsOn: "downloadFederalThemesEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -183,7 +186,7 @@ task downloadCantonalThemesEdit(type: Download, dependsOn: "replaceFederalThemes
     overwrite true
 }
 
-task replaceCantonalThemesToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalThemesEdit") {
+task replaceCantonalThemesToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalThemesEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -204,7 +207,7 @@ task downloadCantonalLogosEdit(type: Download) {
     overwrite true
 }
 
-task replaceCantonalLogosToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalLogosEdit") {
+task replaceCantonalLogosToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalLogosEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -225,7 +228,7 @@ task downloadCantonalTextEdit(type: Download) {
     overwrite true
 }
 
-task replaceCantonalTextToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalTextEdit") {
+task replaceCantonalTextToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalTextEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -246,7 +249,7 @@ task downloadAvailabilityEdit(type: Download) {
     overwrite true
 }
 
-task replaceAvailabilityToEdit(type: Ili2pgReplace, dependsOn: "downloadAvailabilityEdit") {
+task replaceAvailabilityToEdit(type: Ili2pgImport, dependsOn: "downloadAvailabilityEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -267,7 +270,7 @@ task downloadSubunitOfLandRegisterEdit(type: Download) {
     overwrite true
 }
 
-task replaceSubunitOfLandRegisterToEdit(type: Ili2pgReplace, dependsOn: "downloadSubunitOfLandRegisterEdit") {
+task replaceSubunitOfLandRegisterToEdit(type: Ili2pgImport, dependsOn: "downloadSubunitOfLandRegisterEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration

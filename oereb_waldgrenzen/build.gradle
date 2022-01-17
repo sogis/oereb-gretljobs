@@ -22,8 +22,8 @@ def xtfFileName = staticForestPerimeterDataSet + ".xtf"
 def zipFileName = staticForestPerimeterDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.awjf.oereb_statische_waldgrenzen.empty.xtf"
 
-def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.tmp/"
-def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_v2_0"
+def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"
+def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
 
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
