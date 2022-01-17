@@ -30,18 +30,24 @@ ext {
     responsibleOfficesDataSet = "ch.so.agi.konfiguration.oereb.zustaendigestellen"
     cantonalLegalBasisDataFile = "ch.so.sk.oereb_gesetze_V2_0.xtf"
     cantonalLegalBasisDataSet = "ch.so.agi.konfiguration.oereb.gesetze"
-    themesDataFile = "ch.so.agi.oereb_themen_V2_0.xtf"
-    themesDataSet = "ch.so.agi.konfiguration.oereb.themen"
-    logosDataFile = "ch.so.agi.oereb_logo_V2_0.xtf"
-    logosDataSet = "ch.so.agi.konfiguration.oereb.logo"
-    textDataFile = "ch.so.agi.oereb_text_V2_0.xtf"
-    textDataSet = "ch.so.agi.konfiguration.oereb.text"
+    cantonalThemesDataFile = "ch.so.agi.oereb_themen_V2_0.xtf"
+    cantonalThemesDataSet = "ch.so.agi.konfiguration.oereb.themen"
+    cantonalLogosDataFile = "ch.so.agi.oereb_logo_V2_0.xtf"
+    cantonalLogosDataSet = "ch.so.agi.konfiguration.oereb.logo"
+    cantonalTextDataFile = "ch.so.agi.oereb_text_V2_0.xtf"
+    cantonalTextDataSet = "ch.so.agi.konfiguration.oereb.text"
     availabilityDataFile = "ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
     availabilityDataSet = "ch.so.agi.konfiguration.oereb.verfuegbarkeit"
-    subunitOfLandRegisterDataSet = "ch.so.agi.oereb_grundbuchkreis_V2_0.xtf"
+    subunitOfLandRegisterDataFile = "ch.so.agi.oereb_grundbuchkreis_V2_0.xtf"
     subunitOfLandRegisterDataSet = "ch.so.agi.konfiguration.oereb.grundbuchkreis"
 
-    konfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+    federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
+    federalLegalBasisDataSet = "OeREBKRM_V2_0_Gesetze_20210414"
+    federalThemesDataFile = "OeREBKRM_V2_0_Themen_20210915.xml"
+    federalThemesDataSet = "OeREBKRM_V2_0_Themen_20210915"
+
+    cantonalConfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+    federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"
 
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
@@ -85,15 +91,15 @@ ext {
 
 task downloadResponsibleOfficesEdit(type: Download) {
     doFirst {
-        println konfigurationBaseUrl + responsibleOfficesDataFile
+        println cantonalConfigurationBaseUrl + responsibleOfficesDataFile
     }
     description = "Download zuständige, kantonale Stellen."
-    src konfigurationBaseUrl + responsibleOfficesDataFile
+    src cantonalConfigurationBaseUrl + responsibleOfficesDataFile
     dest pathToTempFolder
     overwrite true
 }
 
-task replaceResponsibleOfficesToEdit(type: Ili2pgImport, dependsOn: "downloadResponsibleOfficesEdit") {
+task replaceResponsibleOfficesToEdit(type: Ili2pgReplace, dependsOn: "downloadResponsibleOfficesEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -101,19 +107,20 @@ task replaceResponsibleOfficesToEdit(type: Ili2pgImport, dependsOn: "downloadRes
     disableValidation = true
     dataset = responsibleOfficesDataSet
     importBid = true
+    importTid = true
 }
 
 task downloadCantonalLegalBasisEdit(type: Download) {
     doFirst {
-        println konfigurationBaseUrl + cantonalLegalBasisDataFile
+        println cantonalConfigurationBaseUrl + cantonalLegalBasisDataFile
     }
     description = "Download kantonale Gesetze und Verordnungen."
-    src konfigurationBaseUrl + cantonalLegalBasisDataFile
+    src cantonalConfigurationBaseUrl + cantonalLegalBasisDataFile
     dest pathToTempFolder
     overwrite true
 }
 
-task replaceCantonalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalLegalBasisEdit") {
+task replaceCantonalLegalBasisToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalLegalBasisEdit") {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -121,9 +128,155 @@ task replaceCantonalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadCan
     disableValidation = true
     dataset = cantonalLegalBasisDataSet
     importBid = true
+    importTid = true
 }
 
+task downloadFederalLegalBasisEdit(type: Download) {
+    doFirst {
+        println federalConfigurationBaseUrl + federalLegalBasisDataFile
+    }
+    description = "Download Bundesgesetze und -verordnungen."
+    src federalConfigurationBaseUrl + federalLegalBasisDataFile
+    dest pathToTempFolder
+    overwrite true
+}
 
+task replaceFederalLegalBasisToEdit(type: Ili2pgReplace, dependsOn: "downloadFederalLegalBasisEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), federalLegalBasisDataFile))
+    disableValidation = true
+    dataset = federalLegalBasisDataSet
+    importBid = true
+    importTid = true
+}
+
+task downloadFederalThemesEdit(type: Download, dependsOn: "replaceFederalLegalBasisToEdit") {
+    doFirst {
+        println cantonalConfigurationBaseUrl + federalThemesDataFile
+    }
+    description = "Download Bundesthemen."
+    src federalConfigurationBaseUrl + federalThemesDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceFederalThemesToEdit(type: Ili2pgReplace, dependsOn: "downloadFederalThemesEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), federalThemesDataFile))
+    disableValidation = true
+    dataset = federalThemesDataSet
+    importBid = true
+    importTid = true
+}
+
+task downloadCantonalThemesEdit(type: Download, dependsOn: "replaceFederalThemesToEdit") {
+    doFirst {
+        println cantonalConfigurationBaseUrl + cantonalThemesDataFile
+    }
+    description = "Download kantonale Themen."
+    src cantonalConfigurationBaseUrl + cantonalThemesDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceCantonalThemesToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalThemesEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalThemesDataFile))
+    disableValidation = true
+    dataset = cantonalThemesDataSet
+    importBid = true
+    importTid = true
+}
+
+task downloadCantonalLogosEdit(type: Download) {
+    doFirst {
+        println cantonalConfigurationBaseUrl + cantonalLogosDataFile
+    }
+    description = "Download kantonale Logo."
+    src cantonalConfigurationBaseUrl + cantonalLogosDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceCantonalLogosToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalLogosEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLogosDataFile))
+    disableValidation = true
+    dataset = cantonalLogosDataSet
+    importBid = true
+    importTid = true
+}
+
+task downloadCantonalTextEdit(type: Download) {
+    doFirst {
+        println cantonalConfigurationBaseUrl + cantonalTextDataFile
+    }
+    description = "Download kantonale Text."
+    src cantonalConfigurationBaseUrl + cantonalTextDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceCantonalTextToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalTextEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalTextDataFile))
+    disableValidation = true
+    dataset = cantonalTextDataSet
+    importBid = true
+    importTid = true
+}
+
+task downloadAvailabilityEdit(type: Download) {
+    doFirst {
+        println cantonalConfigurationBaseUrl + availabilityDataFile
+    }
+    description = "Download kantonale Text."
+    src cantonalConfigurationBaseUrl + availabilityDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceAvailabilityToEdit(type: Ili2pgReplace, dependsOn: "downloadAvailabilityEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), availabilityDataFile))
+    disableValidation = true
+    dataset = availabilityDataSet
+    importBid = true
+    importTid = true
+}
+
+task downloadSubunitOfLandRegisterEdit(type: Download) {
+    doFirst {
+        println cantonalConfigurationBaseUrl + subunitOfLandRegisterDataFile
+    }
+    description = "Download kantonale Text."
+    src cantonalConfigurationBaseUrl + subunitOfLandRegisterDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task replaceSubunitOfLandRegisterToEdit(type: Ili2pgReplace, dependsOn: "downloadSubunitOfLandRegisterEdit") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get(pathToTempFolder.toString(), subunitOfLandRegisterDataFile))
+    disableValidation = true
+    dataset = subunitOfLandRegisterDataSet
+    importBid = true
+    importTid = true
+}
 
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 

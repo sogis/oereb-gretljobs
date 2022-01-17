@@ -34,7 +34,7 @@ docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "slee
 
 You also need to import the responsible office into the oereb db if you want to import the generated data into the oereb db:
 ```
-docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importResponsibleOfficesToOereb"
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
 ```
 
 You will need to import much more files / data if you want to use the oereb db for the oereb-web-service (not covered here).
