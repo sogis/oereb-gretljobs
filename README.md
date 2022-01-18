@@ -57,6 +57,14 @@ export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi="yx"
 
 Start the GRETL job (use the --job-directory option to point to the desired GRETL job; find out the names of your Docker networks by running `docker network ls`):
 
+Bundesgesetze:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_bundesgesetze downloadData importData_stage
+```
+
+
+
+
 Zuständige Stellen:
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_zustaendigestellen/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
