@@ -59,8 +59,12 @@ Start the GRETL job (use the --job-directory option to point to the desired GRET
 
 Zuständige Stellen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_zustaendigestellen/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+```
 
+Kantonale Gesetze:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_gesetze/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
 ```
 
 
