@@ -7,7 +7,6 @@ node('master') { // need a few lines of scripted pipeline before the declarative
 pipeline {
     agent none
     options {
-        buildDiscarder(logRotator(numToKeepStr: '25'))
         disableConcurrentBuilds()
         timeout(time: 7, unit: 'DAYS')
     }
