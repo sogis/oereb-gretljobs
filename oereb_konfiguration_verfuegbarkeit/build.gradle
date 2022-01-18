@@ -12,9 +12,9 @@ def iliModelKonfiguration = "OeREBKRMkvs_V2_0"
 
 def dbSchemaKonfiguration = "agi_oereb_konfiguration"
 
-def xtfFileName = "ch.so.agi.oereb_text_V2_0.xtf"
-def zipFileName = "ch.so.agi.oereb_text_V2_0_xtf.zip"
-def dataSet = "text"
+def xtfFileName = "ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
+def zipFileName = "ch.so.agi.oereb_verfuegbarkeit_V2_0_xtf.zip"
+def dataSet = "verfuegbarkeit"
 
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
@@ -27,7 +27,7 @@ if ( gretlEnvironment == 'production' ) {
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 task exportData(type: Ili2pgExport) {
-    description = "Exportiert die kantonalen Texte."
+    description = "Exportiert die Verfügbarkeit."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
@@ -47,7 +47,7 @@ task validateData(type: IliValidator, dependsOn: "exportData") {
 }
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import der kantonalen Texte in das Stage-Schema."
+    description = "Import der Verfügbarkeit in das Stage-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelKonfiguration
     dbschema = "stage"
@@ -59,7 +59,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 }
 
 task importDataToLive(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import der kantonalen Text in das Live-Schema."
+    description = "Import der Verfügbarkeit in das Live-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelKonfiguration
     dbschema = "live"

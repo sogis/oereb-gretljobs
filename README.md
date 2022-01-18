@@ -77,6 +77,16 @@ Kantonale Logos:
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_logo/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
 ```
 
+Kantonale Texte:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_text/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+```
+
+Verfügbarkeit:
+```
+
+```
+
 
 Waldgrenzen:
 ```

@@ -16,10 +16,6 @@ def xtfFileName = "ch.so.agi.oereb_logo_V2_0.xtf"
 def zipFileName = "ch.so.agi.oereb_logo_V2_0_xtf.zip"
 def dataSet = "logo"
 
-def responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
-def legalBasisDataFile = "ch.so.agi.oereb_gesetze_V2_0.xtf"
-def cantonalConfigurationBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"
-
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
     bucketSuffix = ''
