@@ -96,7 +96,7 @@ task zipXtfFile(type: Zip) {
     archiveName zipFileName
     destinationDir(file("$rootDir"))
 }
- */
+*/
 
 task uploadXtfToS3Geodata(type: S3Upload) {
     description = "XTF-File nach S3 hochladen."
