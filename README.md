@@ -41,7 +41,7 @@ docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "slee
 
 You will need to import much more files / data if you want to use the oereb db for the oereb-web-service (not covered here).
 
-Set environment variables containing the DB connection parameters åand names of other resources:
+Set environment variables containing the DB connection parameters and names of other resources:
 ```
 export ORG_GRADLE_PROJECT_dbUriEdit="jdbc:postgresql://edit-db/edit"
 export ORG_GRADLE_PROJECT_dbUserEdit="gretl"
@@ -65,6 +65,16 @@ Zuständige Stellen:
 Kantonale Gesetze:
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_gesetze/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+```
+
+Kantonale Themen:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_themen/ exportData validateData uploadXtfToS3Geodata
+```
+
+Kantonale Logos:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_logo/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
 ```
 
 
