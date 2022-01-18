@@ -84,7 +84,12 @@ Kantonale Texte:
 
 Verfügbarkeit:
 ```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_verfuegbarkeit/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+```
 
+Grundbuchkreis:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_grundbuchkreis/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
 ```
 
 
