@@ -16,6 +16,8 @@ def federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"
 
 def dbSchemas = ["stage","live"]
 
+defaultTasks "importData"
+
 task downloadData(type: Download) {
     doFirst {
         println federalConfigurationBaseUrl + federalLegalBasisDataFile
@@ -36,6 +38,8 @@ dbSchemas.each { dbSchema ->
         models = iliModelBasis
         disableValidation = false
         dataFile = file(Paths.get(pathToTempFolder.toString(), federalLegalBasisDataFile))
+        importBid = true
+        importTid = true
     }
 }
 

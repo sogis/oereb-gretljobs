@@ -24,6 +24,11 @@ java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar --export --dbhost geodb.rootso.org 
 
 Setup development environment for the various themes:
 
+Konfiguration:
+```
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
+```
+
 Statische Waldgrenzen:
 ``` 
 docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
@@ -34,9 +39,8 @@ docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "slee
 
 You also need to import the responsible office into the oereb db if you want to import the generated data into the oereb db:
 
-Konfiguration:
 ```
-docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importResponsibleOfficesToOereb"
 ```
 
 You will need to import much more files / data if you want to use the oereb db for the oereb-web-service (not covered here).
@@ -62,6 +66,10 @@ Bundesgesetze:
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_bundesgesetze downloadData importData_stage
 ```
 
+Bundeskonfiguration:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_bundeskonfiguration importFederalThemes importFederalLogos importFederalText
+```
 
 
 
