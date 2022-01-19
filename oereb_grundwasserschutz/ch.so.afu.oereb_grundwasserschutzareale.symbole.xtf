@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege.areal">
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAA40lEQVR4Xu3PMQrCQBSE4XQ2nsMDxCJ3sEsjWIrYiRcIGOs0aWNjG7C1svUsnsATaHBtXHhD/lSGB98WC48ZJkkWq7F5v+lym5X17nofKDvWQRnEN32BzG7SbH/Im/b8eA6Un9qgCeKbvkCmTzKBeglk+iQTqJdApk8ygXoJZPokE6iXQKZPMoF6CWT6JBOol0CmTzKBeglk+iQTqJdApk8ygXoJZPokE6iXQKZPMoF6CWT6JBOol0CmTzKBeglk+iQTqJdA5kgnTfJ1WlSby22geVF9pF/xTV8gs5s0Nr////cCSpHXxR2SmlUAAAAASUVORK5CYII=</BINBLBOX></Symbol><LegendeTextAggregiert>Grundwasserschutzareal</LegendeTextAggregiert><ArtCode>Areal</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Grundwasserschutzareale</ArtCodeliste><Thema>ch.Grundwasserschutzareale</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
+</SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
+</DATASECTION>
+</TRANSFER>

@@ -38,6 +38,11 @@ ext {
     cantonalConfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
     federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"
 
+    iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
+    dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
+    groundwaterProtectionDataFile = "ch.so.afu.gewaesserschutz_edit.xtf"
+    groundwaterProtectionBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
