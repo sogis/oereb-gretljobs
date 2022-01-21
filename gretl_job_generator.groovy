@@ -117,8 +117,7 @@ for (jobFile in jobFiles) {
 // add a view (tab) for these jobs
 listView('ÖREB-GRETL-Jobs') {
   jobs {
-    regex(/^oereb_.*/)
-    name('gretl-job-generator-oereb')
+    regex(/^(oereb_.*|gretl-job-generator-oereb)/)
   }
   columns {
     status()
