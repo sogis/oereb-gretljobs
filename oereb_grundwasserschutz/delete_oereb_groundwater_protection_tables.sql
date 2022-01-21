@@ -1,5 +1,5 @@
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_geometrie
+    afu_grundwasserschutz_oereb.transferstruktur_geometrie
 ;
 DELETE FROM 
     afu_grundwasserschutz_oereb.transferstruktur_hinweisvorschrift
