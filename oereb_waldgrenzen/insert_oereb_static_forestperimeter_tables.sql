@@ -46,7 +46,6 @@ darstellungsdienst_multilingualuri AS
         t_basket,
         0,
         t_id
-
     FROM 
         darstellungsdienst
     RETURNING *

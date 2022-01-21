@@ -90,6 +90,8 @@ ext {
 }    
 
 /* Edit-DB */
+
+// Konfiguration:
 // Basis: zustaendigeStelle <- Gesetze
 // Konfiguration: (Gesetze) <- Themen
 // Konfiguration: Logo
@@ -286,6 +288,25 @@ task replaceSubunitOfLandRegisterToEdit(type: Ili2pgImport, dependsOn: "download
     importTid = true
 }
 
+// Gewässerschutz
+task downloadDataGroundwaterProtection(type: Download) {
+    src groundwaterProtectionBaseUrl + groundwaterProtectionDataFile
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }        
+}
+
+task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDataGroundwaterProtection") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelGroundwaterProtection
+    dbschema = dbSchemaGroundwaterProtection
+    dataFile = file(Paths.get(pathToTempFolder.toString(), groundwaterProtectionDataFile))
+    deleteData = true
+    disableValidation = true
+}
+
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 
 // task createSchemaLandUsePlans(type: SqlExecutor){
@@ -339,23 +360,6 @@ task uploadToS3(type: AmazonS3FileUploadTask) {
 //     sqlFiles = ['afu_gewaesserschutz.sql', 'afu_gewaesserschutz_grants.sql']
 // }
 
-// task downloadDataGroundwaterProtection(type: Download) {
-//     src groundwaterProtectionBaseUrl + groundwaterProtectionDataFile
-//     dest pathToTempFolder
-//     overwrite true
-//     doLast {
-//         println "File downloaded to: " + pathToTempFolder
-//     }        
-// }
-
-// task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDataGroundwaterProtection") {
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelGroundwaterProtection
-//     dbschema = dbSchemaGroundwaterProtection
-//     dataFile = file(Paths.get(pathToTempFolder.toString(), groundwaterProtectionDataFile))
-//     deleteData = true
-//     disableValidation = true
-// }
 
 
 /*
