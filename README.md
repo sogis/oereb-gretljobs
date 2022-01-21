@@ -63,7 +63,7 @@ Start the GRETL job (use the --job-directory option to point to the desired GRET
 
 Bundesgesetze:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_bundesgesetze downloadData importData_stage
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_bundesgesetze downloadData importData
 ```
 
 Bundeskonfiguration:
@@ -71,43 +71,45 @@ Bundeskonfiguration:
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_bundeskonfiguration importFederalThemes importFederalLogos importFederalText
 ```
 
-
-
 Zuständige Stellen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_zustaendigestellen/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_zustaendigestellen/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Gesetze:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_gesetze/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_gesetze/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Themen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_themen/ exportData validateData uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_themen/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Logos:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_logo/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_logo/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Texte:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_text/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_text/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Verfügbarkeit:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_verfuegbarkeit/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_verfuegbarkeit/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Grundbuchkreis:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_grundbuchkreis/ exportData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_konfiguration_grundbuchkreis/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
+PLZ/Ortschaft:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_plzo/ importPLZO
+```
 
 Waldgrenzen:
 ```
@@ -119,7 +121,3 @@ KbS:
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_belastete_standorte/ unzipData validateData importDataToStage importDataToLive uploadXtfToS3Geodata
 ```
 
-PLZ/Ortschaft:
-```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_plzo/ importPLZO
-```

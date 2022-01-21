@@ -37,6 +37,10 @@ task exportData(type: Ili2pgExport) {
     exportTid = true
 }
 
+def dbSchemas = ["stage","live"]
+
+defaultTasks "importData"
+
 task validateData(type: IliValidator, dependsOn: "exportData") {
     description = "Validiert die exportierten Daten."
     dataFiles = [
@@ -46,28 +50,29 @@ task validateData(type: IliValidator, dependsOn: "exportData") {
     allObjectsAccessible = true
 }
 
-task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import der kantonalen Logos in das Stage-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    models = iliModelKonfiguration
-    dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = dataSet 
-    importBid = true
-    importTid = true
-    disableValidation = true
+dbSchemas.each { dbSchema ->
+    def schema = dbSchema.toString()
+    task "importDataTo_$schema"(type: Ili2pgUpdate, dependsOn: "validateData"){
+        description = "Import der kantonalen Logos in das $schema Schema"
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        dbschema = schema
+        dataset = dataSet
+        models = iliModelKonfiguration
+        dataFile = file(Paths.get("$rootDir", xtfFileName))
+        disableValidation = true
+        importBid = true
+        importTid = true
+    }
 }
 
-task importDataToLive(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import der kantonalen Logos in das Live-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    models = iliModelKonfiguration
-    dbschema = "live"
-    dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = dataSet 
-    importBid = true
-    importTid = true
-    disableValidation = true
+task importData() {
+    description = "Aggregationstask für Import der kantonalen Logos."
+
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importDataTo_') }
+    }    
+
+    finalizedBy "uploadXtfToS3Geodata"
 }
 
 task uploadXtfToS3Geodata(type: S3Upload) {

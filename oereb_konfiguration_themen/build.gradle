@@ -24,7 +24,6 @@ def federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
 def federalThemesDataFile = "OeREBKRM_V2_0_Themen_20210915.xml"
 def federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"
 
-
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
     bucketSuffix = ''
@@ -34,6 +33,10 @@ if ( gretlEnvironment == 'production' ) {
     bucketSuffix = '-' + gretlEnvironment
 }
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+def dbSchemas = ["stage","live"]
+
+defaultTasks "importData"
 
 task exportData(type: Ili2pgExport) {
     description = "Exportiert die kantonalen Themen."
@@ -99,45 +102,30 @@ task validateData(type: IliValidator, dependsOn: ["exportData", "downloadRespons
     allObjectsAccessible = true
 }
 
-task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import der kantonalen Themen in das Stage-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    models = iliModelKonfiguration
-    dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = dataSet 
-    importBid = true
-    importTid = true
-    disableValidation = true
+dbSchemas.each { dbSchema ->
+    def schema = dbSchema.toString()
+    task "importDataTo_$schema"(type: Ili2pgUpdate, dependsOn: "validateData"){
+        description = "Import der kantonalen Themen in das $schema Schema"
+        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        dbschema = schema
+        dataset = dataSet
+        models = iliModelKonfiguration
+        dataFile = file(Paths.get("$rootDir", xtfFileName))
+        disableValidation = true
+        importBid = true
+        importTid = true
+    }
 }
 
-// Müssen/sollen die WMS-Tabellen gerefreshed werden?
+task importData() {
+    description = "Aggregationstask für Import der kantonalen Themen."
 
-// task refreshOerebWMSTablesStage(type: SqlExecutor) {
-//     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
-//     sqlParameters = [dbSchema: 'stage']
-// }
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importDataTo_') }
+    }    
 
-task importDataToLive(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import der kantonalen Themen in das Live-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-    models = iliModelKonfiguration
-    dbschema = "live"
-    dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = dataSet 
-    importBid = true
-    importTid = true
-    disableValidation = true
+    finalizedBy "uploadXtfToS3Geodata"
 }
-
-// task refreshOerebWMSTablesLive(type: SqlExecutor) {
-//     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
-//     sqlParameters = [dbSchema: 'live']
-// }
 
 task uploadXtfToS3Geodata(type: S3Upload) {
     description = "XTF-File nach S3 hochladen."
