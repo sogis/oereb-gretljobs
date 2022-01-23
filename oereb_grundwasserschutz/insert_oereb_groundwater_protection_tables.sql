@@ -292,11 +292,11 @@ INSERT INTO
         DISTINCT ON (dokument.t_id)
         dokument.t_id AS t_id,
         basket.t_id AS basket_t_id,
+        '_'||SUBSTRING(REPLACE(CAST(dokument.t_id AS text), '-', ''),1,15) AS t_ili_tid,
         CASE
             WHEN art = 'Rechtsvorschrift' THEN 'Rechtsvorschrift'
             ELSE 'Hinweis'
         END AS typ,
-        '_'||SUBSTRING(REPLACE(CAST(dokument.t_id AS text), '-', ''),1,15) AS t_ili_tid,        
         dokument.titel AS titel_de,
         dokument.abkuerzung AS abkuerzung_de,
         CASE
@@ -333,4 +333,133 @@ INSERT INTO
         art = 'Rechtsvorschrift'
     AND
         rechtsstatus = 'inKraft'
+;
+
+INSERT INTO
+    afu_grundwasserschutz_oereb.transferstruktur_hinweisvorschrift
+    (
+        t_id,
+        t_basket,
+        eigentumsbeschraenkung,
+        vorschrift  
+    )
+    SELECT 
+        hinweisvorschrift.t_id, 
+        basket.t_id AS basket_t_id,
+        hinweisvorschrift.eigentumsbeschraenkung,
+        hinweisvorschrift.vorschrift_vorschriften_dokument
+    FROM
+    (
+        SELECT
+            t_id, 
+            gwszone AS eigentumsbeschraenkung,
+            rechtsvorschrift AS vorschrift_vorschriften_dokument
+        FROM
+            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwszone
+
+        UNION ALL
+
+        SELECT
+            t_id, 
+            gwsareal AS eigentumsbeschraenkung,
+            rechtsvorschrift AS vorschrift_vorschriften_dokument
+        FROM
+            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwsareal            
+    ) AS hinweisvorschrift
+    INNER JOIN afu_grundwasserschutz_oereb.dokumente_dokument AS dokumente_dokument
+    ON dokumente_dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument,  
+    (
+        SELECT 
+            t_id 
+        FROM 
+            afu_grundwasserschutz_oereb.t_ili2db_basket 
+        WHERE 
+            t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
+    ) AS basket
+;
+
+/*
+ * Datenumbau der Links auf die Dokumente, die im Rahmenmodell 'multilingual' sind und daher eher
+ * mühsam normalisert sind.
+ * 
+ * Das funktioniert so einfach weil wir die t_id mitschleppen können.
+ */
+
+WITH multilingualuri AS
+(
+    INSERT INTO
+        afu_grundwasserschutz_oereb.multilingualuri
+        (
+            t_id,
+            t_basket,
+            t_seq,
+            dokumente_dokument_textimweb
+        )
+    SELECT
+        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        basket.t_id AS basket_t_id,
+        0 AS t_seq,
+        dokumente_dokument.t_id AS dokumente_dokument_textimweb
+    FROM
+        afu_grundwasserschutz_oereb.dokumente_dokument AS dokumente_dokument,
+        (
+            SELECT 
+                t_id 
+            FROM 
+                afu_grundwasserschutz_oereb.t_ili2db_basket 
+            WHERE 
+                t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
+        ) AS basket
+    RETURNING *
+)
+,
+localiseduri AS 
+(
+    SELECT 
+        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        basket.t_id AS basket_t_id,
+        0 AS t_seq,
+        'de' AS alanguage,
+        CASE
+            WHEN rechtsvorschrften_dokument.textimweb IS NULL
+                THEN 'https://geo.so.ch/docs/ch.so.arp.zonenplaene/Zonenplaene_pdf/404.pdf'
+            ELSE rechtsvorschrften_dokument.textimweb
+        END AS atext,
+        multilingualuri.t_id AS multilingualuri_localisedtext
+    FROM
+        afu_gewaesserschutz.gwszonen_dokument AS rechtsvorschrften_dokument
+        RIGHT JOIN multilingualuri 
+        ON multilingualuri.dokumente_dokument_textimweb = rechtsvorschrften_dokument.t_id,
+        (
+            SELECT 
+                t_id 
+            FROM 
+                afu_grundwasserschutz_oereb.t_ili2db_basket 
+            WHERE 
+                t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
+        ) AS basket
+    WHERE
+        art = 'Rechtsvorschrift'
+    AND
+        rechtsstatus = 'inKraft'
+)
+INSERT INTO
+    afu_grundwasserschutz_oereb.localiseduri
+    (
+        t_id,
+        t_basket,
+        t_seq,
+        alanguage,
+        atext,
+        multilingualuri_localisedtext
+    )
+    SELECT 
+        t_id,
+        basket_t_id,
+        t_seq,
+        alanguage,
+        atext,
+        multilingualuri_localisedtext
+    FROM 
+        localiseduri
 ;

@@ -98,7 +98,7 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
 }
 
 task replaceWmsServer(dependsOn: "exportData") {
-    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests (GetMap und GetLegendGraphic)."
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
     doLast {
         ant.replace(
         file: file(Paths.get("$rootDir", xtfFileName)),
