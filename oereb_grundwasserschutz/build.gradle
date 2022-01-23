@@ -131,17 +131,15 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
                 ]
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
-    failOnError = false // TODO!!!!!!!!!! disable
 }
 
-/*
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import des Waldgrenzen-ÖREB-Datensatz in das Stage-Schema."
+    description = "Import des Grundwasserschutz-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = staticForestPerimeterDataSet 
+    dataset = groundwaterProtectionDataSet 
     importBid = true
     disableValidation = true
 }
@@ -154,12 +152,12 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 // }
 
 task importDataToLive(type: Ili2pgReplace) {
-    description = "Import des Waldgrenzen-ÖREB-Datensatz in das Live-Schema."
+    description = "Import des Grundwasserschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
     models = iliModelTransferstruktur
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = staticForestPerimeterDataSet 
+    dataset = groundwaterProtectionDataSet 
     importBid = true
     disableValidation = true
 }
@@ -189,4 +187,3 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
-*/
