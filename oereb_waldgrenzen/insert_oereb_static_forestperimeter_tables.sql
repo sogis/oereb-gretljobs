@@ -322,8 +322,8 @@ dokumente_dokument AS
         dokument.abkuerzung AS abkuerzung_de,
         dokument.offiziellenr AS offiziellenr_de,
         CASE
-            WHEN dokument.typ <> 'Bericht' THEN CAST(999 AS int4) 
-            ELSE CAST(998 AS int4)
+            WHEN dokument.typ <> 'Bericht' THEN CAST(998 AS int4) 
+            ELSE CAST(999 AS int4)
         END as auzugindex,
         dokument.rechtsstatus AS rechtsstatus,
         dokument.publiziert_ab AS publiziertab,
