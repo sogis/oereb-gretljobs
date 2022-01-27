@@ -72,8 +72,10 @@ for (jobFile in jobFiles) {
         }
       }
     }
-    authorization {
-      permissions(properties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+    if (properties.getProperty('authorization.permissions') != 'nobody') {
+      authorization {
+        permissions(properties.getProperty('authorization.permissions'), ['hudson.model.Item.Build', 'hudson.model.Item.Read'])
+      }
     }
     if (properties.getProperty('logRotator.numToKeep') != 'unlimited') {
       logRotator {
