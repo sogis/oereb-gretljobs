@@ -40,7 +40,7 @@ for (jobFile in jobFiles) {
     'authorization.permissions':'nobody',
     'logRotator.numToKeep':'15',
     'parameters.fileParam':'none',
-    'parameters.stringParam':'none',
+    'parameters.stringParam':'buildDescription;Keine Beschreibung angegeben;Beschreibung/Grund für die Publikation der Daten',
     'triggers.upstream':'none',
     'triggers.cron':''
   ])
