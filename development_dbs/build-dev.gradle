@@ -469,7 +469,7 @@ dbSchemas.each { dbSchema ->
 
     task "importResponsibleOfficesToOereb_$schema"(type: Ili2pgReplace, dependsOn: "downloadResponsibleOfficesOereb"){
         description = "Import zuständige, kantonale Stellen in das Schema $schema"
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
         dbschema = schema
         dataset = responsibleOfficesDataSet
         importBid = true
@@ -497,7 +497,7 @@ importResponsibleOfficesToOereb.dependsOn {
 
 // task importFederalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadFederalLegalBasis') {
 //     description = "Import Bundesgesetze ($federalLegalBaseDataSet) in das stage Schema."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
 //     models = iliModelVorschriften
 //     dbschema = "stage"
 //     dataFile = file(Paths.get(pathToTempFolder.toString(), federalLegalBaseDataSet + ".xml"))
@@ -514,7 +514,7 @@ importResponsibleOfficesToOereb.dependsOn {
 
 // task importCantonalLegalBasisToOereb(type: Ili2pgReplace, dependsOn: 'downloadCantonalLegalBasis') {
 //     description = "Import kantonale Gesetze ($cantonalLegalBaseDataSet) in das stage Schema."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
 //     models = iliModelVorschriften
 //     dbschema = "stage"
 //     dataFile = file(Paths.get(pathToTempFolder.toString(), cantonalLegalBaseDataSet + ".xtf"))

@@ -60,7 +60,7 @@ task validateData(type: IliValidator, dependsOn: "unzipData") {
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import Belastete Standorte in das Stage-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", kbsDataSet + ".xtf"))
@@ -77,7 +77,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import Belastete Standorte in das Live-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", kbsDataSet + ".xtf"))

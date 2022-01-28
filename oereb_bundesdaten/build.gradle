@@ -63,7 +63,7 @@ oerebThemen.each { oerebThema ->
     
         task "import_$themaName$schema"(type: Ili2pgReplace, dependsOn: "unzipData_$themaName"){
             description = "Import Bundesdaten in DB schema $schema"
-            database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+            database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
             dbschema = schema
             dataset = themaName
             models = iliModelTransferstruktur

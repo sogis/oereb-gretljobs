@@ -68,7 +68,7 @@ dbSchemas.each { dbSchema ->
     def schema = dbSchema.toString()
     task "importDataTo_$schema"(type: Ili2pgReplace, dependsOn: "validateData"){
         description = "Import der kantonalen Gesetze in das $schema Schema"
-        database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+        database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
         dbschema = schema
         dataset = dataSet
         models = iliModelBasis

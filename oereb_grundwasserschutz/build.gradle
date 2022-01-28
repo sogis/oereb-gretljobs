@@ -135,7 +135,7 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import des Grundwasserschutz-ÖREB-Datensatz in das Stage-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
@@ -146,14 +146,14 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 
 // task refreshOerebWMSTablesStage(type: SqlExecutor) {
 //     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
 //     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
 //     sqlParameters = [dbSchema: 'stage']
 // }
 
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Grundwasserschutz-ÖREB-Datensatz in das Live-Schema."
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
@@ -164,7 +164,7 @@ task importDataToLive(type: Ili2pgReplace) {
 
 // task refreshOerebWMSTablesLive(type: SqlExecutor) {
 //     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+//     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
 //     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
 //     sqlParameters = [dbSchema: 'live']
 // }

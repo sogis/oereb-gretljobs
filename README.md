@@ -45,7 +45,7 @@ docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "slee
 You also need to import the responsible office into the oereb db if you want to import the generated data into the oereb db:
 
 ```
-docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle importResponsibleOfficesToOereb"
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle/project && gretl -b build-dev.gradle importResponsibleOfficesToOereb"
 ```
 
 You will need to import much more files / data if you want to use the oereb db for the oereb-web-service (not covered here).
@@ -55,9 +55,9 @@ Set environment variables containing the DB connection parameters and names of o
 export ORG_GRADLE_PROJECT_dbUriEdit="jdbc:postgresql://edit-db/edit"
 export ORG_GRADLE_PROJECT_dbUserEdit="gretl"
 export ORG_GRADLE_PROJECT_dbPwdEdit="gretl"
-export ORG_GRADLE_PROJECT_dbUriOereb="jdbc:postgresql://oereb-db/oereb"
-export ORG_GRADLE_PROJECT_dbUserOereb="gretl"
-export ORG_GRADLE_PROJECT_dbPwdOereb="gretl"
+export ORG_GRADLE_PROJECT_dbUriOerebV2="jdbc:postgresql://oereb-db/oereb"
+export ORG_GRADLE_PROJECT_dbUserOerebV2="gretl"
+export ORG_GRADLE_PROJECT_dbPwdOerebV2="gretl"
 export ORG_GRADLE_PROJECT_geoservicesHostName="geo-t.so.ch"
 export ORG_GRADLE_PROJECT_gretlEnvironment="dev"
 export ORG_GRADLE_PROJECT_awsAccessKeyAgi="xy"
