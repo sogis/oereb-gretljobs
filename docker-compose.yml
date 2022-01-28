@@ -8,9 +8,9 @@ services:
       ORG_GRADLE_PROJECT_dbUriEdit: "jdbc:postgresql://edit-db/edit"
       ORG_GRADLE_PROJECT_dbUserEdit: gretl
       ORG_GRADLE_PROJECT_dbPwdEdit: gretl
-      ORG_GRADLE_PROJECT_dbUriOereb: "jdbc:postgresql://oereb-db/oereb"
-      ORG_GRADLE_PROJECT_dbUserOereb: gretl
-      ORG_GRADLE_PROJECT_dbPwdOereb: gretl
+      ORG_GRADLE_PROJECT_dbUriOerebV2: "jdbc:postgresql://oereb-db/oereb"
+      ORG_GRADLE_PROJECT_dbUserOerebV2: gretl
+      ORG_GRADLE_PROJECT_dbPwdOerebV2: gretl
     depends_on:
       - oereb-db
       - edit-db

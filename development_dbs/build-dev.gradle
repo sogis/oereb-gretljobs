@@ -43,6 +43,11 @@ ext {
     groundwaterProtectionDataFile = "ch.so.afu.gewaesserschutz_edit.xtf"
     groundwaterProtectionBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
 
+    iliModelEinzelschutzNaturreservat = "SO_ARP_Naturreservate_20200609"
+    dbSchemaEinzelschutzNaturreservat = "arp_naturreservate"
+    einzelschutzNaturreservatDataFile = "ch.so.arp.naturreservate_edit.xtf"
+    einzelschutzNaturreservatBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
@@ -308,6 +313,23 @@ task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDa
 }
 
 // Naturreservate
+task downloadDataEinzelschutzNaturreservat(type: Download) {
+    src einzelschutzNaturreservatBaseUrl + einzelschutzNaturreservatDataFile
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }        
+}
+
+task replaceDataEinzelschutzNaturreservat(type: Ili2pgImport, dependsOn: "downloadDataEinzelschutzNaturreservat") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelEinzelschutzNaturreservat
+    dbschema = dbSchemaEinzelschutzNaturreservat
+    dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzNaturreservatDataFile))
+    deleteData = true
+    disableValidation = true
+}
 
 
 // Cannot use GRETL for ili2pgImportSchema since not all v4 options are exposed. 
@@ -491,7 +513,6 @@ task importResponsibleOfficesToOereb() {
 importResponsibleOfficesToOereb.dependsOn {
     tasks.findAll { task -> task.name.startsWith('importResponsibleOfficesToOereb_') }
 }
-
 
 // task downloadFederalLegalBasis(type: Download) {
 //     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."
