@@ -39,6 +39,11 @@ Naturreservate (Einzelschutz)
 docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzNaturreservat"
 ```
 
+Geotope (Einzelschutz):
+```
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzGeotop"
+```
+
 Statische Waldgrenzen:
 ``` 
 docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
@@ -135,6 +140,8 @@ Naturreservat (Einzelschutz):
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_einzelschutz_naturreservat/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData XXXXX XXXXX zipXtfFile uploadXtfToS3Geodata
 ```
+
+
 
 Waldgrenzen:
 ```

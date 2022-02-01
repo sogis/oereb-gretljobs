@@ -11,6 +11,8 @@ services:
       ORG_GRADLE_PROJECT_dbUriOerebV2: "jdbc:postgresql://oereb-db/oereb"
       ORG_GRADLE_PROJECT_dbUserOerebV2: gretl
       ORG_GRADLE_PROJECT_dbPwdOerebV2: gretl
+      ORG_GRADLE_PROJECT_awsAccessKeyAgi: ${ORG_GRADLE_PROJECT_awsAccessKeyAgi} 
+      ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi: ${ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi}
     depends_on:
       - oereb-db
       - edit-db

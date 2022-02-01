@@ -48,6 +48,12 @@ ext {
     einzelschutzNaturreservatDataFile = "ch.so.arp.naturreservate_edit.xtf"
     einzelschutzNaturreservatBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
 
+    iliModelEinzelschutzGeotop = "SO_AFU_Geotope_20200312"
+    dbSchemaEinzelschutzGeotop = "afu_geotope"
+    einzelschutzGeotopDataFile = "ch.so.afu.geotope_edit.xtf"  
+    einzelschutzGeotopZipFile  = "ch.so.afu.geotope_edit_xtf_dev_oereb.zip" // Kopiert aus int-Umgebung, weil prod voller Fehler.
+    //einzelschutzGeotopBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
@@ -312,7 +318,7 @@ task replaceDataGroundwaterProtection(type: Ili2pgImport, dependsOn: "downloadDa
     disableValidation = true
 }
 
-// Naturreservate
+// Naturreservate (Einzelschutz)
 task downloadDataEinzelschutzNaturreservat(type: Download) {
     src einzelschutzNaturreservatBaseUrl + einzelschutzNaturreservatDataFile
     dest pathToTempFolder
@@ -327,6 +333,32 @@ task replaceDataEinzelschutzNaturreservat(type: Ili2pgImport, dependsOn: "downlo
     models = iliModelEinzelschutzNaturreservat
     dbschema = dbSchemaEinzelschutzNaturreservat
     dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzNaturreservatDataFile))
+    deleteData = true
+    disableValidation = true
+}
+
+// Geotope (Einzelschutz)
+task downloadDataEinzelschutzGeotop(type: S3Download) {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    downloadDir = file(pathToTempFolder.toString())
+    bucketName = "ch.so.agi.geodata"
+    key = einzelschutzGeotopZipFile
+    endPoint = "https://s3.eu-central-1.amazonaws.com" 
+    region = "eu-central-1"
+}
+
+task unzipEinzelschutzGeotop(type: Copy, dependsOn: "downloadDataEinzelschutzGeotop") {
+    from zipTree(Paths.get(pathToTempFolder.toString(), einzelschutzGeotopZipFile))
+    into file(".")
+    include "**/*.xtf"
+}
+
+task replaceDataEinzelschutzGeotop(type: Ili2pgImport, dependsOn: "unzipEinzelschutzGeotop") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelEinzelschutzGeotop
+    dbschema = dbSchemaEinzelschutzGeotop
+    dataFile = file(einzelschutzGeotopDataFile)
     deleteData = true
     disableValidation = true
 }
