@@ -24,9 +24,6 @@ def xtfFileName = einzelschutzNaturreservatDataSet + ".xtf"
 def zipFileName = einzelschutzNaturreservatDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.arp.oereb_einzelschutz_naturreservat.empty.xtf"
 
-def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"
-def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
-
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
     bucketSuffix = ''
@@ -35,6 +32,10 @@ if ( gretlEnvironment == 'production' ) {
 } else {
     bucketSuffix = '-' + gretlEnvironment
 }
+
+def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
+
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 task deleteFromOereb(type: SqlExecutor) {

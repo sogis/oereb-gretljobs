@@ -48,8 +48,6 @@ oerebThemen.each { oerebThema ->
         into file(pathToUnzipFolder)
         include "**/*.xtf"
         rename { String fileName ->
-            //println "****"+fileName
-            //println "****"+themaName
             if (fileName.contains(themaName)) {
                 return themaName + ".xtf"
             }
@@ -69,7 +67,6 @@ oerebThemen.each { oerebThema ->
             models = iliModelTransferstruktur
             dataFile = file(Paths.get(pathToUnzipFolder.toString(), themaName + ".xtf"))
             disableValidation = false
-            //strokeArcs = true
         }
     }
 }

@@ -18,7 +18,6 @@ def dataSet = "themen"
 
 def responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
 def legalBasisDataFile = "ch.so.agi.oereb_gesetze_V2_0.xtf"
-def cantonalConfigurationBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata-dev/"
 
 def federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
 def federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220125.xml"
@@ -32,6 +31,9 @@ if ( gretlEnvironment == 'production' ) {
 } else {
     bucketSuffix = '-' + gretlEnvironment
 }
+
+def cantonalConfigurationBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 def dbSchemas = ["stage","live"]
