@@ -32,8 +32,8 @@ ext {
 
     federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
     federalLegalBasisDataSet = "OeREBKRM_V2_0_Gesetze_20210414"
-    federalThemesDataFile = "OeREBKRM_V2_0_Themen_20210915.xml"
-    federalThemesDataSet = "OeREBKRM_V2_0_Themen_20210915"
+    federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220125.xml"
+    federalThemesDataSet = "OeREBKRM_V2_0_Themen_20220125"
 
     cantonalConfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
     federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"

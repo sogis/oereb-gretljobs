@@ -138,7 +138,7 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
 
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import des Grundwasserschutz-ÖREB-Datensatz in das Stage-Schema."
+    description = "Import der Naturreservate in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
@@ -156,7 +156,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 // }
 
 task importDataToLive(type: Ili2pgReplace) {
-    description = "Import des Grundwasserschutz-ÖREB-Datensatz in das Live-Schema."
+    description = "Import der Naturreservate in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "live"

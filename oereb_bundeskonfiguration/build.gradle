@@ -10,7 +10,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def iliModelKonfiguration = "OeREBKRMkvs_V2_0"
 
-def federalThemesDataFile = "OeREBKRM_V2_0_Themen_20210915.xml"
+def federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220125.xml"
 def federalThemesDataSet = "ch.admin.v_d.oereb_themen"
 def federalLogosDataFile = "OeREBKRM_V2_0_Logos_20211021.xml"
 def federalLogosDataSet = "ch.admin.v_d.oereb_logo"

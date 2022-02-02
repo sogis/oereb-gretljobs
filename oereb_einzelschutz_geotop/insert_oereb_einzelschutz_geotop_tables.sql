@@ -352,55 +352,6 @@ FROM
  * Dokumente
  */
 
-INSERT INTO
-    afu_geotope_oereb.dokumente_dokument
-    (
-        t_id,
-        t_basket,
-        t_ili_tid,
-        typ,
-        titel_de,
-        abkuerzung_de,
-        offiziellenr,
-        auszugindex,
-        rechtsstatus,
-        publiziertab,
-        zustaendigestelle
-    )
-    SELECT
-        dokument.t_id AS t_id,
-        basket.t_id AS basket_t_id,
-        '_'||SUBSTRING(REPLACE(CAST(dokument.t_id AS text), '-', ''),1,15) AS t_ili_tid,
-        'Rechtsvorschrift' AS art,
-        CASE
-            WHEN dokument.typ = 'RRB'
-                 THEN 'Regierungsratsbeschluss'
-            ELSE dokument.typ
-        END AS titel_de,
-        dokument.typ AS abkuerzung_de,
-        dokument.offizielle_nr AS offiziellenr,
-        CAST(998 AS int4) AS auszugindex,
-        dokument.rechtsstatus AS rechtsstatus,
-        dokument.publiziert_ab AS publiziertab,
-        amt.t_id AS zustaendigestelle
-    FROM
-        afu_geotope.geotope_dokument AS dokument
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
-        ON amt.t_ili_tid = 'ch.so.afu',
-        (
-            SELECT 
-                t_id 
-            FROM 
-                afu_geotope_oereb.t_ili2db_basket 
-            WHERE 
-                t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop'
-        ) AS basket
-    WHERE
-        dokument.typ = 'RRB'
-    AND
-        dokument.rechtsstatus= 'inKraft'
-;
-
 WITH dokumente AS
 (
     SELECT
@@ -417,7 +368,7 @@ WITH dokumente AS
     FROM
         afu_geotope.geotope_erratiker_dokument
     
-        UNION ALL    
+    UNION ALL    
     
     SELECT
         hoehle AS geotop,
@@ -442,6 +393,111 @@ WITH dokumente AS
         afu_geotope.geotope_quelle_dokument
 )
 ,
+-- Nur noch Dokumente, die mit einem Geotop verknüpft sind, das im 
+-- Kataster publiziert wird.
+dokumente_oereb AS (
+    SELECT 
+        DISTINCT ON (dokumente.dokument)
+        dokumente.*
+    FROM 
+        dokumente 
+        INNER JOIN afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+        ON dokumente.geotop = eigentumsbeschraenkung.t_id
+)
+INSERT INTO
+    afu_geotope_oereb.dokumente_dokument
+    (
+        t_id,
+        t_basket,
+        t_ili_tid,
+        typ,
+        titel_de,
+        abkuerzung_de,
+        offiziellenr,
+        auszugindex,
+        rechtsstatus,
+        publiziertab,
+        zustaendigestelle
+    )
+    SELECT
+        dokument_geotope.t_id AS t_id,
+        basket.t_id AS basket_t_id,
+        '_'||SUBSTRING(REPLACE(CAST(dokument_geotope.t_id AS text), '-', ''),1,15) AS t_ili_tid,
+        'Rechtsvorschrift' AS art,
+        CASE
+            WHEN dokument_geotope.typ = 'RRB'
+                 THEN 'Regierungsratsbeschluss'
+            ELSE dokument_geotope.typ
+        END AS titel_de,
+        dokument_geotope.typ AS abkuerzung_de,
+        dokument_geotope.offizielle_nr AS offiziellenr,
+        CAST(998 AS int4) AS auszugindex,
+        dokument_geotope.rechtsstatus AS rechtsstatus,
+        dokument_geotope.publiziert_ab AS publiziertab,
+        amt.t_id AS zustaendigestelle
+    FROM
+        afu_geotope.geotope_dokument AS dokument_geotope
+        INNER JOIN dokumente_oereb
+        ON dokument_geotope.t_id = dokumente_oereb.dokument
+        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        ON amt.t_ili_tid = 'ch.so.afu',
+        (
+            SELECT
+                t_id 
+            FROM 
+                afu_geotope_oereb.t_ili2db_basket 
+            WHERE 
+                t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop'
+        ) AS basket
+    WHERE
+        dokument_geotope.typ = 'RRB'
+    AND
+        dokument_geotope.rechtsstatus= 'inKraft'
+;
+
+WITH dokumente AS
+(
+    SELECT
+        aufschluss AS geotop,
+        dokument
+    FROM
+        afu_geotope.geotope_aufschluss_dokument
+        
+    UNION ALL    
+    
+    SELECT
+        erratiker AS geotop,
+        dokument
+    FROM
+        afu_geotope.geotope_erratiker_dokument
+    
+    UNION ALL    
+    
+    SELECT
+        hoehle AS geotop,
+        dokument
+    FROM
+        afu_geotope.geotope_hoehle_dokument
+    
+    UNION ALL    
+    
+    SELECT
+        landform AS geotop,
+        dokument
+    FROM
+        afu_geotope.geotope_landform_dokument
+    
+    UNION ALL
+    
+    SELECT
+        quelle AS geotop,
+        dokument
+    FROM
+        afu_geotope.geotope_quelle_dokument
+)
+,
+-- INNER JOIN führt dazu, dass nur Records der Zwischentabelle kopiert werden,
+-- die mit einem Geotop aus dem Kataster verknüpft sind.
 hinweisvorschrift AS
 (
     SELECT
