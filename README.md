@@ -10,17 +10,7 @@ If you want to set up development databases for developing new GRETL jobs, use t
 
 Start two DBs ("oereb" and "edit"), import data required for the data transformation (the so called legal basis data and some more files) into the "oereb" DB, and import demo data into the "edit" DB.
 
-XTF files that are not available in this repo should be directly exported from the database into the GRETL-Job directory (development_dbs):
-
-Denkmalschutz:
-```
-java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar --export --dbhost geodb.rootso.org --dbdatabase edit --dbusr $USER --dbpwd $(awk -v dbhost=$DBHOST -F ':' '$1~dbhost{print $5}' ~/.pgpass) --disableValidation --models SO_ADA_Denkmal_20191128 --dbschema ada_denkmalschutz ada_denkmalschutz1.xtf
-```
-
-Geotope:
-```
-java -jar /usr/local/ili2pg-4.3.1/ili2pg.jar --export --dbhost geodb.rootso.org --dbdatabase edit --dbusr $USER --dbpwd $(awk -v dbhost=$DBHOST -F ':' '$1~dbhost{print $5}' ~/.pgpass) --disableValidation --models SO_AFU_Geotope_20200312 --dbschema afu_geotope afu_geotope.xtf
-```
+XTF files that are not available in this repo (Geotope, Denkmalschutz) contain not public data and are downloaded from a private S3 bucket.
 
 Setup development environment for the various themes:
 
@@ -42,6 +32,11 @@ docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "slee
 Geotope (Einzelschutz):
 ```
 docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzGeotop"
+```
+
+Denkmal (Einzelschutz):
+```
+docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle downloadDataEinzelschutzDenkmal"
 ```
 
 Statische Waldgrenzen:
@@ -146,6 +141,10 @@ Geotope (Einzelschutz):
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_einzelschutz_geotop/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData validateData importDataToStage importDataToLive zipXtfFile uploadXtfToS3Geodata
 ```
 
+Denkmal (Einzelschutz):
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_einzelschutz_denkmal/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData exportPdfFromDatabase uploadPdfToS3Stage importDataToStage copyPdfToS3Live importDataToLive zipXtfFile uploadXtfToS3Geodata
+```
 
 Waldgrenzen:
 ```

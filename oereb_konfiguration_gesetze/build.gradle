@@ -25,8 +25,8 @@ if ( gretlEnvironment == 'production' ) {
     bucketSuffix = '-' + gretlEnvironment
 }
 
-def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
-def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
+def responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
+def cantonalConfigurationBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
 
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 

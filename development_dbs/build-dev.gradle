@@ -52,17 +52,17 @@ ext {
     dbSchemaEinzelschutzGeotop = "afu_geotope"
     einzelschutzGeotopDataFile = "ch.so.afu.geotope_edit.xtf"  
     einzelschutzGeotopZipFile  = "ch.so.afu.geotope_edit_xtf_dev_oereb.zip" // Kopiert aus int-Umgebung, weil prod voller Fehler.
-    //einzelschutzGeotopBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+
+    iliModelEinzelschutzDenkmal = "SO_ADA_Denkmal_20191128"
+    dbSchemaEinzelschutzDenkmal = "ada_denkmalschutz"
+    einzelschutzDenkmalDataFile = "ch.so.ada.denkmalschutz_edit.xtf"
+    einzelschutzDenkmalZipFile = "ch.so.ada.denkmalschutz_edit_xtf_dev_oereb.zip"
 
     iliModelStaticForestPerimeters = "SO_AWJF_Statische_Waldgrenzen_20191119"
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
     staticForestPerimetersBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
     
-    // iliModelEinzelschutzDenkmal = "SO_ADA_Denkmal_20191128"
-    // dbSchemaEinzelschutzDenkmal = "ada_denkmalschutz"
-    // einzelschutzDenkmalDataFile = "ada_denkmalschutz.xtf"
-    // einzelschutzDenkmalBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
 
     // iliModelEinzelschutzGeotop = "SO_AFU_Geotope_20200312"
     // dbSchemaEinzelschutzGeotop = "afu_geotope"
@@ -359,6 +359,32 @@ task replaceDataEinzelschutzGeotop(type: Ili2pgImport, dependsOn: "unzipEinzelsc
     models = iliModelEinzelschutzGeotop
     dbschema = dbSchemaEinzelschutzGeotop
     dataFile = file(einzelschutzGeotopDataFile)
+    deleteData = true
+    disableValidation = true
+}
+
+// Denkmal (Einzelschutz)
+task downloadDataEinzelschutzDenkmal(type: S3Download) {
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    downloadDir = file(pathToTempFolder.toString())
+    bucketName = "ch.so.agi.geodata"
+    key = einzelschutzDenkmalZipFile
+    endPoint = "https://s3.eu-central-1.amazonaws.com" 
+    region = "eu-central-1"
+}
+
+task unzipEinzelschutzDenkmal(type: Copy, dependsOn: "downloadDataEinzelschutzDenkmal") {
+    from zipTree(Paths.get(pathToTempFolder.toString(), einzelschutzDenkmalZipFile))
+    into file(".")
+    include "**/*.xtf"
+}
+
+task replaceDataEinzelschutzDenkmal(type: Ili2pgImport, dependsOn: "unzipEinzelschutzDenkmal") {
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelEinzelschutzDenkmal
+    dbschema = dbSchemaEinzelschutzDenkmal
+    dataFile = file(einzelschutzDenkmalDataFile)
     deleteData = true
     disableValidation = true
 }
