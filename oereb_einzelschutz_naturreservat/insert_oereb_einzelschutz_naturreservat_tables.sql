@@ -171,6 +171,7 @@ legendeneintrag AS (
             artcode,
             artcodeliste,
             thema,
+            subthema,
             darstellungsdienst    
         )
     SELECT 
@@ -183,6 +184,7 @@ legendeneintrag AS (
         eigentumsbeschraenkung.artcode,
         eigentumsbeschraenkung.artcodeliste,
         eigentumsbeschraenkung.thema,
+        eigentumsbeschraenkung.subthema,
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 

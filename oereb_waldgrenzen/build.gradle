@@ -127,15 +127,16 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet 
     importBid = true
+    importTid = true
     disableValidation = true
 }
 
-// task refreshOerebWMSTablesStage(type: SqlExecutor) {
-//     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
-//     sqlParameters = [dbSchema: 'stage']
-// }
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
 
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Waldgrenzen-ÖREB-Datensatz in das Live-Schema."
@@ -145,15 +146,16 @@ task importDataToLive(type: Ili2pgReplace) {
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = staticForestPerimeterDataSet 
     importBid = true
+    importTid = true
     disableValidation = true
 }
 
-// task refreshOerebWMSTablesLive(type: SqlExecutor) {
-//     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-//     sqlFiles = ["update_oerebwms_staticforestperimeters_tables.sql"]
-//     sqlParameters = [dbSchema: 'live']
-// }
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
 
 task zipXtfFile(type: Zip) {
     description = "Zipt das XTF-File mit den Waldgrenzen für den Upload nach S3"

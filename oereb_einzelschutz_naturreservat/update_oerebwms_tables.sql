@@ -1,7 +1,21 @@
 DELETE FROM 
-    ${dbSchema}.so_g_rb0220222wms_belastete_standorte
+    ${dbSchema}.so_g_rb0220222wms_einzelschutz_flaeche
+WHERE 
+    (
+        thema = 'ch.Nutzungsplanung'
+        AND 
+        subthema = 'ch.SO.NutzungsplanungUeberlagernd'
+        AND 
+        artcodeliste = 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.Naturreservat_Flaeche'
+    )
+    OR 
+    (
+        thema = 'ch.SO.Einzelschutz'
+        AND 
+        artcodeliste = 'urn:fdc:ilismeta.interlis.ch:2019:Typ_Naturschutzgebiete_Flaeche'
+    )
 ;
-
+ 
 WITH eigentumsbeschraenkung_thema AS 
 (
     SELECT 
@@ -16,7 +30,19 @@ WITH eigentumsbeschraenkung_thema AS
         LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_legendeeintrag AS legende
         ON eigentumsbeschraenkung.legende = legende.t_id 
     WHERE 
-        legende.thema = 'ch.BelasteteStandorte'
+        (
+            legende.thema = 'ch.Nutzungsplanung'
+            AND 
+            legende.subthema = 'ch.SO.NutzungsplanungUeberlagernd'
+            AND 
+            legende.artcodeliste = 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.Naturreservat_Flaeche'
+        )
+        OR 
+        (
+            legende.thema = 'ch.SO.Einzelschutz'
+            AND 
+            legende.artcodeliste = 'urn:fdc:ilismeta.interlis.ch:2019:Typ_Naturschutzgebiete_Flaeche'
+        )
 )
 ,
 dokumente AS 
@@ -90,7 +116,7 @@ eigentumsbeschrankung_geometrie AS
         ON geometrie.eigentumsbeschraenkung = eigentumsbeschraenkung_thema.t_id
 )
 INSERT INTO 
-    ${dbSchema}.so_g_rb0220222wms_belastete_standorte 
+    ${dbSchema}.so_g_rb0220222wms_einzelschutz_flaeche 
     (
         t_ili_tid,
         geometrie,

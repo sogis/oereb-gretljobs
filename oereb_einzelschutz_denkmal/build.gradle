@@ -160,8 +160,8 @@ task uploadPdfToS3Stage(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
     acl = "public-read"
 }
 
-//task importDataToStage(type: Ili2pgReplace, dependsOn: "uploadPdfToS3Stage") {
-task importDataToStage(type: Ili2pgReplace) {
+task importDataToStage(type: Ili2pgReplace, dependsOn: "uploadPdfToS3Stage") {
+//task importDataToStage(type: Ili2pgReplace) {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
@@ -169,6 +169,7 @@ task importDataToStage(type: Ili2pgReplace) {
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet
     importBid = true
+    importTid = true
     disableValidation = true
     finalizedBy {
         updateS3StageLink
@@ -181,12 +182,12 @@ task updateS3StageLink(type: SqlExecutor) {
     sqlFiles = ["update_rechtsvorschriften_localiseduri.sql"]
 }
 
-// task refreshOerebWMSTablesStage(type: SqlExecutor) {
-//     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-//     sqlFiles = ["update_oerebwms_einzelschutz_denkmal_tables.sql"]
-//     sqlParameters = [dbSchema: 'stage']
-// }
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
 
 task copyPdfToS3Live(type: S3Bucket2Bucket) {
     accessKey = awsAccessKeyAda
@@ -197,6 +198,7 @@ task copyPdfToS3Live(type: S3Bucket2Bucket) {
 }
 
 task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
+//task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
@@ -204,15 +206,16 @@ task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet 
     importBid = true
+    importTid = true
     disableValidation = true
 }
 
-// task refreshOerebWMSTablesLive(type: SqlExecutor) {
-//     description = "Aktualisiert OEREB WMS Tabellen."
-//     database = [dbUriOereb, dbUserOereb, dbPwdOereb]
-//     sqlFiles = ["update_oerebwms_einzelschutz_denkmal_tables.sql"]
-//     sqlParameters = [dbSchema: 'live']
-// }
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
 
 task zipXtfFile(type: Zip) {
     description = "Zipt das xtf-File mit den Einzelschutz-Denkmal-Daten für den Upload nach S3"

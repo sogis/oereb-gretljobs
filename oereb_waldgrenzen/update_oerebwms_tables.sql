@@ -1,5 +1,5 @@
 DELETE FROM 
-    ${dbSchema}.so_g_rb0220222wms_belastete_standorte
+    ${dbSchema}.so_g_rb0220222wms_waldgrenzen
 ;
 
 WITH eigentumsbeschraenkung_thema AS 
@@ -16,7 +16,7 @@ WITH eigentumsbeschraenkung_thema AS
         LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_legendeeintrag AS legende
         ON eigentumsbeschraenkung.legende = legende.t_id 
     WHERE 
-        legende.thema = 'ch.BelasteteStandorte'
+        legende.thema = 'ch.StatischeWaldgrenzen'
 )
 ,
 dokumente AS 
@@ -83,14 +83,14 @@ eigentumsbeschrankung_geometrie AS
 (
     SELECT 
         eigentumsbeschraenkung_thema.t_id, 
-        geometrie.flaeche AS geometrie
+        geometrie.linie AS geometrie
     FROM 
         eigentumsbeschraenkung_thema 
         LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_geometrie AS geometrie 
         ON geometrie.eigentumsbeschraenkung = eigentumsbeschraenkung_thema.t_id
 )
 INSERT INTO 
-    ${dbSchema}.so_g_rb0220222wms_belastete_standorte 
+    ${dbSchema}.so_g_rb0220222wms_waldgrenzen 
     (
         t_ili_tid,
         geometrie,
@@ -120,7 +120,6 @@ SELECT
     eigentumsbeschraenkung_amt.amtimweb AS amtimweb,
     eigentumsbeschraenkung.publiziertab,
     eigentumsbeschraenkung.publiziertbis
-    
 FROM 
     eigentumsbeschraenkung_thema 
     LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
