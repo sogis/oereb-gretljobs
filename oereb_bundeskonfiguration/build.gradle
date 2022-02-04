@@ -96,7 +96,7 @@ task downloadFederalText(type: Download) {
     doFirst {
         println federalConfigurationBaseUrl + federalTextDataFile
     }
-    description = "Download Bundeslogos."
+    description = "Download Bundestexte."
     src federalConfigurationBaseUrl + federalTextDataFile
     dest pathToTempFolder
     overwrite true

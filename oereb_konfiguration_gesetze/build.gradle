@@ -12,8 +12,8 @@ def iliModelBasis = "OeREBKRM_V2_0"
 
 def dbSchemaKonfiguration = "agi_oereb_konfiguration"
 
-def xtfFileName = "ch.so.agi.oereb_gesetze_V2_0.xtf"
-def zipFileName = "ch.so.agi.oereb_gesetze_V2_0_xtf.zip"
+def xtfFileName = "ch.so.sk.oereb_gesetze_V2_0.xtf"
+def zipFileName = "ch.so.sk.oereb_gesetze_V2_0_xtf.zip"
 def dataSet = "gesetze"
 
 def bucketSuffix = '-undefined'
