@@ -7,6 +7,15 @@ apply plugin: "de.undercouch.download"
 apply plugin: "ch.so.agi.gretl"
 
 ext {
+    def bucketSuffix = '-undefined'
+    if ( gretlEnvironment == 'production' ) {
+        bucketSuffix = ''
+    } else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+        bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+    } else {
+        bucketSuffix = '-' + gretlEnvironment
+    }
+
     pathToTempFolder = System.getProperty("java.io.tmpdir")
     pathToUserFolder = System.getProperty("user.dir")
 
@@ -89,7 +98,9 @@ ext {
     iliModelKonfiguration = "OeREBKRMkvs_V2_0"
     iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 
-    responsibleOfficesBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+    cantonalDataBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+
+
     //responsibleOfficesDataSet = "zustaendigestellen" Bereits für Edit-DB definiert.
 
     // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
@@ -535,16 +546,52 @@ task replaceDataStaticForestPerimetersToEdit(type: Ili2pgImport, dependsOn: "dow
 // }
 
 /* OEREB-DB */
-// Zum Testen der GRETL-Jobs werden nur die zuständigen Stellen benötigt.
 
 def dbSchemas = ["stage", "live"]
+
+//    federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220125.xml"
+//    federalThemesDataSet = "OeREBKRM_V2_0_Themen_20220125"
+
+
+task downloadFederalLegalBasisData(type: Download) {
+    doFirst {
+        println federalConfigurationBaseUrl + federalLegalBasisDataFile
+    }
+    description = "Download Bundesgesetze."
+    src federalConfigurationBaseUrl + federalLegalBasisDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+dbSchemas.each { dbSchema ->
+    def schema = dbSchema.toString()
+    task "importFederalLegalBasisData_$schema"(type: Ili2pgUpdate, dependsOn: "downloadFederalLegalBasisData"){
+        description = "Import Bundesgesetze in das $schema Schema"
+        database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+        dbschema = schema
+        dataset = federalLegalBasisDataSet
+        models = iliModelBasis
+        disableValidation = false
+        dataFile = file(Paths.get(pathToTempFolder.toString(), federalLegalBasisDataFile))
+        importBid = true
+        importTid = true
+    }
+}
+
+task importFederalLegalBasisToOereb() {
+    description = "Import Bundesgesetze in beide Schemas."
+
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importFederalLegalBaseData_') }
+    }    
+}
 
 task downloadResponsibleOfficesOereb(type: Download) {
     doFirst {
         println responsibleOfficesBaseUrl + responsibleOfficesDataFile
     }
     description = "Download zuständige, kantonale Stellen."
-    src responsibleOfficesBaseUrl + responsibleOfficesDataFile
+    src cantonalDataBaseUrl + responsibleOfficesDataFile
     dest pathToTempFolder
     overwrite true
 }
@@ -557,20 +604,22 @@ dbSchemas.each { dbSchema ->
         database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
         dbschema = schema
         dataset = responsibleOfficesDataSet
-        importBid = true
         models = iliModelBasis
         dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataFile))
-        strokeArcs = true
+        importBid = true
+        importTid = true
     }
 }
 
 task importResponsibleOfficesToOereb() {
     description = "Import zuständige, kantonale Stellen in beide Schemas."
+
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importResponsibleOfficesToOereb_') }
+    }    
 }
 
-importResponsibleOfficesToOereb.dependsOn {
-    tasks.findAll { task -> task.name.startsWith('importResponsibleOfficesToOereb_') }
-}
+
 
 // task downloadFederalLegalBasis(type: Download) {
 //     description = "Download Bundesgesetze ($federalLegalBaseDataSet)."

@@ -67,6 +67,9 @@ export ORG_GRADLE_PROJECT_geoservicesHostName="geo-t.so.ch"
 export ORG_GRADLE_PROJECT_gretlEnvironment="dev"
 export ORG_GRADLE_PROJECT_awsAccessKeyAgi="xy"
 export ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi="yx"
+export ORG_GRADLE_PROJECT_awsAccessKeyAda="foo"
+export ORG_GRADLE_PROJECT_awsSecretAccessKeyAda="bar"
+export ORG_GRADLE_PROJECT_GRADLE_USER_HOME=/home/default/.gradle
 ```
 
 Start the GRETL job (use the --job-directory option to point to the desired GRETL job; find out the names of your Docker networks by running `docker network ls`):
