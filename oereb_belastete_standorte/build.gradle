@@ -65,6 +65,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dataFile = file(Paths.get("$rootDir", kbsDataSet + ".xtf"))
     dataset = kbsDataSet
     disableValidation = true
+    importTid = true
 }
 
 // task refreshOerebWMSTablesStage(type: SqlExecutor) {
@@ -82,6 +83,7 @@ task importDataToLive(type: Ili2pgReplace) {
     dataFile = file(Paths.get("$rootDir", kbsDataSet + ".xtf"))
     dataset = kbsDataSet
     disableValidation = true
+    importTid = true
 }
 
 // task refreshOerebWMSTablesLive(type: SqlExecutor) {

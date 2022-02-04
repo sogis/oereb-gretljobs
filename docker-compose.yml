@@ -14,6 +14,7 @@ services:
       ORG_GRADLE_PROJECT_awsAccessKeyAgi: ${ORG_GRADLE_PROJECT_awsAccessKeyAgi} 
       ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi: ${ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi}
       ORG_GRADLE_PROJECT_gretlEnvironment: ${ORG_GRADLE_PROJECT_gretlEnvironment:-dev}
+      ORG_GRADLE_PROJECT_GRADLE_USER_HOME: /home/default/.gradle
     depends_on:
       - oereb-db
       - edit-db
