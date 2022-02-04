@@ -16,7 +16,7 @@ Setup development environment for the various themes:
 
 Konfiguration:
 ```
-docker-compose run --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
+docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
 ```
 
 Gewässerschutz:
