@@ -17,6 +17,7 @@ ext {
     }
 
     pathToTempFolder = System.getProperty("java.io.tmpdir")
+    pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
     pathToUserFolder = System.getProperty("user.dir")
 
     /* Edit-DB */
@@ -72,6 +73,11 @@ ext {
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
     staticForestPerimetersBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
     
+    iliModelCadastralSurveying = "DM01AVSO24LV95"
+    dbSchemaCadastralSurveying = "agi_dm01avso24"
+    cadastralSurveyingDataSets = ["2401", "2457", "2546", "2581", "2601"]
+    cadastralSurveyingBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.dm01avso24lv95/"
+
 
     // iliModelEinzelschutzGeotop = "SO_AFU_Geotope_20200312"
     // dbSchemaEinzelschutzGeotop = "afu_geotope"
@@ -117,6 +123,7 @@ ext {
 }    
 
 /* Edit-DB */
+def editGroupName = "Edit-DB"
 
 // Konfiguration:
 // Basis: zustaendigeStelle <- Gesetze
@@ -440,48 +447,6 @@ task replaceDataEinzelschutzDenkmal(type: Ili2pgImport, dependsOn: "unzipEinzels
 //     }
 // }
 
-/*
-task uploadToS3(type: AmazonS3FileUploadTask) {
-    description = "Hochladen der exportierten Datei auf S3."
-    file file("$rootDir/" + xtfFileName) 
-    bucketName "ch.so.arp.nutzungsplanung.oereb"
-    key xtfFileName
-
-    def m = new ObjectMetadata()
-    m.setCacheControl("no-cache, no-store")
-    objectMetadata = m
-}
-*/
-
-// task createSchemaGroundwaterProtection(type: SqlExecutor){
-//     database = [dbUriEdit, "admin", "admin"]
-//     sqlFiles = ['afu_gewaesserschutz.sql', 'afu_gewaesserschutz_grants.sql']
-// }
-
-
-
-/*
-task createSchemaStaticForestPerimeters(type: SqlExecutor){
-    database = [dbUriEdit, "admin", "admin"]
-    sqlFiles = ['awjf_statische_waldgrenze.sql', 'awjf_statische_waldgrenze_grants.sql']
-}
-*/
-/*
-task createSchemaStaticForestPerimeters(type: Ili2pgImportSchema) {
-    database = [dbUriEdit, "admin", "admin"]
-    models = iliModelStaticForestPerimeters
-    dbschema = dbSchemaStaticForestPerimeters
-    strokeArcs = true
-    defaultSrsAuth = 2056
-    createEnumTabs = true
-    beautifyEnumDispName = true
-    createFk = true
-    createFkIdx = true
-    createGeomIdx = true
-    nameByTopic = true
-    postScript = file("awjf_statische_waldgrenze_grants.sql")
-}
-*/
 
 // Statische Waldgrenzen
 
@@ -503,52 +468,53 @@ task replaceDataStaticForestPerimetersToEdit(type: Ili2pgImport, dependsOn: "dow
     disableValidation = true
 }
 
-// task createSchemaEinzelschutzDenkmal(type: SqlExecutor){
-//     database = [dbUriEdit, "admin", "admin"]
-//     sqlFiles = ['ada_denkmalschutz.sql', 'ada_denkmalschutz_grants.sql']
-// }
+// Amtliche Vermessung
 
-// task downloadDataEinzelschutzDenkmal(type: Download) {
-//     src einzelschutzDenkmalBaseUrl + einzelschutzDenkmalDataFile
-//     dest pathToTempFolder
-//     overwrite true
-//     doLast {
-//         println "File downloaded to: " + pathToTempFolder
-//     }
-// }
+cadastralSurveyingDataSets.each { cadastralSurveyingDataSet ->
+    def dataSet = cadastralSurveyingDataSet.toString()
+    task "downloadDataCadastralSurveying_$dataSet"(type: Download) {
+        group = editGroupName
+        src cadastralSurveyingBaseUrl + dataSet + "00.zip"
+        dest pathToTempFolder
+        overwrite true
 
-// task replaceDataEinzelschutzDenkmal(type: Ili2pgImport, dependsOn: "downloadDataEinzelschutzDenkmal") {
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelEinzelschutzDenkmal
-//     dbschema = dbSchemaEinzelschutzDenkmal
-//     dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzDenkmalDataFile))
-//     deleteData = true
-//     disableValidation = true
-// }
+        doLast {
+            println "File downloaded to: " + pathToTempFolder
+        }        
+    }
 
+    task "unzipCadastralSurveying_$dataSet"(type: Copy, dependsOn: "downloadDataCadastralSurveying_$dataSet") {
+        group = editGroupName
+        from zipTree(Paths.get(pathToTempFolder.toString(), dataSet + "00.zip"))
+        into file(pathToUnzipFolder)
+        //include "**/*.itf"
+        include {
+            it.file.name.toLowerCase().endsWith("itf")
+        }         
+        rename { String fileName ->
+            return fileName.toLowerCase()
+        }
+ 
+        
+    }
 
-// task createSchemaEinzelschutzGeotop(type: SqlExecutor){
-//     database = [dbUriEdit, "admin", "admin"]
-//     sqlFiles = ['afu_geotope.sql', 'afu_geotope_grants.sql']
-// }
+    task "replaceCadastralSurveying_$dataSet"(type: Ili2pgReplace, dependsOn: "unzipCadastralSurveying_$dataSet") {
+        group = editGroupName
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        models = iliModelCadastralSurveying
+        dbschema = dbSchemaCadastralSurveying
+        dataFile = file(Paths.get(pathToUnzipFolder.toString(), dataSet + "00.itf"))
+        dataset = dataSet
+        disableValidation = true
+    }
+}
 
-// task downloadDataEinzelschutzGeotop(type: Download) {
-//     src einzelschutzGeotopBaseUrl + einzelschutzGeotopDataFile
-//     dest pathToTempFolder
-//     overwrite true
-//     doLast {
-//         println "File downloaded to: " + pathToTempFolder
-//     }
-// }
-
-// task replaceDataEinzelschutzGeotop(type: Ili2pgImport, dependsOn: "downloadDataEinzelschutzGeotop") {
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelEinzelschutzGeotop
-//     dbschema = dbSchemaEinzelschutzGeotop
-//     dataFile = file(Paths.get(pathToTempFolder.toString(), einzelschutzGeotopDataFile))
-//     deleteData = true
-//     disableValidation = true
-// }
+task replaceCadastralSurveying() {
+    group = editGroupName
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('replaceCadastralSurveying_') }
+    }
+}
 
 /* OEREB-DB */
 

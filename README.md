@@ -153,6 +153,10 @@ Waldgrenzen:
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_waldgrenzen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
+Amtliche Vermessung:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oereb_av/ tasks --all
+```
 
 
 
