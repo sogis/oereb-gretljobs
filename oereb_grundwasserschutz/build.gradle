@@ -19,8 +19,8 @@ def symbolsZoneDataSet = groundwaterProtectionDataSet + "zonen.symbole"
 def symbolsArealDataSet = groundwaterProtectionDataSet + "areale.symbole" 
 def symbolsDataSets = [symbolsZoneDataSet, symbolsArealDataSet]
 
-def xtfFileName = groundwaterProtectionDataSet + ".xtf"
-def zipFileName = groundwaterProtectionDataSet + "_V2_0_xtf.zip"
+def xtfFileName = groundwaterProtectionDataSet + "_V2_0.xtf"
+def xtfZipFileName = groundwaterProtectionDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.afu.oereb_grundwasserschutz.empty.xtf"
 
 def bucketSuffix = '-undefined'
@@ -176,7 +176,7 @@ task zipXtfFile(type: Zip) {
     description = "Zipt das XTF-File mit den Waldgrenzen für den Upload nach S3"
     from "$rootDir"
     include xtfFileName
-    archiveName zipFileName
+    archiveName xtfZipFileName
     destinationDir(file("$rootDir"))
 }
 
@@ -184,7 +184,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "XTF-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket

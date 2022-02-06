@@ -21,8 +21,8 @@ def symbolsDenkmalFlaecheDataSet = einzelschutzDenkmalDataSet + "_flaeche.symbol
 def symbolsDenkmalPunktDataSet = einzelschutzDenkmalDataSet + "_punkt.symbole" 
 def symbolsDataSets = [symbolsDenkmalFlaecheDataSet, symbolsDenkmalPunktDataSet]
 
-def xtfFileName = einzelschutzDenkmalDataSet + ".xtf"
-def zipFileName = einzelschutzDenkmalDataSet + "_V2_0_xtf.zip"
+def xtfFileName = einzelschutzDenkmalDataSet + "_V2_0.xtf"
+def xtfZipFileName = einzelschutzDenkmalDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.ada.oereb_einzelschutz_denkmal.empty.xtf"
 
 def bucketSuffix = '-undefined'
@@ -221,7 +221,7 @@ task zipXtfFile(type: Zip) {
     description = "Zipt das xtf-File mit den Einzelschutz-Denkmal-Daten für den Upload nach S3"
     from "$rootDir"
     include xtfFileName
-    archiveName zipFileName
+    archiveName xtfZipFileName
     destinationDir(file("$rootDir"))
 }
 
@@ -229,7 +229,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "Xtf-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket

@@ -20,8 +20,8 @@ def symbolsEinzelschutzDataSet = einzelschutzNaturreservatDataSet + "_einzelschu
 def symbolsNutzungsplanungDataSet = einzelschutzNaturreservatDataSet + "_nutzungsplanung.symbole" 
 def symbolsDataSets = [symbolsEinzelschutzDataSet, symbolsNutzungsplanungDataSet]
 
-def xtfFileName = einzelschutzNaturreservatDataSet + ".xtf"
-def zipFileName = einzelschutzNaturreservatDataSet + "_V2_0_xtf.zip"
+def xtfFileName = einzelschutzNaturreservatDataSet + "_V2_0.xtf"
+def xtfZipFileName = einzelschutzNaturreservatDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.arp.oereb_einzelschutz_naturreservat.empty.xtf"
 
 def bucketSuffix = '-undefined'
@@ -180,7 +180,7 @@ task zipXtfFile(type: Zip) {
     description = "Zipt das XTF-File mit den Waldgrenzen für den Upload nach S3"
     from "$rootDir"
     include xtfFileName
-    archiveName zipFileName
+    archiveName xtfZipFileName
     destinationDir(file("$rootDir"))
 }
 
@@ -188,7 +188,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "XTF-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket

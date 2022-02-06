@@ -18,8 +18,8 @@ def staticForestPerimeterDataSet = "ch.so.awjf.oereb_statische_waldgrenzen"
 def symbolsDataSet = staticForestPerimeterDataSet + ".symbole" 
 
 def symbolsFileName = symbolsDataSet + ".xtf"    
-def xtfFileName = staticForestPerimeterDataSet + ".xtf"
-def zipFileName = staticForestPerimeterDataSet + "_V2_0_xtf.zip"
+def xtfFileName = staticForestPerimeterDataSet + "_V2_0.xtf"
+def xtfZipFileName = staticForestPerimeterDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.awjf.oereb_statische_waldgrenzen.empty.xtf"
 
 def bucketSuffix = '-undefined'
@@ -161,7 +161,7 @@ task zipXtfFile(type: Zip) {
     description = "Zipt das XTF-File mit den Waldgrenzen für den Upload nach S3"
     from "$rootDir"
     include xtfFileName
-    archiveName zipFileName
+    archiveName xtfZipFileName
     destinationDir(file("$rootDir"))
 }
 
@@ -169,7 +169,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "XTF-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", zipFileName))
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket

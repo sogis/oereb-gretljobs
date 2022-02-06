@@ -373,7 +373,7 @@ task downloadDataEinzelschutzGeotop(type: S3Download) {
 
 task unzipEinzelschutzGeotop(type: Copy, dependsOn: "downloadDataEinzelschutzGeotop") {
     from zipTree(Paths.get(pathToTempFolder.toString(), einzelschutzGeotopZipFile))
-    into file(".")
+    into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
 
@@ -381,7 +381,7 @@ task replaceDataEinzelschutzGeotop(type: Ili2pgImport, dependsOn: "unzipEinzelsc
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelEinzelschutzGeotop
     dbschema = dbSchemaEinzelschutzGeotop
-    dataFile = file(einzelschutzGeotopDataFile)
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), einzelschutzGeotopDataFile))
     deleteData = true
     disableValidation = true
 }
@@ -400,6 +400,7 @@ task downloadDataEinzelschutzDenkmal(type: S3Download) {
 task unzipEinzelschutzDenkmal(type: Copy, dependsOn: "downloadDataEinzelschutzDenkmal") {
     from zipTree(Paths.get(pathToTempFolder.toString(), einzelschutzDenkmalZipFile))
     into file(".")
+    into file(pathToUnzipFolder)
     include "**/*.xtf"
 }
 
@@ -407,7 +408,7 @@ task replaceDataEinzelschutzDenkmal(type: Ili2pgImport, dependsOn: "unzipEinzels
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelEinzelschutzDenkmal
     dbschema = dbSchemaEinzelschutzDenkmal
-    dataFile = file(einzelschutzDenkmalDataFile)
+    dataFile = file(Paths.get(pathToUnzipFolder.toString(), einzelschutzDenkmalDataFile))
     deleteData = true
     disableValidation = true
 }
