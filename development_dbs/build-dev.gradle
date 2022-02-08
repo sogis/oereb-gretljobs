@@ -78,26 +78,14 @@ ext {
     cadastralSurveyingDataSets = ["2401", "2457", "2546", "2581", "2601"]
     cadastralSurveyingBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.dm01avso24lv95/"
 
-
-    // iliModelEinzelschutzGeotop = "SO_AFU_Geotope_20200312"
-    // dbSchemaEinzelschutzGeotop = "afu_geotope"
-    // einzelschutzGeotopDataFile = "afu_geotope.xtf"
-    // einzelschutzGeotopBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
-
-    // iliModelLandUsePlans = "SO_Nutzungsplanung_20171118"
-    // dbSchemaLandUsePlans = "arp_npl"
-    // landUsePlansDataSets = ["2401", "2403", "2405", "2407", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2479",  "2491", "2498", "2501", "2502", "2514", "2551", "2573", "2580", "2613", "2614", "2615", "2616"]
-    // //landUsePlansDataSets = ["2502"]
-    // landUsePlansBaseUrl = "https://geo.so.ch/geodata/ch.so.arp.nutzungsplanung/"
+    iliModelLandUsePlans = "SO_ARP_Nutzungsplanung_Nachfuehrung_20201005"
+    dbSchemaLandUsePlans = "arp_nutzungsplanung"
+    dbSchemaCantonalLandUsePlans = "arp_nutzungsplanung_kanton"
+    //landUsePlansDataSets = ["2401", "2403", "2405", "2407", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2479",  "2491", "2498", "2501", "2502", "2514", "2551", "2573", "2580", "2613", "2614", "2615", "2616"]
+    landUsePlansDataSets = ["2457"]
+    cantonalLandUsePlansDataSet = "kanton"
+    landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.data4dev/nutzungsplanung/"
     
-    // iliModelGroundwaterProtection = "PlanerischerGewaesserschutz_LV95_V1_1"
-    // dbSchemaGroundwaterProtection = "afu_gewaesserschutz"
-    // groundwaterProtectionDataFile = "afu_gewaesserschutz.xtf"
-    // groundwaterProtectionBaseUrl = "https://raw.githubusercontent.com/sogis/oereb-gretljobs/master/development_dbs/"
-
-
-
-
     /* OEREB-DB */
 
     iliModelBasis = "OeREBKRM_V2_0"
@@ -110,16 +98,6 @@ ext {
     federalTextDataSet = "ch.admin.v_d.oereb_text"
 
     cantonalDataBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
-
-
-    //responsibleOfficesDataSet = "zustaendigestellen" Bereits für Edit-DB definiert.
-
-    // federalLegalBasisBaseUrl = "http://models.geo.admin.ch/V_D/OeREB/replaced/"
-    // federalLegalBaseDataSet = "OeREBKRM_V1_1_Gesetze_20180501"
-
-    // cantonalLegalBasisBaseUrl = "https://geo.so.ch/geodata/ch.so.sk.gesetze.oereb/"
-    // cantonalLegalBaseDataSet = "ch.so.sk.gesetze"
-
 }    
 
 /* Edit-DB */
