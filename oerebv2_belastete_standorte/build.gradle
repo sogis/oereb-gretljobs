@@ -30,7 +30,7 @@ def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 task downloadKbs(type: Download){
     description = "Download Belastete Standorte"
-    src "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.tmp/altlast4web/data.zip" // http://altlast4web.verw.rootso.org/interlis_exports/oereb2/data.zip TODO: URL anpassen
+    src "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.data4dev/altlast4web/data.zip" // http://altlast4web.verw.rootso.org/interlis_exports/oereb2/data.zip TODO: URL anpassen
     dest pathToTempFolder
     overwrite true
     acceptAnyCertificate true //eventuell später mit neuem Base-Image löschen, Stand 14.01.22 noch nicht möglich

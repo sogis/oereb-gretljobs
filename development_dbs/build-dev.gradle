@@ -365,7 +365,7 @@ task downloadDataEinzelschutzGeotop(type: S3Download) {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     downloadDir = file(pathToTempFolder.toString())
-    bucketName = "ch.so.agi.geodata"
+    bucketName = "ch.so.agi.oereb.data4dev-restricted"
     key = einzelschutzGeotopZipFile
     endPoint = "https://s3.eu-central-1.amazonaws.com" 
     region = "eu-central-1"
@@ -391,7 +391,7 @@ task downloadDataEinzelschutzDenkmal(type: S3Download) {
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
     downloadDir = file(pathToTempFolder.toString())
-    bucketName = "ch.so.agi.geodata"
+    bucketName = "ch.so.agi.oereb.data4dev-restricted"
     key = einzelschutzDenkmalZipFile
     endPoint = "https://s3.eu-central-1.amazonaws.com" 
     region = "eu-central-1"
