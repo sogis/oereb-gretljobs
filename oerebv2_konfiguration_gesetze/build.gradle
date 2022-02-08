@@ -1,0 +1,102 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelBasis = "OeREBKRM_V2_0"
+
+def dbSchemaKonfiguration = "agi_oereb_konfiguration"
+
+def xtfFileName = "ch.so.sk.oereb_gesetze_V2_0.xtf"
+def zipFileName = "ch.so.sk.oereb_gesetze_V2_0_xtf.zip"
+def dataSet = "gesetze"
+
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+
+def responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
+def cantonalConfigurationBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+def dbSchemas = ["stage","live"]
+
+defaultTasks "importData"
+
+task exportData(type: Ili2pgExport) {
+    description = "Exportiert die kantonalen Gesetze."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelBasis
+    dbschema = dbSchemaKonfiguration
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = dataSet
+    disableValidation = true
+}
+
+task downloadResponsibleOfficesEdit(type: Download) {
+    doFirst {
+        println cantonalConfigurationBaseUrl + responsibleOfficesDataFile
+    }
+    description = "Download zuständige, kantonale Stellen."
+    src cantonalConfigurationBaseUrl + responsibleOfficesDataFile
+    dest pathToTempFolder
+    overwrite true
+}
+
+task validateData(type: IliValidator, dependsOn: ["exportData", "downloadResponsibleOfficesEdit"]) {
+    description = "Validiert die exportierten Daten."
+    dataFiles = [
+                    file(Paths.get(pathToTempFolder, responsibleOfficesDataFile)),
+                    file(Paths.get("$rootDir", xtfFileName))
+                ]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = true
+}
+
+// See xxxx bug wegen --update
+dbSchemas.each { dbSchema ->
+    def schema = dbSchema.toString()
+    task "importDataTo_$schema"(type: Ili2pgReplace, dependsOn: "validateData"){
+        description = "Import der kantonalen Gesetze in das $schema Schema"
+        database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+        dbschema = schema
+        dataset = dataSet
+        models = iliModelBasis
+        dataFile = file(Paths.get("$rootDir", xtfFileName))
+        disableValidation = true
+        importBid = true
+        importTid = true
+    }
+}
+
+task importData() {
+    description = "Aggregationstask für Import der kantonalen Gesetze."
+
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importDataTo_') }
+    }    
+
+    finalizedBy "uploadXtfToS3Geodata"
+}
+
+task uploadXtfToS3Geodata(type: S3Upload) {
+    description = "XTF-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", xtfFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}

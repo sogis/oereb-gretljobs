@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
-<HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
-<DATASECTION>
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege">
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAbklEQVR4Xu3WIQoAIBBE0T2t2epVRfAoY18sBsGR/5hk2t8MfSfygz+SHJDkgCQHJDn4MamqvrOhkQ88F0XlnXX1fOA5ki6PpD2SLo+kPZIuj6S9aGrvbGrmA8/9+G3ND/5IckCSA5IckOSAJAcLmR7/1sQ+BEkAAAAASUVORK5CYII=</BINBLBOX></Symbol><LegendeTextAggregiert>in Bauzonen</LegendeTextAggregiert><ArtCode>in_Bauzonen</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen</ArtCodeliste><Thema>ch.StatischeWaldgrenzen</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="2"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAU0lEQVR4Xu3WoREAQAjEQKpFY6me999BbpI5hVtHXVz1H/hJIiSJkCRCkgglkuYmbNXXYZNEmCTCJBEmibBE0t6GLfFt/Q/8JBGSREgSIUmEJBF6tc6+f/a7ZMsAAAAASUVORK5CYII=</BINBLBOX></Symbol><LegendeTextAggregiert>ausserhalb Bauzonen</LegendeTextAggregiert><ArtCode>ausserhalb_Bauzonen</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2017:Typ_Kanton_Waldgrenzen</ArtCodeliste><Thema>ch.StatischeWaldgrenzen</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
-</SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
-</DATASECTION>
-</TRANSFER>

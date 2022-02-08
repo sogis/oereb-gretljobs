@@ -495,8 +495,6 @@ cadastralSurveyingDataSets.each { cadastralSurveyingDataSet ->
         rename { String fileName ->
             return fileName.toLowerCase()
         }
- 
-        
     }
 
     task "replaceCadastralSurveying_$dataSet"(type: Ili2pgReplace, dependsOn: "unzipCadastralSurveying_$dataSet") {

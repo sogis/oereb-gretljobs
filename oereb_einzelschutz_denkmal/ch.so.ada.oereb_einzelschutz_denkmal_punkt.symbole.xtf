@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
-<HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
-<DATASECTION>
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege.einzelschutz.punkt">
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAgUlEQVR4Xu3PsQmAMBCF4czgZK5g7RC21i4hWKVxBEEsXMBhtA/vipAUXvh/XnXFwRfe5grpwX+QPATJQ9VIz3JeQyzcPe7p3/yqkY5+3cJUuNjN6d/8INlB0oOkg2QHSQ+SDpIdJD1IOkh2kPQg6SDZQdKDpINk1yDpP0HyECQPfWQSnvwM5xBDAAAAAElFTkSuQmCC</BINBLBOX></Symbol><LegendeTextAggregiert>geschütztes historisches Kulturdenkmal</LegendeTextAggregiert><ArtCode>geschuetztes_Kulturdenkmal</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt</ArtCodeliste><Thema>ch.SO.Einzelschutz</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="2"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAg0lEQVR4Xu3PoQ2AQBBE0SuDEiiLErBgaQOJxVAEmoQCSAiOIsBfZsXlTrDk/4xasckLz+8K8cF/kDwEyUPFSPc6nnObuWvp4r/pFSMdU7P1Veb2oY7/pgfJDpIeJB0kO0h6kHSQ7CDpQdJBsoOkB0kHyQ6SHiQdJLsfkr4TJA9B8tALpVsbM+VkASMAAAAASUVORK5CYII=</BINBLBOX></Symbol><LegendeTextAggregiert>Geotope</LegendeTextAggregiert><ArtCode>geotope</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt</ArtCodeliste><Thema>ch.SO.Einzelschutz</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
-</SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
-</DATASECTION>
-</TRANSFER>
