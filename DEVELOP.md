@@ -51,6 +51,11 @@ Denkmal (Einzelschutz):
 docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzDenkmal"
 ```
 
+Nutzungsplanung (auch für Planungszonen und Gewässerraum)
+```
+
+```
+
 Statische Waldgrenzen:
 ``` 
 docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
@@ -144,4 +149,9 @@ Waldgrenzen:
 Amtliche Vermessung:
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_av/ tasks --all
+```
+
+Planungszonen:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_planungszonen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb 
 ```
