@@ -58,3 +58,133 @@ SELECT
 FROM
     darstellungsdienst_multilingualuri
 ;
+
+/* (1) Inner Join damit nur Typen verwendet werden, die eine Geometrie aufweisen.
+ * 
+ * (2) Geometrie gleich hier mitnehmen, dafür erst beim INSERT der Eigentumsbeschränkung
+ * distincten.
+ * 
+ */
+
+WITH darstellungsdienst AS 
+(
+    SELECT
+        darstellungsdienst.t_id,
+        darstellungsdienst.t_basket AS basket_t_id,
+        localiseduri.atext
+    FROM 
+        arp_planungszonen_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN arp_planungszonen_oereb.multilingualuri AS multilingualuri  
+        ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
+        LEFT JOIN arp_planungszonen_oereb.localiseduri AS localiseduri 
+        ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
+)
+,
+eigentumsbeschraenkung AS (
+        SELECT
+        --DISTINCT ON (geobasisdaten_typ.t_id)
+        geobasisdaten_typ.t_id,
+        darstellungsdienst.basket_t_id,
+        'ch.Planungszonen' AS thema,
+        geometrie.rechtsstatus,
+        geometrie.publiziertab AS publiziertab,
+        darstellungsdienst.t_id AS darstellungsdienst,
+        amt.t_id AS zustaendigestelle,
+        'Planungszone' AS legendetext_de,
+        '692' AS artcode,        
+        'urn:fdc:ilismeta.interlis.ch:2022:Typ_Kanton_Planungszonen' AS artcodeliste,
+        geometrie.geometrie 
+    FROM
+        arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
+        INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_flaeche AS geometrie
+        ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
+        LEFT JOIN darstellungsdienst
+        ON darstellungsdienst.atext ILIKE '%ch.Planungszonen%'
+        LEFT JOIN arp_planungszonen_oereb.amt_amt AS amt 
+        ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+    WHERE 
+        geobasisdaten_typ.typ_kt = 'N692_Planungszone'
+        AND 
+        geometrie.rechtsstatus = 'inKraft'
+)
+,
+legendeneintrag AS (
+    INSERT INTO 
+        arp_planungszonen_oereb.transferstruktur_legendeeintrag 
+        (
+            t_id,
+            t_basket,
+            t_ili_tid,
+            symbol,
+            legendetext_de,
+            artcode,
+            artcodeliste,
+            thema,
+            darstellungsdienst    
+        )
+    SELECT 
+        DISTINCT ON (artcode, artcodeliste)
+        nextval('arp_planungszonen_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        basket_t_id,
+        uuid_generate_v4(),
+        eintrag.symbol,
+        legendetext_de,
+        eigentumsbeschraenkung.artcode,
+        eigentumsbeschraenkung.artcodeliste,
+        eigentumsbeschraenkung.thema,
+        darstellungsdienst
+    FROM 
+        eigentumsbeschraenkung 
+        LEFT JOIN arp_planungszonen_oereb.legendeneintraege_legendeneintrag AS eintrag
+        ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
+   RETURNING *
+)
+,
+geometrie AS (
+    INSERT INTO 
+        arp_planungszonen_oereb.transferstruktur_geometrie 
+        (
+            t_basket,
+            t_ili_tid,
+            flaeche,
+            rechtsstatus,
+            publiziertab,
+            eigentumsbeschraenkung
+        )
+    SELECT 
+        basket_t_id,
+        uuid_generate_v4(),
+        geometrie,
+        rechtsstatus,
+        publiziertab,
+        t_id
+    FROM 
+        eigentumsbeschraenkung
+)
+INSERT INTO
+    arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung 
+    (
+        t_id,
+        t_basket,
+        t_ili_tid,
+        rechtsstatus,
+        publiziertab,
+        darstellungsdienst,
+        legende,
+        zustaendigestelle
+    )
+SELECT 
+    DISTINCT ON (eigentumsbeschraenkung.t_id)
+    eigentumsbeschraenkung.t_id, 
+    eigentumsbeschraenkung.basket_t_id,
+    uuid_generate_v4(),
+    eigentumsbeschraenkung.rechtsstatus,
+    eigentumsbeschraenkung.publiziertab,
+    eigentumsbeschraenkung.darstellungsdienst,
+    legendeneintrag.t_id,
+    eigentumsbeschraenkung.zustaendigestelle
+FROM 
+    eigentumsbeschraenkung 
+    LEFT JOIN legendeneintrag 
+    ON (eigentumsbeschraenkung.artcode = legendeneintrag.artcode AND eigentumsbeschraenkung.artcodeliste = legendeneintrag.artcodeliste)
+;
