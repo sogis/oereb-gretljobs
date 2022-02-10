@@ -81,8 +81,9 @@ WITH darstellungsdienst AS
 )
 ,
 eigentumsbeschraenkung AS (
-        SELECT
-        --DISTINCT ON (geobasisdaten_typ.t_id)
+    -- Durch die Joins enstehen mehrfache Eigentumsbeschränkungen.
+    -- Diese werden beim Insert wieder entfernt (distinct on).
+    SELECT
         geobasisdaten_typ.t_id,
         darstellungsdienst.basket_t_id,
         'ch.Planungszonen' AS thema,
@@ -188,3 +189,46 @@ FROM
     LEFT JOIN legendeneintrag 
     ON (eigentumsbeschraenkung.artcode = legendeneintrag.artcode AND eigentumsbeschraenkung.artcodeliste = legendeneintrag.artcodeliste)
 ;
+
+
+INSERT INTO 
+    arp_planungszonen_oereb.dokumente_dokument
+    (
+        t_id,
+        t_basket,
+        t_ili_tid,
+        typ,
+        titel_de,
+        abkuerzung_de,
+        offiziellenr,
+        auszugindex,
+        rechtsstatus,
+        publiziertab,
+        zustaendigestelle
+    )
+SELECT 
+    dokument.t_id, 
+    dokument.t_basket,
+    '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
+    CASE 
+        WHEN dokument.rechtsvorschrift IS TRUE THEN 'Rechtsvorschrift'
+        ELSE 'Hinweis'
+    END AS typ,
+    dokument.offiziellertitel AS titel_de,
+    dokument.abkuerzung AS abkuerzung_de,
+    dokument.offiziellenr AS offiziellenr_de,
+    CASE
+        WHEN dokument.abkuerzung = 'RRB' THEN CAST(999 AS int4) 
+        ELSE CAST(998 AS int4)
+    END AS auzugindex,
+    dokument.rechtsstatus AS rechtsstatus,
+    dokument.publiziert_ab AS publiziertab,
+
+
+FROM 
+    arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
+    LEFT JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
+    ON flaeche_dokument.dokument = dokumente.t_id 
+    INNER JOIN arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+    ON eigentumsbeschraenkung.t_id = flaeche_dokument.typ_ueberlagernd_flaeche 
+...
