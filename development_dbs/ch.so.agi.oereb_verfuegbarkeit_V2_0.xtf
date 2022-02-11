@@ -69,6 +69,9 @@
         <Gemeinde>2457</Gemeinde>
         <Themen>
           <OeREBKRM_V2_0.ThemaRef>
+            <Thema>ch.Gewaesserraum</Thema>
+          </OeREBKRM_V2_0.ThemaRef>
+          <OeREBKRM_V2_0.ThemaRef>
             <Thema>ch.Sicherheitszonenplan</Thema>
           </OeREBKRM_V2_0.ThemaRef>
           <OeREBKRM_V2_0.ThemaRef>
