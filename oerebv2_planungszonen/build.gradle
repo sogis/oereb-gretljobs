@@ -82,22 +82,24 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     dataset = planungszonenDataSet
 }
 
-/*
+
 task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["insert_oereb_static_forestperimeter_tables.sql"]
+    sqlFiles = ["insert_oereb_planungszonen_tables.sql"]
 }
+
 
 task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
-    dbschema = dbSchemaStaticForestPerimeterOereb
+    dbschema = dbSchemaPlanungszonenOereb
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = staticForestPerimeterDataSet
+    dataset = planungszonenDataSet
     disableValidation = true
 }
+
 
 task replaceWmsServer(dependsOn: "exportData") {
     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
@@ -110,6 +112,7 @@ task replaceWmsServer(dependsOn: "exportData") {
     }
 }
 
+
 task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [
@@ -120,17 +123,19 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     allObjectsAccessible = true
 }
 
+
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import des Waldgrenzen-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = staticForestPerimeterDataSet 
+    dataset = planungszonenDataSet 
     importBid = true
     importTid = true
     disableValidation = true
 }
+
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
@@ -145,7 +150,7 @@ task importDataToLive(type: Ili2pgReplace) {
     models = iliModelTransferstruktur
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = staticForestPerimeterDataSet 
+    dataset = planungszonenDataSet 
     importBid = true
     importTid = true
     disableValidation = true
@@ -159,7 +164,7 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
 }
 
 task zipXtfFile(type: Zip) {
-    description = "Zipt das XTF-File mit den Waldgrenzen für den Upload nach S3"
+    description = "Zipt das XTF-File mit den Planungszonen für den Upload nach S3"
     from "$rootDir"
     include xtfFileName
     archiveName xtfZipFileName
@@ -176,4 +181,3 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
-*/

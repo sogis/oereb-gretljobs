@@ -487,5 +487,3 @@ WHERE
 AND 
     waldgrenze.datum_archivierung IS NULL
 ;
-
-

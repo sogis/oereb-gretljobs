@@ -190,7 +190,6 @@ FROM
     ON (eigentumsbeschraenkung.artcode = legendeneintrag.artcode AND eigentumsbeschraenkung.artcodeliste = legendeneintrag.artcodeliste)
 ;
 
-
 INSERT INTO 
     arp_planungszonen_oereb.dokumente_dokument
     (
@@ -208,7 +207,7 @@ INSERT INTO
     )
 SELECT 
     dokument.t_id, 
-    dokument.t_basket,
+    eigentumsbeschraenkung.t_basket,
     '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
     CASE 
         WHEN dokument.rechtsvorschrift IS TRUE THEN 'Rechtsvorschrift'
@@ -218,17 +217,127 @@ SELECT
     dokument.abkuerzung AS abkuerzung_de,
     dokument.offiziellenr AS offiziellenr_de,
     CASE
-        WHEN dokument.abkuerzung = 'RRB' THEN CAST(999 AS int4) 
+        WHEN dokument.abkuerzung = 'RRB' OR dokument.titel ILIKE '%Regierungsratsbeschluss%' THEN CAST(999 AS int4) 
         ELSE CAST(998 AS int4)
     END AS auzugindex,
     dokument.rechtsstatus AS rechtsstatus,
-    dokument.publiziert_ab AS publiziertab,
-
-
+    dokument.publiziertab AS publiziertab,
+    CASE
+        WHEN dokument.abkuerzung = 'RRB' OR dokument.titel ILIKE '%Regierungsratsbeschluss%' THEN 
+            (
+                SELECT 
+                    t_id
+                FROM
+                    arp_planungszonen_oereb.amt_amt 
+                WHERE
+                    t_ili_tid = 'ch.so.sk'
+            )
+        ELSE
+            (
+                SELECT 
+                    t_id
+                FROM
+                    arp_planungszonen_oereb.amt_amt 
+                WHERE
+                    t_ili_tid = 'ch.' || dokument.t_datasetname
+            )
+    END AS zustaendigestelle
 FROM 
     arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
     LEFT JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
-    ON flaeche_dokument.dokument = dokumente.t_id 
+    ON flaeche_dokument.dokument = dokument.t_id 
     INNER JOIN arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ON eigentumsbeschraenkung.t_id = flaeche_dokument.typ_ueberlagernd_flaeche 
-...
+;
+
+INSERT INTO
+    arp_planungszonen_oereb.transferstruktur_hinweisvorschrift
+    (
+        t_id,
+        t_basket,
+        eigentumsbeschraenkung,
+        vorschrift 
+    )
+SELECT 
+    flaeche_dokument.t_id,
+    eigentumsbeschraenkung.t_basket,
+    eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
+    dokument.t_id AS vorschrift
+FROM 
+    arp_planungszonen_oereb.dokumente_dokument AS dokument
+    LEFT JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
+    ON flaeche_dokument.dokument = dokument.t_id
+    INNER JOIN arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+    ON eigentumsbeschraenkung.t_id = flaeche_dokument.typ_ueberlagernd_flaeche
+;
+
+WITH multilingualuri AS
+(
+    INSERT INTO
+        arp_planungszonen_oereb.multilingualuri
+        (
+            t_id,
+            t_basket,
+            t_seq,
+            dokumente_dokument_textimweb
+        )
+    SELECT
+        nextval('arp_planungszonen_oereb.t_ili2db_seq'::regclass) AS t_id,
+        basket.t_id,
+        0 AS t_seq,
+        dokumente_dokument.t_id AS dokumente_dokument_textimweb
+    FROM
+        arp_planungszonen_oereb.dokumente_dokument AS dokumente_dokument,
+        (
+            SELECT
+                t_id
+            FROM
+                arp_planungszonen_oereb.t_ili2db_basket
+            WHERE
+                t_ili_tid = 'ch.so.arp.oereb_planungszonen' 
+        ) AS basket
+    RETURNING *
+)
+,
+localiseduri AS 
+(
+    SELECT 
+        nextval('arp_planungszonen_oereb.t_ili2db_seq'::regclass) AS t_id,
+        basket.t_id AS basket_t_id,
+        0 AS t_seq,
+        'de' AS alanguage,
+        textimweb AS atext,
+        multilingualuri.t_id AS multilingualuri_localisedtext
+    FROM
+        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokumente_dokument
+        RIGHT JOIN multilingualuri 
+        ON multilingualuri.dokumente_dokument_textimweb = dokumente_dokument.t_id,
+        (
+            SELECT
+                t_id
+            FROM
+                arp_planungszonen_oereb.t_ili2db_basket
+            WHERE
+                t_ili_tid = 'ch.so.arp.oereb_planungszonen' 
+        ) AS basket
+)
+INSERT INTO
+    arp_planungszonen_oereb.localiseduri
+    (
+        t_id,
+        t_basket,
+        t_seq,
+        alanguage,
+        atext,
+        multilingualuri_localisedtext
+    )
+    SELECT 
+        t_id,
+        basket_t_id,
+        t_seq,
+        alanguage,
+        atext,
+        multilingualuri_localisedtext
+    FROM 
+        localiseduri
+;
