@@ -123,7 +123,6 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     allObjectsAccessible = true
 }
 
-
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import des Waldgrenzen-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
@@ -135,7 +134,6 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     importTid = true
     disableValidation = true
 }
-
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
