@@ -4,7 +4,7 @@ def gretlJobFileName = 'build.gradle'
 def jenkinsfileName = 'Jenkinsfile'
 def jobPropertiesFileName = 'job.properties'
 
-def jobNamePrefix = 'oerebv2_'
+def jobNamePrefix = ''
 
 
 // search for files (gretlJobFileName) that are causing the creation of a GRETL-Job
