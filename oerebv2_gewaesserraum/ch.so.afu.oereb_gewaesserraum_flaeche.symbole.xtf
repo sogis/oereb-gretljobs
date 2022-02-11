@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege.gewaesserraum.flaeche">
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAhElEQVR4Xu3PsQmAMBSE4eziXi7gBC5g5xzOIliqIEEQCRYKigha6gCvSJl38eCvrrrPvE0SWUZO6JGEEEkIkYTQz0iHLealU9vVZ/Kzh7RO1bg9atttKT+TpCySSAoSSSQFiSSSgkRSrKRzyJ2r1Xa3qfzsIYFGEkIkIUQSQiQhFCHpA1eJHgkDNpSeAAAAAElFTkSuQmCC</BINBLBOX></Symbol><LegendeTextAggregiert>Gewässerraum</LegendeTextAggregiert><ArtCode>gewaesserraum</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2022:Typ_Kanton_Gewaesserraum_Flaeche</ArtCodeliste><Thema>ch.Gewaesserraum</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
+</SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
+</DATASECTION>
+</TRANSFER>

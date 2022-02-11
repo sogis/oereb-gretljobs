@@ -145,6 +145,7 @@ geometrie AS (
     INSERT INTO 
         arp_planungszonen_oereb.transferstruktur_geometrie 
         (
+            t_id,
             t_basket,
             t_ili_tid,
             flaeche,
@@ -153,6 +154,7 @@ geometrie AS (
             eigentumsbeschraenkung
         )
     SELECT 
+        nextval('arp_planungszonen_oereb.t_ili2db_seq'::regclass),                    
         basket_t_id,
         uuid_generate_v4(),
         geometrie,
