@@ -148,7 +148,6 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true
 }
 
-
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
