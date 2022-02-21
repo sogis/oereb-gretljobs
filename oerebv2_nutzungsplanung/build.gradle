@@ -12,15 +12,15 @@ def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
-def dbSchemaPlanungszonenOereb = "arp_planungszonen_oereb"
+def dbSchemaNutzungsplanungOereb = "arp_nutzungsplanung_oereb"
     
-def planungszonenDataSet = "ch.so.arp.oereb_planungszonen"
-def symbolsDataSet = planungszonenDataSet + ".symbole" 
+def nutzungsplanungDataSet = "ch.so.arp.oereb_nutzungsplanung"
+def symbolsDataSet = nutzungsplanungDataSet + ".symbole" 
 
 def symbolsFileName = symbolsDataSet + ".xtf"    
-def xtfFileName = planungszonenDataSet + "_V2_0.xtf"
-def xtfZipFileName = planungszonenDataSet + "_V2_0_xtf.zip"
-def emptyTransferFile = "ch.so.arp.oereb_planungszonen.empty.xtf"
+def xtfFileName = nutzungsplanungDataSet + "_V2_0.xtf"
+def xtfZipFileName = nutzungsplanungDataSet + "_V2_0_xtf.zip"
+def emptyTransferFile = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
 
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
@@ -39,7 +39,7 @@ def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 task deleteFromOereb(type: SqlExecutor) {
     description = "Löscht die Daten aus dem Transferschema."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["delete_oereb_planungszonen_tables.sql"]
+    sqlFiles = ["delete_oereb_nutzungsplanung_tables.sql"]
 }
 
 task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
@@ -56,7 +56,7 @@ task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadRe
     description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelBasis
-    dbschema = dbSchemaPlanungszonenOereb
+    dbschema = dbSchemaNutzungsplanungOereb
     dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
     importBid = true
     dataset = responsibleOfficesDataSet
@@ -66,27 +66,27 @@ task importSymbolsToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
     description = "Import Symbole ($symbolsDataSet)."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelSymbole
-    dbschema = dbSchemaPlanungszonenOereb
+    dbschema = dbSchemaNutzungsplanungOereb
     dataFile = file(symbolsFileName)
     importBid = true
     dataset = symbolsDataSet
 }
 
 task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
-    description = "Import eines leeren Planungszonen-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
+    description = "Import eines leeren Nutzungsplanung-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
-    dbschema = dbSchemaPlanungszonenOereb
+    dbschema = dbSchemaNutzungsplanungOereb
     dataFile = file(emptyTransferFile)
     importBid = true
-    dataset = planungszonenDataSet
+    dataset = nutzungsplanungDataSet
 }
 
-
+/*
 task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["insert_oereb_planungszonen_tables.sql"]
+    sqlFiles = ["insert_oereb_nutzungsplanung_tables.sql"]
 }
 
 
@@ -94,9 +94,9 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
-    dbschema = dbSchemaPlanungszonenOereb
+    dbschema = dbSchemaNutzungsplanungOereb
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = planungszonenDataSet
+    dataset = nutzungsplanungDataSet
     disableValidation = true
 }
 
@@ -124,12 +124,12 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
 }
 
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import des Planungszonen-ÖREB-Datensatz in das Stage-Schema."
+    description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = planungszonenDataSet 
+    dataset = pnutzungsplanungDataSet 
     importBid = true
     importTid = true
     disableValidation = true
@@ -143,12 +143,12 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
 }
 
 task importDataToLive(type: Ili2pgReplace) {
-    description = "Import des Planungszonen-ÖREB-Datensatz in das Live-Schema."
+    description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = planungszonenDataSet 
+    dataset = nutzungsplanungDataSet 
     importBid = true
     importTid = true
     disableValidation = true
@@ -162,7 +162,7 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
 }
 
 task zipXtfFile(type: Zip) {
-    description = "Zipt das XTF-File mit den Planungszonen für den Upload nach S3"
+    description = "Zipt das XTF-File mit der Nutzungsplanung für den Upload nach S3"
     from "$rootDir"
     include xtfFileName
     archiveName xtfZipFileName
@@ -179,3 +179,4 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
+*/

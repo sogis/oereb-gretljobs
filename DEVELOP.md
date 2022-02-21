@@ -111,6 +111,11 @@ Grundbuchkreis:
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_grundbuchkreis/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
+Bundesdaten:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_bundesdaten importData
+```
+
 PLZ/Ortschaft:
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_plzo/ importPLZO
@@ -159,4 +164,9 @@ Planungszonen:
 Gewässerraum:
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_gewaesserraum/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+```
+
+Nutzungsplanung:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_nutzungsplanung/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb 
 ```
