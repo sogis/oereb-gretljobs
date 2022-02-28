@@ -16,6 +16,9 @@ export ORG_GRADLE_PROJECT_awsAccessKeyAda="foo"
 export ORG_GRADLE_PROJECT_awsSecretAccessKeyAda="bar"
 ```
 
+## Test data
+Für die meisten Themen sind Testdaten im Github-Repo im Ordner `development_dbs` vorhanden. Für einige Themen beinhalten die Originaldaten geschützte Informationen. Diese Testdaten sind momentan auf S3 im Bucket "ch.so.agi.oereb.data4dev-restricted" gespeichert.
+
 ## Setup Dev-Umgebung
 
 - Bestückt die Edit-DB.
@@ -168,5 +171,5 @@ Gewässerraum:
 
 Nutzungsplanung:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_nutzungsplanung/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb 
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_nutzungsplanung/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData
 ```

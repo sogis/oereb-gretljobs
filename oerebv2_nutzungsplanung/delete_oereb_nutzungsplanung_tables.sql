@@ -1,24 +1,24 @@
 DELETE FROM 
-    arp_planungszonen_oereb.transferstruktur_geometrie
+    arp_nutzungsplanung_oerebv2.transferstruktur_geometrie
 ;
 DELETE FROM 
-    arp_planungszonen_oereb.transferstruktur_hinweisvorschrift
+    arp_nutzungsplanung_oerebv2.transferstruktur_hinweisvorschrift
 ;
 DELETE FROM
-    arp_planungszonen_oereb.localiseduri
+    arp_nutzungsplanung_oerebv2.localiseduri
 ;
 DELETE FROM 
-    arp_planungszonen_oereb.multilingualuri 
+    arp_nutzungsplanung_oerebv2.multilingualuri 
 ;
 DELETE FROM 
-    arp_planungszonen_oereb.dokumente_dokument
+    arp_nutzungsplanung_oerebv2.dokumente_dokument
 ;
 DELETE FROM 
-    arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung
+    arp_nutzungsplanung_oerebv2.transferstruktur_eigentumsbeschraenkung
 ;
 DELETE FROM 
-    arp_planungszonen_oereb.transferstruktur_legendeeintrag
+    arp_nutzungsplanung_oerebv2.transferstruktur_legendeeintrag
 ;
 DELETE FROM 
-    arp_planungszonen_oereb.transferstruktur_darstellungsdienst
+    arp_nutzungsplanung_oerebv2.transferstruktur_darstellungsdienst
 ;

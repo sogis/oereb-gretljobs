@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege.nutzungsplanung_ueberlagernd.linie">
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAuklEQVR4Xu2UPQrCQBhE904WHsBriKVo6x20ELQRCUEsUomFfwieIBGikCZir3iP2FjNV7jFNrPM41XLLNnXxDXR4fCAHyUxoCQGlMSAkhhQEgNKYsANV+2Abq8z+MDpntgZ+HgXcGty6NmZp66ftgK6KabwuONtaWdg/crh1njXtTNPlfRPJf0MnDTKOgHdlwt43KVa2xn4/JRwa34e2JmnMf7E8YAfJTGgJAaUxICSGFASA0piIMKkL5OlMyHrkCL4AAAAAElFTkSuQmCC</BINBLBOX></Symbol><LegendeTextAggregiert>weitere linienbezogene Festlegungen NP</LegendeTextAggregiert><ArtCode>799</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie</ArtCodeliste><Thema>ch.Nutzungsplanung</Thema><SubThema>ch.SO.NutzungsplanungUeberlagernd</SubThema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
+</SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
+</DATASECTION>
+</TRANSFER>
