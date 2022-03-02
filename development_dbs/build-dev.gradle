@@ -42,7 +42,7 @@ ext {
 
     federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
     federalLegalBasisDataSet = "ch.admin.v_d.oereb_gesetze"
-    federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220125.xml"
+    federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220301.xml"
     federalThemesDataSet = "ch.admin.v_d.oereb_themen"
 
     cantonalConfigurationBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
@@ -94,7 +94,7 @@ ext {
 
     federalLogosDataFile = "OeREBKRM_V2_0_Logos_20211021.xml"
     federalLogosDataSet = "ch.admin.v_d.oereb_logo"
-    federalTextDataFile = "OeREBKRM_V2_0_Texte_20211021.xml"
+    federalTextDataFile = "OeREBKRM_V2_0_Texte_20220301.xml"
     federalTextDataSet = "ch.admin.v_d.oereb_text"
 
     cantonalDataBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"

@@ -20,7 +20,7 @@ def responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
 def legalBasisDataFile = "ch.so.agi.oereb_gesetze_V2_0.xtf"
 
 def federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
-def federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220125.xml"
+def federalThemesDataFile = "OeREBKRM_V2_0_Themen_20220301.xml"
 def federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"
 
 def bucketSuffix = '-undefined'
