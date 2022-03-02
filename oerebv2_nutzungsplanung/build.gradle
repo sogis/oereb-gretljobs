@@ -17,8 +17,22 @@ def nutzungsplanungDataSet = "ch.so.arp.oereb_nutzungsplanung"
 
 def nutzungsplanungGrundnutzungDataSet = "ch.so.arp.oereb_nutzungsplanung_grundnutzung" 
 def symbolsNutzungsplanungGrundnutzungDataSet = nutzungsplanungGrundnutzungDataSet + ".symbole" 
+def nutzungsplanungUeberlagerndFlaecheDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_flaeche" 
+def symbolsNutzungsplanungUeberlagerndFlaecheDataSet = nutzungsplanungUeberlagerndFlaecheDataSet + ".symbole" 
+def nutzungsplanungUeberlagerndLinieDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_linie" 
+def symbolsNutzungsplanungUeberlagerndLinieDataSet = nutzungsplanungUeberlagerndLinieDataSet + ".symbole" 
+def nutzungsplanungUeberlagerndPunktDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_punkt" 
+def symbolsNutzungsplanungUeberlagerndPunktDataSet = nutzungsplanungUeberlagerndPunktDataSet + ".symbole" 
+def nutzungsplanungSondernutzungsplaeneDataSet = "ch.so.arp.oereb_nutzungsplanung_sondernutzungsplaene" 
+def symbolsNutzungsplanungSondernutzungsplaeneDataSet = nutzungsplanungSondernutzungsplaeneDataSet + ".symbole" 
+def nutzungsplanungBaulinienDataSet = "ch.so.arp.oereb_baulinien" 
+def symbolsNutzungsplanungBaulinienDataSet = nutzungsplanungBaulinienDataSet + ".symbole" 
+def nutzungsplanungLaermempfindlichkeitsstufenDataSet = "ch.so.arp.oereb_laermempfindlichkeitsstufen" 
+def symbolsNutzungsplanungLaermempfindlichkeitsstufenDataSet = nutzungsplanungLaermempfindlichkeitsstufenDataSet + ".symbole" 
+def nutzungsplanungWaldabstandslinienDataSet = "ch.so.arp.oereb_waldabstandslinien" 
+def symbolsNutzungsplanungWaldabstandslinienDataSet = nutzungsplanungWaldabstandslinienDataSet + ".symbole" 
 
-def symbolsDataSets = [symbolsNutzungsplanungGrundnutzungDataSet]
+def symbolsDataSets = [symbolsNutzungsplanungGrundnutzungDataSet, symbolsNutzungsplanungUeberlagerndFlaecheDataSet, symbolsNutzungsplanungUeberlagerndLinieDataSet, symbolsNutzungsplanungUeberlagerndPunktDataSet, symbolsNutzungsplanungSondernutzungsplaeneDataSet, symbolsNutzungsplanungBaulinienDataSet, symbolsNutzungsplanungLaermempfindlichkeitsstufenDataSet, symbolsNutzungsplanungWaldabstandslinienDataSet]
 
 def xtfFileName = nutzungsplanungDataSet + "_V2_0.xtf"
 def xtfZipFileName = nutzungsplanungDataSet + "_V2_0_xtf.zip"
@@ -77,6 +91,14 @@ symbolsDataSets.each { symbolsDataSet ->
         importBid = true
         importTid = true
     }
+}
+
+task importSymbolsToOereb() {
+    description = "Aggregationstask für Import der Symbole."
+
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importSymbolsToOereb_') }
+    }    
 }
 
 task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {

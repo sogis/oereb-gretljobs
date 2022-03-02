@@ -27,6 +27,10 @@ WITH themen AS
     SELECT 
         'ch.Laermempfindlichkeitsstufen' AS thema,
         CAST(NULL AS text) AS subthema
+    UNION ALL
+    SELECT 
+        'ch.Waldabstandslinien' AS thema,
+        CAST(NULL AS text) AS subthema        
 )
 ,
 darstellungsdienst AS
@@ -135,6 +139,8 @@ darstellungsdienst AS
 eigentumsbeschraenkung AS (
     -- Durch die Joins enstehen mehrfache Eigentumsbeschränkungen.
     -- Diese werden beim Insert wieder entfernt (distinct on).
+
+    -- Grundnutzung
     SELECT
         geobasisdaten_typ.t_id,
         darstellungsdienst.basket_t_id,
@@ -156,28 +162,327 @@ eigentumsbeschraenkung AS (
         ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungGrundnutzung%'
         LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
         ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
-    WHERE 
-        typ_kt NOT IN 
+    WHERE
         (
-            'N180_Verkehrszone_Strasse',
-            'N181_Verkehrszone_Bahnareal',
-            'N182_Verkehrszone_Flugplatzareal',
-            'N189_weitere_Verkehrszonen',
-            'N210_Landwirtschaftszone',
-            'N320_Gewaesser',
-            'N329_weitere_Zonen_fuer_Gewaesser_und_ihre_Ufer',
-            'N420_Verkehrsflaeche_Strasse', 
-            'N421_Verkehrsflaeche_Bahnareal', 
-            'N422_Verkehrsflaeche_Flugplatzareal', 
-            'N429_weitere_Verkehrsflaechen', 
-            'N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone',
-            'N431_Reservezone_Arbeiten',
-            'N432_Reservezone_OeBA',
-            'N439_Reservezone',
-            'N440_Wald'
+            typ_kt NOT IN 
+            (
+                'N161_kommunale_Uferschutzzone_innerhalb_Bauzone', -- gilt nicht, falls Gemeinde Gewässerraum ausgeschieden hat. Siehe 'OR'
+                'N180_Verkehrszone_Strasse',
+                'N181_Verkehrszone_Bahnareal',
+                'N182_Verkehrszone_Flugplatzareal',
+                'N189_weitere_Verkehrszonen',
+                'N210_Landwirtschaftszone',
+                'N320_Gewaesser', -- gilt immer
+                'N329_weitere_Zonen_fuer_Gewaesser_und_ihre_Ufer', -- gilt immer
+                'N420_Verkehrsflaeche_Strasse', 
+                'N421_Verkehrsflaeche_Bahnareal', 
+                'N422_Verkehrsflaeche_Flugplatzareal', 
+                'N429_weitere_Verkehrsflaechen', 
+                'N430_Reservezone_Wohnzone_Mischzone_Kernzone_Zentrumszone',
+                'N431_Reservezone_Arbeiten',
+                'N432_Reservezone_OeBA',
+                'N439_Reservezone',
+                'N440_Wald'
+            )
+            OR 
+            (
+                typ_kt = 'N161_kommunale_Uferschutzzone_innerhalb_Bauzone' 
+                AND 
+                CAST(geobasisdaten_typ.t_datasetname AS int4) NOT IN 
+                (
+                    SELECT 
+                        gemeinde
+                    FROM 
+                        availabilty
+                )
+            )
         )
         AND 
         geometrie.rechtsstatus = 'inKraft'
+        
+        UNION ALL 
+        
+        -- Überlagernd (Fläche)
+        SELECT
+            geobasisdaten_typ.t_id,
+            darstellungsdienst.basket_t_id,
+            'ch.Nutzungsplanung' AS thema,
+            'ch.SO.NutzungsplanungUeberlagernd' AS subthema,
+            geometrie.rechtsstatus,
+            geometrie.publiziertab AS publiziertab,
+            darstellungsdienst.t_id AS darstellungsdienst,
+            amt.t_id AS zustaendigestelle,
+            geobasisdaten_typ.bezeichnung AS legendetext_de,
+            geobasisdaten_typ.code_kommunal AS artcode,        
+            'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            geometrie.geometrie 
+        FROM
+            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_flaeche AS geometrie
+            ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
+            LEFT JOIN darstellungsdienst
+            ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungUeberlagernd%'
+            LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
+            ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+        WHERE
+            (
+                typ_kt IN 
+                (
+                    'N510_ueberlagernde_Ortsbildschutzzone',
+                    'N523_Landschaftsschutzzone',
+                    'N526_kantonale_Landwirtschafts_und_Schutzzone_Witi',
+                    'N527_kantonale_Uferschutzzone',
+                    'N529_weitere_Schutzzonen_fuer_Lebensraeume_und_Landschaften',
+                    'N590_Hofstattzone_Freihaltezone',
+                    'N591_Bauliche_Einschraenkungen',
+                    'N690_kantonales_Vorranggebiet_Natur_und_Landschaft',
+                    'N691_kommunales_Vorranggebiet_Natur_und_Landschaft',
+                    'N692_Planungszone',
+                    --'N699_weitere_flaechenbezogene_Festlegungen_NP',
+                    'N812_geologisches_Objekt',
+                    'N813_Naturobjekt',
+                    'N822_schuetzenswertes_Kulturobjekt',
+                    'N823_erhaltenswertes_Kulturobjekt'
+                )
+                OR
+                (
+                    typ_kt = 'N599_weitere_ueberlagernde_Nutzungszonen' AND verbindlichkeit = 'Nutzungsplanfestlegung'
+                ) 
+                OR
+                (
+                    typ_kt = 'N699_weitere_flaechenbezogene_Festlegungen_NP' AND verbindlichkeit = 'Nutzungsplanfestlegung'
+                ) 
+                OR 
+                (
+                    -- Falls Gewässerraum nicht rechtsgültig ausgeschieden ist,
+                    -- wird dieser Typ weiterhin bei der Nutzungsplanung geführt.
+                    typ_kt = 'N528_kommunale_Uferschutzzone_ausserhalb_Bauzonen'  
+                    AND 
+                    CAST(geobasisdaten_typ.t_datasetname AS int4) NOT IN 
+                    (
+                        SELECT 
+                            gemeinde
+                        FROM 
+                            availabilty
+                    )
+                )
+            )
+            AND 
+            geometrie.rechtsstatus = 'inKraft'
+
+        UNION ALL
+            
+        -- Überlagernd (Linie)
+        SELECT
+            geobasisdaten_typ.t_id,
+            darstellungsdienst.basket_t_id,
+            'ch.Nutzungsplanung' AS thema,
+            'ch.SO.NutzungsplanungUeberlagernd' AS subthema,
+            geometrie.rechtsstatus,
+            geometrie.publiziertab AS publiziertab,
+            darstellungsdienst.t_id AS darstellungsdienst,
+            amt.t_id AS zustaendigestelle,
+            geobasisdaten_typ.bezeichnung AS legendetext_de,
+            geobasisdaten_typ.code_kommunal AS artcode,        
+            'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            geometrie.geometrie 
+        FROM
+            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_linie AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_linie AS geometrie
+            ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_linie 
+            LEFT JOIN darstellungsdienst
+            ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungUeberlagernd%'
+            LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
+            ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+        WHERE
+            (
+                typ_kt = 'N799_weitere_linienbezogene_Festlegungen_NP' AND verbindlichkeit = 'Nutzungsplanfestlegung'
+            )
+            AND 
+            geometrie.rechtsstatus = 'inKraft'
+
+        UNION ALL
+            
+        -- Überlagernd (Punkt)
+        SELECT
+            geobasisdaten_typ.t_id,
+            darstellungsdienst.basket_t_id,
+            'ch.Nutzungsplanung' AS thema,
+            'ch.SO.NutzungsplanungUeberlagernd' AS subthema,
+            geometrie.rechtsstatus,
+            geometrie.publiziertab AS publiziertab,
+            darstellungsdienst.t_id AS darstellungsdienst,
+            amt.t_id AS zustaendigestelle,
+            geobasisdaten_typ.bezeichnung AS legendetext_de,
+            geobasisdaten_typ.code_kommunal AS artcode,        
+            'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            geometrie.geometrie 
+        FROM
+            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_punkt AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_punkt AS geometrie
+            ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_punkt
+            LEFT JOIN darstellungsdienst
+            ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungUeberlagernd%'
+            LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
+            ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+        WHERE
+            (
+                typ_kt = 'N899_weitere_punktbezogene_Festlegungen_NP' AND verbindlichkeit = 'Nutzungsplanfestlegung'
+            )
+            AND 
+            geometrie.rechtsstatus = 'inKraft'
+            
+        UNION ALL 
+        
+        -- Sondernutzungspläne
+        SELECT
+            geobasisdaten_typ.t_id,
+            darstellungsdienst.basket_t_id,
+            'ch.Nutzungsplanung' AS thema,
+            'ch.SO.NutzungsplanungSondernutzungsplaene' AS subthema,
+            geometrie.rechtsstatus,
+            geometrie.publiziertab AS publiziertab,
+            darstellungsdienst.t_id AS darstellungsdienst,
+            amt.t_id AS zustaendigestelle,
+            geobasisdaten_typ.bezeichnung AS legendetext_de,
+            geobasisdaten_typ.code_kommunal AS artcode,        
+            'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            geometrie.geometrie 
+        FROM
+            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_flaeche AS geometrie
+            ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
+            LEFT JOIN darstellungsdienst
+            ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungSondernutzungsplaene%'
+            LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
+            ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+        WHERE
+            (
+                typ_kt IN 
+                (
+                    -- N610_Perimeter_kantonaler_Nutzungsplan kommt neu aus einem anderen Schema
+                    'N611_Perimeter_kommunaler_Gestaltungsplan',
+                    'N620_Perimeter_Gestaltungsplanpflicht'
+                )
+            )
+            AND 
+            geometrie.rechtsstatus = 'inKraft'
+
+        UNION ALL    
+            
+        -- Baulinien + Waldabstandslinie 
+        SELECT
+            geobasisdaten_typ.t_id,
+            darstellungsdienst.basket_t_id,            
+            CASE
+                WHEN typ_kt = 'E725_Waldabstandslinie'
+                    THEN 'ch.Waldabstandslinien'
+                ELSE 'ch.Nutzungsplanung'
+            END AS thema,
+            CASE
+                WHEN typ_kt = 'E725_Waldabstandslinie'
+                    THEN CAST(NULL AS text)
+                ELSE 'ch.SO.Baulinien'
+            END AS subthema,
+            geometrie.rechtsstatus,
+            geometrie.publiziertab AS publiziertab,
+            darstellungsdienst.t_id AS darstellungsdienst,
+            amt.t_id AS zustaendigestelle,
+            geobasisdaten_typ.bezeichnung AS legendetext_de,
+            geobasisdaten_typ.code_kommunal AS artcode,        
+            'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            geometrie.geometrie 
+        FROM
+            arp_nutzungsplanung.erschlssngsplnung_typ_erschliessung_linienobjekt AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung.erschlssngsplnung_erschliessung_linienobjekt AS geometrie
+            ON geobasisdaten_typ.t_id = geometrie.typ_erschliessung_linienobjekt 
+            LEFT JOIN darstellungsdienst
+            ON 
+            (
+                darstellungsdienst.atext ILIKE '%ch.Waldabstandslinien%'
+                OR 
+                darstellungsdienst.atext ILIKE '%ch.SO.Baulinien%'
+            )
+            LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
+            ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+        WHERE
+            (
+                typ_kt IN 
+                (
+                    'E711_Baulinie_Strasse_kantonal',
+                    'E712_Vorbaulinie_kantonal',
+                    'E713_Gestaltungsbaulinie_kantonal',
+                    'E714_Rueckwaertige_Baulinie_kantonal',
+                    'E715_Baulinie_Infrastruktur_kantonal',
+                    'E719_weitere_nationale_und_kantonale_Baulinien',
+                    'E720_Baulinie_Strasse',
+                    'E721_Vorbaulinie',
+                    'E722_Gestaltungsbaulinie',
+                    'E723_Rueckwaertige_Baulinie',
+                    'E724_Baulinie_Infrastruktur',
+                    'E725_Waldabstandslinie',
+                    'E726_Baulinie_Hecke',
+                    --'E727_Baulinie_Gewaesser',
+                    'E728_Immissionsstreifen',
+                    'E729_weitere_kommunale_Baulinien' -- ????
+                )
+                OR 
+                (
+                    -- Falls Gewässerraum nicht rechtsgültig ausgeschieden ist,
+                    -- wird dieser Typ weiterhin bei der Nutzungsplanung geführt.
+                    typ_kt = 'E727_Baulinie_Gewaesser'  
+                    AND 
+                    CAST(geobasisdaten_typ.t_datasetname AS int4) NOT IN 
+                    (
+                        SELECT 
+                            gemeinde
+                        FROM 
+                            availabilty
+                    )
+                )
+            )
+            AND 
+            geometrie.rechtsstatus = 'inKraft'
+
+        UNION ALL 
+            
+        -- Lärmempfindlichkeit
+        SELECT
+            geobasisdaten_typ.t_id,
+            darstellungsdienst.basket_t_id,
+            'ch.Laermempfindlichkeitsstufen' AS thema,
+            CAST(NULL AS TEXT) AS subthema,
+            geometrie.rechtsstatus,
+            geometrie.publiziertab AS publiziertab,
+            darstellungsdienst.t_id AS darstellungsdienst,
+            amt.t_id AS zustaendigestelle,
+            geobasisdaten_typ.bezeichnung AS legendetext_de,
+            substring(geobasisdaten_typ.typ_kt FROM 2 FOR 3) AS artcode,        
+            'urn:fdc:ilismeta.interlis.ch:2020:Typ_Kanton_Empfindlichkeitsstufe.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            geometrie.geometrie 
+        FROM
+            arp_nutzungsplanung.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung.laermmpfhktsstfen_empfindlichkeitsstufe AS geometrie
+            ON geobasisdaten_typ.t_id = geometrie.typ_empfindlichkeitsstufen 
+            LEFT JOIN darstellungsdienst
+            ON darstellungsdienst.atext ILIKE '%ch.Laermempfindlichkeitsstufen%'
+            LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
+            ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
+        WHERE
+            (
+                typ_kt IN 
+                (
+                    'N680_Empfindlichkeitsstufe_I',
+                    'N681_Empfindlichkeitsstufe_II',
+                    'N682_Empfindlichkeitsstufe_II_aufgestuft',
+                    'N683_Empfindlichkeitsstufe_III',
+                    'N684_Empfindlichkeitsstufe_III_aufgestuft',
+                    'N685_Empfindlichkeitsstufe_IV',
+                    'N686_keine_Empfindlichkeitsstufe'
+                )
+            )
+            AND 
+            geometrie.rechtsstatus = 'inKraft'            
 )
 ,
 legendeneintrag AS (
@@ -238,7 +543,58 @@ geometrie_flaeche AS (
         eigentumsbeschraenkung
     WHERE 
         ST_GeometryType(geometrie) = 'ST_Polygon'
-
+)
+,
+geometrie_linie AS (
+    INSERT INTO 
+        arp_nutzungsplanung_oerebv2.transferstruktur_geometrie 
+        (
+            t_id,
+            t_basket,
+            t_ili_tid,
+            linie,
+            rechtsstatus,
+            publiziertab,
+            eigentumsbeschraenkung
+        )
+    SELECT 
+        nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass),                    
+        basket_t_id,
+        uuid_generate_v4(),
+        ST_ReducePrecision(geometrie, 0.001),
+        rechtsstatus,
+        publiziertab,
+        t_id
+    FROM 
+        eigentumsbeschraenkung
+    WHERE 
+        ST_GeometryType(geometrie) = 'ST_LineString'
+)
+,
+geometrie_punkt AS (
+    INSERT INTO 
+        arp_nutzungsplanung_oerebv2.transferstruktur_geometrie 
+        (
+            t_id,
+            t_basket,
+            t_ili_tid,
+            punkt,
+            rechtsstatus,
+            publiziertab,
+            eigentumsbeschraenkung
+        )
+    SELECT 
+        nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass),                    
+        basket_t_id,
+        uuid_generate_v4(),
+        ST_ReducePrecision(geometrie, 0.001),
+        rechtsstatus,
+        publiziertab,
+        t_id
+    FROM 
+        eigentumsbeschraenkung
+    WHERE 
+        ST_GeometryType(geometrie) = 'ST_Point'
 )
 INSERT INTO
     arp_nutzungsplanung_oerebv2.transferstruktur_eigentumsbeschraenkung 
@@ -269,7 +625,9 @@ FROM
 ;
 
 /*
- * (1) In dokument_typ bewusst nur UNION, damit Dokument nicht mehrfache gelistet sind.
+ * (1) In dokument_typ UNION ALL, weil bei dokument distincted wird. 
+ * ACHTUNG: Prüfen, ob nun nicht doch was doppelt erscheint. document_typ
+ * wird für die Zwischentabelle verwendet.
  * 
  */
 
@@ -290,7 +648,102 @@ WITH dokument_typ AS
     FROM 
         arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
         INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_grundnutzung_dokument AS typ_dokument
-        ON typ_dokument.dokument = dokument.t_id         
+        ON typ_dokument.dokument = dokument.t_id   
+        
+    UNION ALL 
+    
+    SELECT 
+        dokument.t_id,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.titel,
+        dokument.offiziellertitel,
+        dokument.abkuerzung,
+        dokument.offiziellenr,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        dokument.rechtsvorschrift,
+        typ_dokument.typ_ueberlagernd_flaeche AS typ_eigentumsbeschraenkung
+    FROM 
+        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dokument
+        ON typ_dokument.dokument = dokument.t_id
+        
+    UNION ALL 
+    
+    SELECT 
+        dokument.t_id,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.titel,
+        dokument.offiziellertitel,
+        dokument.abkuerzung,
+        dokument.offiziellenr,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        dokument.rechtsvorschrift,
+        typ_dokument.typ_ueberlagernd_linie AS typ_eigentumsbeschraenkung
+    FROM 
+        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_linie_dokument AS typ_dokument
+        ON typ_dokument.dokument = dokument.t_id
+        
+    UNION ALL 
+    
+    SELECT 
+        dokument.t_id,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.titel,
+        dokument.offiziellertitel,
+        dokument.abkuerzung,
+        dokument.offiziellenr,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        dokument.rechtsvorschrift,
+        typ_dokument.typ_ueberlagernd_punkt AS typ_eigentumsbeschraenkung
+    FROM 
+        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_dokument
+        ON typ_dokument.dokument = dokument.t_id
+        
+    UNION ALL 
+    
+    SELECT 
+        dokument.t_id,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.titel,
+        dokument.offiziellertitel,
+        dokument.abkuerzung,
+        dokument.offiziellenr,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        dokument.rechtsvorschrift,
+        typ_dokument.typ_erschliessung_linienobjekt AS typ_eigentumsbeschraenkung
+    FROM 
+        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_dokument
+        ON typ_dokument.dokument = dokument.t_id
+        
+    UNION ALL 
+    
+    SELECT 
+        dokument.t_id,
+        dokument.t_basket,
+        dokument.t_datasetname,
+        dokument.titel,
+        dokument.offiziellertitel,
+        dokument.abkuerzung,
+        dokument.offiziellenr,
+        dokument.rechtsstatus,
+        dokument.publiziertab,
+        dokument.rechtsvorschrift,
+        typ_dokument.typ_empfindlichkeitsstufen AS typ_eigentumsbeschraenkung
+    FROM 
+        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument AS typ_dokument
+        ON typ_dokument.dokument = dokument.t_id
 )
 ,
 dokumente AS 

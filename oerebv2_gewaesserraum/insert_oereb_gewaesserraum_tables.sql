@@ -314,12 +314,6 @@ FROM
     ON (eigentumsbeschraenkung.artcode = legendeneintrag.artcode AND eigentumsbeschraenkung.artcodeliste = legendeneintrag.artcodeliste)
 ;
 
-
-/*
- * (1) In dokument_typ bewusst nur UNION, damit Dokument nicht mehrfache gelistet sind.
- * 
- */
-
 WITH dokument_typ AS 
 (
     SELECT 
@@ -339,7 +333,7 @@ WITH dokument_typ AS
         INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_grundnutzung_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id         
         
-    UNION  
+    UNION ALL 
     
     SELECT 
         dokument.t_id,
@@ -358,7 +352,7 @@ WITH dokument_typ AS
         INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id 
 
-    UNION 
+    UNION ALL
         
     SELECT 
         dokument.t_id,

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><TRANSFER xmlns="http://www.interlis.ch/INTERLIS2.3">
+<HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
+<DATASECTION>
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege.waldabstandslinien">
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAAk0lEQVR4Xu2WMQqAMBAE79u+0d7ewsZGUgWDMULAZgPXJbBhh6nCcdx0sTIdhg/8KIkBJTGgJAaUxICSGLAtbSONb8QTKmc+22FfXPFjtg91vVc8obJcSzvsm0vGLRWc662SPJXUTSV5KqmbI5KO5xhpehOeUAk5tMO+uOJnxg8RPvCjJAaUxICSGFASA0piYMKkD2408hfbS0tDAAAAAElFTkSuQmCC</BINBLBOX></Symbol><LegendeTextAggregiert>Waldabstandslinie</LegendeTextAggregiert><ArtCode>725</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt</ArtCodeliste><Thema>ch.Waldabstandslinien</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
+</SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
+</DATASECTION>
+</TRANSFER>
