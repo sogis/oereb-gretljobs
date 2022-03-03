@@ -1,0 +1,208 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelBasis = "OeREBKRM_V2_0"
+def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
+
+def dbSchemaNutzungsplanungOereb = "arp_nutzungsplanung_oerebv2"
+def nutzungsplanungDataSet = "ch.so.arp.oereb_nutzungsplanung"
+
+def nutzungsplanungGrundnutzungDataSet = "ch.so.arp.oereb_nutzungsplanung_grundnutzung" 
+def symbolsNutzungsplanungGrundnutzungDataSet = nutzungsplanungGrundnutzungDataSet + ".symbole" 
+def nutzungsplanungUeberlagerndFlaecheDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_flaeche" 
+def symbolsNutzungsplanungUeberlagerndFlaecheDataSet = nutzungsplanungUeberlagerndFlaecheDataSet + ".symbole" 
+def nutzungsplanungUeberlagerndLinieDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_linie" 
+def symbolsNutzungsplanungUeberlagerndLinieDataSet = nutzungsplanungUeberlagerndLinieDataSet + ".symbole" 
+def nutzungsplanungUeberlagerndPunktDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_punkt" 
+def symbolsNutzungsplanungUeberlagerndPunktDataSet = nutzungsplanungUeberlagerndPunktDataSet + ".symbole" 
+def nutzungsplanungSondernutzungsplaeneDataSet = "ch.so.arp.oereb_nutzungsplanung_sondernutzungsplaene" 
+def symbolsNutzungsplanungSondernutzungsplaeneDataSet = nutzungsplanungSondernutzungsplaeneDataSet + ".symbole" 
+def nutzungsplanungBaulinienDataSet = "ch.so.arp.oereb_baulinien" 
+def symbolsNutzungsplanungBaulinienDataSet = nutzungsplanungBaulinienDataSet + ".symbole" 
+def nutzungsplanungLaermempfindlichkeitsstufenDataSet = "ch.so.arp.oereb_laermempfindlichkeitsstufen" 
+def symbolsNutzungsplanungLaermempfindlichkeitsstufenDataSet = nutzungsplanungLaermempfindlichkeitsstufenDataSet + ".symbole" 
+def nutzungsplanungWaldabstandslinienDataSet = "ch.so.arp.oereb_waldabstandslinien" 
+def symbolsNutzungsplanungWaldabstandslinienDataSet = nutzungsplanungWaldabstandslinienDataSet + ".symbole" 
+
+def symbolsDataSets = [symbolsNutzungsplanungGrundnutzungDataSet, symbolsNutzungsplanungUeberlagerndFlaecheDataSet, symbolsNutzungsplanungUeberlagerndLinieDataSet, symbolsNutzungsplanungUeberlagerndPunktDataSet, symbolsNutzungsplanungSondernutzungsplaeneDataSet, symbolsNutzungsplanungBaulinienDataSet, symbolsNutzungsplanungLaermempfindlichkeitsstufenDataSet, symbolsNutzungsplanungWaldabstandslinienDataSet]
+
+def xtfFileName = nutzungsplanungDataSet + "_V2_0.xtf"
+def xtfZipFileName = nutzungsplanungDataSet + "_V2_0_xtf.zip"
+def emptyTransferFile = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
+
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+
+def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
+
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+task deleteFromOereb(type: SqlExecutor) {
+    description = "Löscht die Daten aus dem Transferschema."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["delete_oereb_nutzungsplanung_tables.sql"]
+}
+
+task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
+    doFirst {
+        println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    }
+    description = "Download zuständige Stellen ($responsibleOfficesDataSet)."
+    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
+
+task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadResponsibleOffices') {
+    description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelBasis
+    dbschema = dbSchemaNutzungsplanungOereb
+    dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
+    importBid = true
+    dataset = responsibleOfficesDataSet
+}
+
+symbolsDataSets.each { symbolsDataSet ->
+    def symbols = symbolsDataSet.toString()
+    task "importSymbolsToOereb_$symbols"(type: Ili2pgReplace, dependsOn: "deleteFromOereb") {
+        description = "Import der Symbole $symbols"
+        database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+        dbschema = dbSchemaNutzungsplanungOereb
+        dataset = symbols
+        models = iliModelSymbole
+        dataFile = file(Paths.get("$rootDir", symbols + ".xtf"))
+        disableValidation = true
+        importBid = true
+        importTid = true
+    }
+}
+
+task importSymbolsToOereb() {
+    description = "Aggregationstask für Import der Symbole."
+
+    dependsOn {
+        tasks.findAll { task -> task.name.startsWith('importSymbolsToOereb_') }
+    }    
+}
+
+task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
+    description = "Import eines leeren Nutzungsplanung-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaNutzungsplanungOereb
+    dataFile = file(emptyTransferFile)
+    importBid = true
+    dataset = nutzungsplanungDataSet
+}
+
+task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importEmptyTransferToOereb"]) {
+    description = "Führt den Datenumbau in das Transferschema durch."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_oereb_nutzungsplanung_tables.sql"]
+}
+
+task exportData(type: Ili2pgExport, dependsOn: "transferData") {
+    description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaNutzungsplanungOereb
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = nutzungsplanungDataSet
+    disableValidation = true
+}
+
+task replaceWmsServer(dependsOn: "exportData") {
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
+    doLast {
+        ant.replace(
+        file: file(Paths.get("$rootDir", xtfFileName)),
+        token: '${wmsHost}',
+        value: 'https://' + geoservicesHostName,
+        encoding: 'UTF-8')
+    }
+}
+
+task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
+    description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf")), 
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = true
+}
+
+/*
+task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+    description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Stage-Schema."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "stage"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = nutzungsplanungDataSet 
+    importBid = true
+    importTid = true
+    disableValidation = true
+}
+
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
+
+task importDataToLive(type: Ili2pgReplace) {
+    description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Live-Schema."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "live"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = nutzungsplanungDataSet 
+    importBid = true
+    importTid = true
+    disableValidation = true
+}
+
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das XTF-File mit der Nutzungsplanung für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName xtfZipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "XTF-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}
+*/
