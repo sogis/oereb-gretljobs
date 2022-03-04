@@ -12,7 +12,7 @@ WITH themen AS
 darstellungsdienst AS 
 (
     SELECT
-        nextval('arp_naturreservate_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('arp_naturreservate_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         uuid_generate_v4() AS t_ili_tid,
         themen.thema,
@@ -22,7 +22,7 @@ darstellungsdienst AS
         SELECT
             t_id
         FROM
-            arp_naturreservate_oereb.t_ili2db_basket
+            arp_naturreservate_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.arp.oereb_einzelschutz_naturreservat' 
     ) AS basket, 
@@ -31,7 +31,7 @@ darstellungsdienst AS
 ,
 darstellungsdienst_insert AS (
     INSERT INTO 
-        arp_naturreservate_oereb.transferstruktur_darstellungsdienst 
+        arp_naturreservate_oerebv2.transferstruktur_darstellungsdienst 
         (
             t_id,
             t_basket,
@@ -48,7 +48,7 @@ darstellungsdienst_insert AS (
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO
-        arp_naturreservate_oereb.multilingualuri 
+        arp_naturreservate_oerebv2.multilingualuri 
         (
             t_basket,
             t_seq, 
@@ -63,7 +63,7 @@ darstellungsdienst_multilingualuri AS
     RETURNING *
 )
 INSERT INTO 
-    arp_naturreservate_oereb.localiseduri 
+    arp_naturreservate_oerebv2.localiseduri 
     (
         t_basket,
         t_seq,
@@ -103,10 +103,10 @@ WITH darstellungsdienst AS
         darstellungsdienst.t_basket AS basket_t_id,
         localiseduri.atext
     FROM 
-        arp_naturreservate_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
-        LEFT JOIN arp_naturreservate_oereb.multilingualuri AS multilingualuri  
+        arp_naturreservate_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN arp_naturreservate_oerebv2.multilingualuri AS multilingualuri  
         ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
-        LEFT JOIN arp_naturreservate_oereb.localiseduri AS localiseduri 
+        LEFT JOIN arp_naturreservate_oerebv2.localiseduri AS localiseduri 
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
@@ -151,21 +151,21 @@ eigentumsbeschraenkung AS
             END AS artcodeliste,
             'inKraft' AS rechtsstatus,
             reservat.publiziertab AS publiziertab,
-            amt.t_id AS zustaendigestelle        
+            amt.t_id AS zustaendigestelle
         FROM
             arp_naturreservate.reservate_reservat AS reservat
-            LEFT JOIN arp_naturreservate_oereb.amt_amt AS amt
+            LEFT JOIN arp_naturreservate_oerebv2.amt_amt AS amt
             ON amt.t_ili_tid = 'ch.so.arp'
         WHERE
             reservat.rechtsstatus = 'inKraft'
     ) AS foo
     LEFT JOIN darstellungsdienst
-    ON darstellungsdienst.atext ILIKE '%'||thema||'%'
+    ON (darstellungsdienst.atext ILIKE '%'||thema||'%' OR darstellungsdienst.atext ILIKE '%'||subthema||'%')
 )
 ,
 legendeneintrag AS (
     INSERT INTO 
-        arp_naturreservate_oereb.transferstruktur_legendeeintrag 
+        arp_naturreservate_oerebv2.transferstruktur_legendeeintrag 
         (
             t_id,
             t_basket,
@@ -180,7 +180,7 @@ legendeneintrag AS (
         )
     SELECT 
         DISTINCT ON (artcode, artcodeliste)
-        nextval('arp_naturreservate_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        nextval('arp_naturreservate_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
         eintrag.symbol,
@@ -192,7 +192,7 @@ legendeneintrag AS (
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 
-        LEFT JOIN arp_naturreservate_oereb.legendeneintraege_legendeneintrag AS eintrag
+        LEFT JOIN arp_naturreservate_oerebv2.legendeneintraege_legendeneintrag AS eintrag
         ON 
         (
             (
@@ -206,7 +206,7 @@ legendeneintrag AS (
     RETURNING *
 )
 INSERT INTO
-    arp_naturreservate_oereb.transferstruktur_eigentumsbeschraenkung 
+    arp_naturreservate_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
         t_id,
         t_basket,
@@ -237,7 +237,7 @@ FROM
  */
 
 INSERT INTO
-    arp_naturreservate_oereb.dokumente_dokument
+    arp_naturreservate_oerebv2.dokumente_dokument
     (
         t_id,
         t_basket,
@@ -273,7 +273,7 @@ INSERT INTO
             SELECT 
                 t_id
             FROM 
-                arp_naturreservate_oereb.amt_amt 
+                arp_naturreservate_oerebv2.amt_amt 
             WHERE 
                 t_ili_tid = 'ch.so.arp'
         ) AS amt,
@@ -281,7 +281,7 @@ INSERT INTO
             SELECT 
                 t_id 
             FROM 
-                arp_naturreservate_oereb.t_ili2db_basket 
+                arp_naturreservate_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.arp.oereb_einzelschutz_naturreservat'
         ) AS basket
@@ -292,7 +292,7 @@ INSERT INTO
 ;
 
 INSERT INTO
-    arp_naturreservate_oereb.transferstruktur_hinweisvorschrift
+    arp_naturreservate_oerebv2.transferstruktur_hinweisvorschrift
     (
         t_basket,
         eigentumsbeschraenkung,
@@ -304,15 +304,15 @@ INSERT INTO
         hinweis_vorschrift.dokument AS vorschrift
     FROM
     arp_naturreservate.reservate_reservat_dokument AS hinweis_vorschrift
-        INNER JOIN arp_naturreservate_oereb.dokumente_dokument AS dokumente_dokument
+        INNER JOIN arp_naturreservate_oerebv2.dokumente_dokument AS dokumente_dokument
         ON dokumente_dokument.t_id = hinweis_vorschrift.dokument
-    INNER JOIN arp_naturreservate_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+    INNER JOIN arp_naturreservate_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
     ON eigentumsbeschraenkung.t_id = hinweis_vorschrift.reservat,
     (
         SELECT 
             t_id 
         FROM 
-            arp_naturreservate_oereb.t_ili2db_basket 
+            arp_naturreservate_oerebv2.t_ili2db_basket 
         WHERE 
             t_ili_tid = 'ch.so.arp.oereb_einzelschutz_naturreservat'
     ) AS basket
@@ -321,7 +321,7 @@ INSERT INTO
 WITH multilingualuri AS
 (
     INSERT INTO
-        arp_naturreservate_oereb.multilingualuri
+        arp_naturreservate_oerebv2.multilingualuri
         (
             t_id,
             t_basket,
@@ -329,17 +329,17 @@ WITH multilingualuri AS
             dokumente_dokument_textimweb
         )
     SELECT
-        nextval('arp_naturreservate_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('arp_naturreservate_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         dokumente_dokument.t_id AS dokumente_dokument_textimweb
     FROM
-        arp_naturreservate_oereb.dokumente_dokument AS dokumente_dokument,
+        arp_naturreservate_oerebv2.dokumente_dokument AS dokumente_dokument,
         (
             SELECT 
                 t_id 
             FROM 
-                arp_naturreservate_oereb.t_ili2db_basket 
+                arp_naturreservate_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.arp.oereb_einzelschutz_naturreservat'
         ) AS basket
@@ -349,7 +349,7 @@ WITH multilingualuri AS
 localiseduri AS
 (
     SELECT
-        nextval('arp_naturreservate_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('arp_naturreservate_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
@@ -367,7 +367,7 @@ localiseduri AS
             SELECT 
                 t_id 
             FROM 
-                arp_naturreservate_oereb.t_ili2db_basket 
+                arp_naturreservate_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.arp.oereb_einzelschutz_naturreservat'
         ) AS basket
@@ -377,7 +377,7 @@ localiseduri AS
         rechtsvorschriften_dokument.rechtsstatus= 'inKraft'
 )
 INSERT INTO
-    arp_naturreservate_oereb.localiseduri
+    arp_naturreservate_oerebv2.localiseduri
     (
         t_id,
         t_basket,
@@ -403,7 +403,7 @@ INSERT INTO
  */
 
 INSERT INTO
-    arp_naturreservate_oereb.transferstruktur_geometrie
+    arp_naturreservate_oerebv2.transferstruktur_geometrie
     (
         t_basket,
         flaeche,
@@ -419,13 +419,13 @@ INSERT INTO
         eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung
     FROM
         arp_naturreservate.reservate_teilgebiet AS teilgebiet_geometrie
-        INNER JOIN arp_naturreservate_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+        INNER JOIN arp_naturreservate_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON teilgebiet_geometrie.reservat = eigentumsbeschraenkung.t_id,
         (
             SELECT 
                 t_id 
             FROM 
-                arp_naturreservate_oereb.t_ili2db_basket 
+                arp_naturreservate_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.arp.oereb_einzelschutz_naturreservat'
         ) AS basket

@@ -1,25 +1,25 @@
 DELETE FROM 
-    arp_naturreservate_oereb.transferstruktur_geometrie
+    arp_naturreservate_oerebv2.transferstruktur_geometrie
 ;
 DELETE FROM 
-    arp_naturreservate_oereb.transferstruktur_hinweisvorschrift
+    arp_naturreservate_oerebv2.transferstruktur_hinweisvorschrift
 ;
 DELETE FROM
-    arp_naturreservate_oereb.localiseduri
+    arp_naturreservate_oerebv2.localiseduri
 ;
 DELETE FROM 
-    arp_naturreservate_oereb.multilingualuri 
+    arp_naturreservate_oerebv2.multilingualuri 
 ;
 DELETE FROM 
-    arp_naturreservate_oereb.dokumente_dokument
+    arp_naturreservate_oerebv2.dokumente_dokument
 ;
 DELETE FROM 
-    arp_naturreservate_oereb.transferstruktur_eigentumsbeschraenkung
+    arp_naturreservate_oerebv2.transferstruktur_eigentumsbeschraenkung
 ;
 DELETE FROM 
-    arp_naturreservate_oereb.transferstruktur_legendeeintrag
+    arp_naturreservate_oerebv2.transferstruktur_legendeeintrag
 ;
 DELETE FROM 
-    arp_naturreservate_oereb.transferstruktur_darstellungsdienst
+    arp_naturreservate_oerebv2.transferstruktur_darstellungsdienst
 ;
 

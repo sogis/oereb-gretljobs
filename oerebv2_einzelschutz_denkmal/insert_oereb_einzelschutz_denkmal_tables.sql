@@ -1,14 +1,14 @@
 WITH darstellungsdienst AS 
 (
     INSERT INTO 
-        ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst 
+        ada_denkmalschutz_oerebv2.transferstruktur_darstellungsdienst 
         (
             t_id,
             t_basket,
             t_ili_tid            
         )         
     SELECT
-        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id,
         uuid_generate_v4() AS t_ili_tid
     FROM 
@@ -16,7 +16,7 @@ WITH darstellungsdienst AS
         SELECT
             t_id
         FROM
-            ada_denkmalschutz_oereb.t_ili2db_basket
+            ada_denkmalschutz_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
     ) AS basket
@@ -26,7 +26,7 @@ WITH darstellungsdienst AS
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO
-        ada_denkmalschutz_oereb.multilingualuri 
+        ada_denkmalschutz_oerebv2.multilingualuri 
         (
             t_basket,
             t_seq, 
@@ -41,7 +41,7 @@ darstellungsdienst_multilingualuri AS
     RETURNING *
 )
 INSERT INTO 
-    ada_denkmalschutz_oereb.localiseduri 
+    ada_denkmalschutz_oerebv2.localiseduri 
     (
         t_basket,
         t_seq,
@@ -79,10 +79,10 @@ WITH darstellungsdienst AS
         darstellungsdienst.t_basket AS basket_t_id,
         localiseduri.atext
     FROM 
-        ada_denkmalschutz_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
-        LEFT JOIN ada_denkmalschutz_oereb.multilingualuri AS multilingualuri  
+        ada_denkmalschutz_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN ada_denkmalschutz_oerebv2.multilingualuri AS multilingualuri  
         ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
-        LEFT JOIN ada_denkmalschutz_oereb.localiseduri AS localiseduri 
+        LEFT JOIN ada_denkmalschutz_oerebv2.localiseduri AS localiseduri 
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
@@ -107,7 +107,7 @@ eigentumsbeschraenkung AS
         END AS artcodeliste
     FROM
         ada_denkmalschutz.fachapplikation_denkmal AS denkmal
-        LEFT JOIN ada_denkmalschutz_oereb.amt_amt AS amt
+        LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada'
         INNER JOIN ada_denkmalschutz.gis_geometrie AS gis_geometrie
         ON denkmal.id = gis_geometrie.denkmal_id
@@ -121,7 +121,7 @@ eigentumsbeschraenkung AS
             SELECT
                 t_id
             FROM
-                ada_denkmalschutz_oereb.t_ili2db_basket
+                ada_denkmalschutz_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket,
@@ -133,7 +133,7 @@ eigentumsbeschraenkung AS
 geometrie_flaeche AS 
 (
     INSERT INTO 
-        ada_denkmalschutz_oereb.transferstruktur_geometrie
+        ada_denkmalschutz_oerebv2.transferstruktur_geometrie
         (
             t_id,
             t_basket,
@@ -144,7 +144,7 @@ geometrie_flaeche AS
             eigentumsbeschraenkung
         )
     SELECT 
-        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         eigentumsbeschraenkung.basket_t_id,
         uuid_generate_v4(),
         ST_ReducePrecision(apolygon, 0.001) AS flaeche,
@@ -162,7 +162,7 @@ geometrie_flaeche AS
 geometrie_punkt AS 
 (
     INSERT INTO 
-        ada_denkmalschutz_oereb.transferstruktur_geometrie
+        ada_denkmalschutz_oerebv2.transferstruktur_geometrie
         (
             t_id,
             t_basket,
@@ -173,7 +173,7 @@ geometrie_punkt AS
             eigentumsbeschraenkung
         )
     SELECT 
-        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         eigentumsbeschraenkung.basket_t_id,
         uuid_generate_v4(),
         punkt,
@@ -190,7 +190,7 @@ geometrie_punkt AS
 ,
 legendeneintrag AS (
     INSERT INTO 
-        ada_denkmalschutz_oereb.transferstruktur_legendeeintrag 
+        ada_denkmalschutz_oerebv2.transferstruktur_legendeeintrag 
         (
             t_id,
             t_basket,
@@ -204,7 +204,7 @@ legendeneintrag AS (
         )
     SELECT 
         DISTINCT ON (artcode, artcodeliste)
-        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        nextval('ada_denkmalschutz_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
         eintrag.symbol,
@@ -215,12 +215,12 @@ legendeneintrag AS (
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 
-        LEFT JOIN ada_denkmalschutz_oereb.legendeneintraege_legendeneintrag AS eintrag
+        LEFT JOIN ada_denkmalschutz_oerebv2.legendeneintraege_legendeneintrag AS eintrag
         ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
     RETURNING *
 )
 INSERT INTO
-    ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung 
+    ada_denkmalschutz_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
         t_id,
         t_basket,
@@ -256,7 +256,7 @@ FROM
  
 
 INSERT INTO 
-    ada_denkmalschutz_oereb.dokumente_dokument
+    ada_denkmalschutz_oerebv2.dokumente_dokument
     (
         t_id,
         t_basket,
@@ -299,13 +299,13 @@ INSERT INTO
         ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS dokument
         INNER JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
         ON denkmal.id = dokument.denkmal_id
-        LEFT JOIN ada_denkmalschutz_oereb.amt_amt AS amt
+        LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
         (
             SELECT
                 t_id
             FROM
-                ada_denkmalschutz_oereb.t_ili2db_basket
+                ada_denkmalschutz_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
@@ -314,7 +314,7 @@ INSERT INTO
 ;
 
 INSERT INTO
-     ada_denkmalschutz_oereb.transferstruktur_hinweisvorschrift
+     ada_denkmalschutz_oerebv2.transferstruktur_hinweisvorschrift
      (
          t_basket,
          eigentumsbeschraenkung,
@@ -326,13 +326,13 @@ INSERT INTO
          typ_dokument.t_id AS vorschrift_vorschriften_dokument
       FROM
         ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS typ_dokument
-        INNER JOIN ada_denkmalschutz_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+        INNER JOIN ada_denkmalschutz_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON typ_dokument.denkmal_id = eigentumsbeschraenkung.t_id,
         (
             SELECT
                 t_id
             FROM
-                ada_denkmalschutz_oereb.t_ili2db_basket
+                ada_denkmalschutz_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
@@ -343,7 +343,7 @@ INSERT INTO
 WITH multilingualuri AS
 (
     INSERT INTO
-        ada_denkmalschutz_oereb.multilingualuri
+        ada_denkmalschutz_oerebv2.multilingualuri
         (
             t_id,
             t_basket,
@@ -351,17 +351,17 @@ WITH multilingualuri AS
             dokumente_dokument_textimweb
         )
     SELECT
-        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         dokumente_dokument.t_id AS dokumente_dokument_textimweb
     FROM
-        ada_denkmalschutz_oereb.dokumente_dokument AS dokumente_dokument,
+        ada_denkmalschutz_oerebv2.dokumente_dokument AS dokumente_dokument,
         (
             SELECT 
                 t_id 
             FROM 
-                ada_denkmalschutz_oereb.t_ili2db_basket 
+                ada_denkmalschutz_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal'
         ) AS basket
@@ -371,7 +371,7 @@ WITH multilingualuri AS
 localiseduri AS 
 (
     SELECT 
-        nextval('ada_denkmalschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('ada_denkmalschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
@@ -389,7 +389,7 @@ localiseduri AS
             SELECT 
                 t_id 
             FROM 
-                ada_denkmalschutz_oereb.t_ili2db_basket 
+                ada_denkmalschutz_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal'
         ) AS basket
@@ -397,7 +397,7 @@ localiseduri AS
      --   rechtsvorschrften_dokument.datum IS NOT NULL
 )
 INSERT INTO
-    ada_denkmalschutz_oereb.localiseduri
+    ada_denkmalschutz_oerebv2.localiseduri
     (
         t_id,
         t_basket,

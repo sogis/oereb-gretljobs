@@ -1,24 +1,24 @@
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_geometrie
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_geometrie
 ;
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_hinweisvorschrift
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_hinweisvorschrift
 ;
 DELETE FROM
-    awjf_statische_waldgrenzen_oereb.localiseduri
+    awjf_statische_waldgrenzen_oerebv2.localiseduri
 ;
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.multilingualuri 
+    awjf_statische_waldgrenzen_oerebv2.multilingualuri 
 ;
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.dokumente_dokument
+    awjf_statische_waldgrenzen_oerebv2.dokumente_dokument
 ;
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_eigentumsbeschraenkung
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_eigentumsbeschraenkung
 ;
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_legendeeintrag
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_legendeeintrag
 ;
 DELETE FROM 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_darstellungsdienst
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_darstellungsdienst
 ;
