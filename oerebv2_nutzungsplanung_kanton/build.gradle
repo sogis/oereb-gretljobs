@@ -12,31 +12,21 @@ def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
-def dbSchemaNutzungsplanungOereb = "arp_nutzungsplanung_kantonal_oerebv2"
+def dbSchemaNutzungsplanungOereb = "arp_nutzungsplanung_kanton_oerebv2"
 def nutzungsplanungDataSet = "ch.so.arp.oereb_nutzungsplanung_kantonal"
 
-//def nutzungsplanungGrundnutzungDataSet = "ch.so.arp.oereb_nutzungsplanung_grundnutzung" 
-//def symbolsNutzungsplanungGrundnutzungDataSet = nutzungsplanungGrundnutzungDataSet + ".symbole" 
 def nutzungsplanungUeberlagerndFlaecheDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_flaeche" 
 def symbolsNutzungsplanungUeberlagerndFlaecheDataSet = nutzungsplanungUeberlagerndFlaecheDataSet + ".symbole" 
-def nutzungsplanungUeberlagerndLinieDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_linie" 
-def symbolsNutzungsplanungUeberlagerndLinieDataSet = nutzungsplanungUeberlagerndLinieDataSet + ".symbole" 
-//def nutzungsplanungUeberlagerndPunktDataSet = "ch.so.arp.oereb_nutzungsplanung_ueberlagernd_punkt" 
-//def symbolsNutzungsplanungUeberlagerndPunktDataSet = nutzungsplanungUeberlagerndPunktDataSet + ".symbole" 
 def nutzungsplanungSondernutzungsplaeneDataSet = "ch.so.arp.oereb_nutzungsplanung_sondernutzungsplaene" 
 def symbolsNutzungsplanungSondernutzungsplaeneDataSet = nutzungsplanungSondernutzungsplaeneDataSet + ".symbole" 
 def nutzungsplanungBaulinienDataSet = "ch.so.arp.oereb_baulinien" 
 def symbolsNutzungsplanungBaulinienDataSet = nutzungsplanungBaulinienDataSet + ".symbole" 
-//def nutzungsplanungLaermempfindlichkeitsstufenDataSet = "ch.so.arp.oereb_laermempfindlichkeitsstufen" 
-//def symbolsNutzungsplanungLaermempfindlichkeitsstufenDataSet = nutzungsplanungLaermempfindlichkeitsstufenDataSet + ".symbole" 
-//def nutzungsplanungWaldabstandslinienDataSet = "ch.so.arp.oereb_waldabstandslinien" 
-//def symbolsNutzungsplanungWaldabstandslinienDataSet = nutzungsplanungWaldabstandslinienDataSet + ".symbole" 
 
-def symbolsDataSets = [symbolsNutzungsplanungGrundnutzungDataSet, symbolsNutzungsplanungUeberlagerndFlaecheDataSet, symbolsNutzungsplanungUeberlagerndLinieDataSet, symbolsNutzungsplanungUeberlagerndPunktDataSet, symbolsNutzungsplanungSondernutzungsplaeneDataSet, symbolsNutzungsplanungBaulinienDataSet, symbolsNutzungsplanungLaermempfindlichkeitsstufenDataSet, symbolsNutzungsplanungWaldabstandslinienDataSet]
+def symbolsDataSets = [symbolsNutzungsplanungUeberlagerndFlaecheDataSet, symbolsNutzungsplanungSondernutzungsplaeneDataSet, symbolsNutzungsplanungBaulinienDataSet]
 
 def xtfFileName = nutzungsplanungDataSet + "_V2_0.xtf"
 def xtfZipFileName = nutzungsplanungDataSet + "_V2_0_xtf.zip"
-def emptyTransferFile = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
+def emptyTransferFile = "ch.so.arp.oereb_nutzungsplanung_kantonal.empty.xtf"
 
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
@@ -148,7 +138,6 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     allObjectsAccessible = true
 }
 
-/*
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
@@ -205,4 +194,3 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
-*/
