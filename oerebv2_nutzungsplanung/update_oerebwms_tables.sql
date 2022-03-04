@@ -746,7 +746,7 @@ WITH eigentumsbeschraenkung_thema AS
     WHERE 
         legende.subthema = 'ch.SO.NutzungsplanungSondernutzungsplaene'
         AND 
-        artcodeliste = 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche%'
+        artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche%'
 )
 ,
 dokumente AS 
@@ -1087,13 +1087,13 @@ eigentumsbeschrankung_geometrie AS
 (
     SELECT 
         eigentumsbeschraenkung_thema.t_id, 
-        geometrie.flaeche AS geometrie
+        geometrie.linie AS geometrie
     FROM 
         eigentumsbeschraenkung_thema 
         LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_geometrie AS geometrie 
         ON geometrie.eigentumsbeschraenkung = eigentumsbeschraenkung_thema.t_id
     WHERE 
-        geometrie.flaeche IS NOT NULL
+        geometrie.linie IS NOT NULL
 )
 INSERT INTO 
     ${dbSchema}.so_g_rb0220222wms_waldabstandslinien 

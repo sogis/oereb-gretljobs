@@ -160,7 +160,6 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true
 }
 
-/*
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
@@ -205,4 +204,3 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
-*/
