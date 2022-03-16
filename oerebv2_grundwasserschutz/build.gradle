@@ -12,7 +12,7 @@ def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
-def dbSchemaGroundwaterProtectionOereb = "afu_grundwasserschutz_oereb"
+def dbSchemaGroundwaterProtectionOereb = "afu_grundwasserschutz_oerebv2"
     
 def groundwaterProtectionDataSet = "ch.so.afu.oereb_grundwasserschutz"
 def symbolsZoneDataSet = groundwaterProtectionDataSet + "zonen.symbole" 

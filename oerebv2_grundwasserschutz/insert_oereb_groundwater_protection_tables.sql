@@ -20,7 +20,7 @@ WITH themen AS
 darstellungsdienst AS 
 (
     SELECT
-        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_grundwasserschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         uuid_generate_v4() AS t_ili_tid,
         themen.thema
@@ -29,7 +29,7 @@ darstellungsdienst AS
         SELECT
             t_id
         FROM
-            afu_grundwasserschutz_oereb.t_ili2db_basket
+            afu_grundwasserschutz_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz' 
     ) AS basket, 
@@ -38,7 +38,7 @@ darstellungsdienst AS
 ,
 darstellungsdienst_insert AS (
     INSERT INTO 
-        afu_grundwasserschutz_oereb.transferstruktur_darstellungsdienst 
+        afu_grundwasserschutz_oerebv2.transferstruktur_darstellungsdienst 
         (
             t_id,
             t_basket,
@@ -55,7 +55,7 @@ darstellungsdienst_insert AS (
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO
-        afu_grundwasserschutz_oereb.multilingualuri 
+        afu_grundwasserschutz_oerebv2.multilingualuri 
         (
             t_basket,
             t_seq, 
@@ -70,7 +70,7 @@ darstellungsdienst_multilingualuri AS
     RETURNING *
 )
 INSERT INTO 
-    afu_grundwasserschutz_oereb.localiseduri 
+    afu_grundwasserschutz_oerebv2.localiseduri 
     (
         t_basket,
         t_seq,
@@ -104,10 +104,10 @@ WITH darstellungsdienst AS
         darstellungsdienst.t_basket AS basket_t_id,
         localiseduri.atext
     FROM 
-        afu_grundwasserschutz_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
-        LEFT JOIN afu_grundwasserschutz_oereb.multilingualuri AS multilingualuri  
+        afu_grundwasserschutz_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN afu_grundwasserschutz_oerebv2.multilingualuri AS multilingualuri  
         ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
-        LEFT JOIN afu_grundwasserschutz_oereb.localiseduri AS localiseduri 
+        LEFT JOIN afu_grundwasserschutz_oerebv2.localiseduri AS localiseduri 
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
@@ -143,7 +143,7 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_gewaesserschutz.gwszonen_gwszone AS gwszone
-        LEFT JOIN afu_grundwasserschutz_oereb.amt_amt AS amt
+        LEFT JOIN afu_grundwasserschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu'
         LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
         ON gwszone.astatus = status.t_id
@@ -171,7 +171,7 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_gewaesserschutz.gwszonen_gwsareal AS gwszone
-        LEFT JOIN afu_grundwasserschutz_oereb.amt_amt AS amt
+        LEFT JOIN afu_grundwasserschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu'
         LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
         ON gwszone.astatus = status.t_id
@@ -186,7 +186,7 @@ eigentumsbeschraenkung AS
 geometrie AS 
 (
     INSERT INTO 
-    afu_grundwasserschutz_oereb.transferstruktur_geometrie 
+    afu_grundwasserschutz_oerebv2.transferstruktur_geometrie 
     (
         t_id,
         t_basket,
@@ -197,7 +197,7 @@ geometrie AS
         eigentumsbeschraenkung
     )
     SELECT 
-        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_grundwasserschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket_t_id,
         uuid_generate_v4(),
         geometrie,
@@ -210,7 +210,7 @@ geometrie AS
 ,
 legendeneintrag AS (
     INSERT INTO 
-        afu_grundwasserschutz_oereb.transferstruktur_legendeeintrag 
+        afu_grundwasserschutz_oerebv2.transferstruktur_legendeeintrag 
         (
             t_id,
             t_basket,
@@ -224,7 +224,7 @@ legendeneintrag AS (
         )
     SELECT 
         DISTINCT ON (artcode, artcodeliste)
-        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        nextval('afu_grundwasserschutz_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
         eintrag.symbol,
@@ -235,12 +235,12 @@ legendeneintrag AS (
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 
-        LEFT JOIN afu_grundwasserschutz_oereb.legendeneintraege_legendeneintrag AS eintrag
+        LEFT JOIN afu_grundwasserschutz_oerebv2.legendeneintraege_legendeneintrag AS eintrag
         ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
     RETURNING *
 )
 INSERT INTO
-    afu_grundwasserschutz_oereb.transferstruktur_eigentumsbeschraenkung 
+    afu_grundwasserschutz_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
         t_id,
         t_basket,
@@ -274,7 +274,7 @@ FROM
  */
 
 INSERT INTO 
-    afu_grundwasserschutz_oereb.dokumente_dokument
+    afu_grundwasserschutz_oerebv2.dokumente_dokument
     (
         t_id,
         t_basket,
@@ -317,7 +317,7 @@ INSERT INTO
             SELECT 
                 t_id
             FROM 
-                afu_grundwasserschutz_oereb.amt_amt 
+                afu_grundwasserschutz_oerebv2.amt_amt 
             WHERE 
                 t_ili_tid = 'ch.so.afu'
         ) AS amt,
@@ -325,7 +325,7 @@ INSERT INTO
             SELECT 
                 t_id 
             FROM 
-                afu_grundwasserschutz_oereb.t_ili2db_basket 
+                afu_grundwasserschutz_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
         ) AS basket
@@ -336,7 +336,7 @@ INSERT INTO
 ;
 
 INSERT INTO
-    afu_grundwasserschutz_oereb.transferstruktur_hinweisvorschrift
+    afu_grundwasserschutz_oerebv2.transferstruktur_hinweisvorschrift
     (
         t_id,
         t_basket,
@@ -366,13 +366,13 @@ INSERT INTO
         FROM
             afu_gewaesserschutz.gwszonen_rechtsvorschriftgwsareal            
     ) AS hinweisvorschrift
-    INNER JOIN afu_grundwasserschutz_oereb.dokumente_dokument AS dokumente_dokument
+    INNER JOIN afu_grundwasserschutz_oerebv2.dokumente_dokument AS dokumente_dokument
     ON dokumente_dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument,  
     (
         SELECT 
             t_id 
         FROM 
-            afu_grundwasserschutz_oereb.t_ili2db_basket 
+            afu_grundwasserschutz_oerebv2.t_ili2db_basket 
         WHERE 
             t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
     ) AS basket
@@ -388,7 +388,7 @@ INSERT INTO
 WITH multilingualuri AS
 (
     INSERT INTO
-        afu_grundwasserschutz_oereb.multilingualuri
+        afu_grundwasserschutz_oerebv2.multilingualuri
         (
             t_id,
             t_basket,
@@ -396,17 +396,17 @@ WITH multilingualuri AS
             dokumente_dokument_textimweb
         )
     SELECT
-        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_grundwasserschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         dokumente_dokument.t_id AS dokumente_dokument_textimweb
     FROM
-        afu_grundwasserschutz_oereb.dokumente_dokument AS dokumente_dokument,
+        afu_grundwasserschutz_oerebv2.dokumente_dokument AS dokumente_dokument,
         (
             SELECT 
                 t_id 
             FROM 
-                afu_grundwasserschutz_oereb.t_ili2db_basket 
+                afu_grundwasserschutz_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
         ) AS basket
@@ -416,7 +416,7 @@ WITH multilingualuri AS
 localiseduri AS 
 (
     SELECT 
-        nextval('afu_grundwasserschutz_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_grundwasserschutz_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
@@ -434,7 +434,7 @@ localiseduri AS
             SELECT 
                 t_id 
             FROM 
-                afu_grundwasserschutz_oereb.t_ili2db_basket 
+                afu_grundwasserschutz_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_grundwasserschutz'
         ) AS basket
@@ -444,7 +444,7 @@ localiseduri AS
         rechtsstatus = 'inKraft'
 )
 INSERT INTO
-    afu_grundwasserschutz_oereb.localiseduri
+    afu_grundwasserschutz_oerebv2.localiseduri
     (
         t_id,
         t_basket,

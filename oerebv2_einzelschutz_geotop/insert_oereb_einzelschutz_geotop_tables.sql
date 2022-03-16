@@ -1,14 +1,14 @@
 WITH darstellungsdienst AS 
 (
     INSERT INTO 
-        afu_geotope_oereb.transferstruktur_darstellungsdienst 
+        afu_geotope_oerebv2.transferstruktur_darstellungsdienst 
         (
             t_id,
             t_basket,
             t_ili_tid            
         )         
     SELECT
-        nextval('afu_geotope_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_geotope_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id,
         uuid_generate_v4() AS t_ili_tid
     FROM 
@@ -16,7 +16,7 @@ WITH darstellungsdienst AS
         SELECT
             t_id
         FROM
-            afu_geotope_oereb.t_ili2db_basket
+            afu_geotope_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop' 
     ) AS basket
@@ -26,7 +26,7 @@ WITH darstellungsdienst AS
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO
-        afu_geotope_oereb.multilingualuri 
+        afu_geotope_oerebv2.multilingualuri 
         (
             t_basket,
             t_seq, 
@@ -41,7 +41,7 @@ darstellungsdienst_multilingualuri AS
     RETURNING *
 )
 INSERT INTO 
-    afu_geotope_oereb.localiseduri 
+    afu_geotope_oerebv2.localiseduri 
     (
         t_basket,
         t_seq,
@@ -72,10 +72,10 @@ WITH darstellungsdienst AS
         darstellungsdienst.t_basket AS basket_t_id,
         localiseduri.atext
     FROM 
-        afu_geotope_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
-        LEFT JOIN afu_geotope_oereb.multilingualuri AS multilingualuri  
+        afu_geotope_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN afu_geotope_oerebv2.multilingualuri AS multilingualuri  
         ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
-        LEFT JOIN afu_geotope_oereb.localiseduri AS localiseduri 
+        LEFT JOIN afu_geotope_oerebv2.localiseduri AS localiseduri 
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
@@ -96,13 +96,13 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_geotope.geotope_aufschluss AS aufschluss
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        LEFT JOIN afu_geotope_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu',
         (
             SELECT
                 t_id
             FROM
-                afu_geotope_oereb.t_ili2db_basket
+                afu_geotope_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop' 
         ) AS basket,
@@ -127,13 +127,13 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_geotope.geotope_landschaftsform AS landschaftsform
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        LEFT JOIN afu_geotope_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu',
         (
             SELECT
                 t_id
             FROM
-                afu_geotope_oereb.t_ili2db_basket
+                afu_geotope_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop' 
         ) AS basket,
@@ -158,13 +158,13 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_geotope.geotope_erratiker AS erratiker
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        LEFT JOIN afu_geotope_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu',
         (
             SELECT
                 t_id
             FROM
-                afu_geotope_oereb.t_ili2db_basket
+                afu_geotope_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop' 
         ) AS basket,
@@ -189,13 +189,13 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_geotope.geotope_hoehle AS hoehle
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        LEFT JOIN afu_geotope_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu',
         (
             SELECT
                 t_id
             FROM
-                afu_geotope_oereb.t_ili2db_basket
+                afu_geotope_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop' 
         ) AS basket,
@@ -220,13 +220,13 @@ eigentumsbeschraenkung AS
         geometrie
     FROM
         afu_geotope.geotope_quelle AS quelle
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        LEFT JOIN afu_geotope_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu',
         (
             SELECT
                 t_id
             FROM
-                afu_geotope_oereb.t_ili2db_basket
+                afu_geotope_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop' 
         ) AS basket,
@@ -238,7 +238,7 @@ eigentumsbeschraenkung AS
 geometrie_flaeche AS 
 (
     INSERT INTO 
-    afu_geotope_oereb.transferstruktur_geometrie 
+    afu_geotope_oerebv2.transferstruktur_geometrie 
     (
         t_id,
         t_basket,
@@ -249,7 +249,7 @@ geometrie_flaeche AS
         eigentumsbeschraenkung
     )
     SELECT 
-        nextval('afu_geotope_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_geotope_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket_t_id,
         uuid_generate_v4(),
         ST_ReducePrecision((ST_Dump(geometrie)).geom::geometry(Polygon,2056), 0.001) AS flaeche,
@@ -264,7 +264,7 @@ geometrie_flaeche AS
 ,
 geometrie_punkt AS (
     INSERT INTO 
-    afu_geotope_oereb.transferstruktur_geometrie 
+    afu_geotope_oerebv2.transferstruktur_geometrie 
     (
         t_id,
         t_basket,
@@ -275,7 +275,7 @@ geometrie_punkt AS (
         eigentumsbeschraenkung
     )
     SELECT 
-        nextval('afu_geotope_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_geotope_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket_t_id,
         uuid_generate_v4(),
         geometrie,
@@ -291,7 +291,7 @@ geometrie_punkt AS (
 ,
 legendeneintrag AS (
     INSERT INTO 
-        afu_geotope_oereb.transferstruktur_legendeeintrag 
+        afu_geotope_oerebv2.transferstruktur_legendeeintrag 
         (
             t_id,
             t_basket,
@@ -305,7 +305,7 @@ legendeneintrag AS (
         )
     SELECT 
         DISTINCT ON (artcode, artcodeliste)
-        nextval('afu_geotope_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        nextval('afu_geotope_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
         eintrag.symbol,
@@ -316,12 +316,12 @@ legendeneintrag AS (
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 
-        LEFT JOIN afu_geotope_oereb.legendeneintraege_legendeneintrag AS eintrag
+        LEFT JOIN afu_geotope_oerebv2.legendeneintraege_legendeneintrag AS eintrag
         ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
     RETURNING *
 )
 INSERT INTO
-    afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung 
+    afu_geotope_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
         t_id,
         t_basket,
@@ -401,11 +401,11 @@ dokumente_oereb AS (
         dokumente.*
     FROM 
         dokumente 
-        INNER JOIN afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+        INNER JOIN afu_geotope_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
         ON dokumente.geotop = eigentumsbeschraenkung.t_id
 )
 INSERT INTO
-    afu_geotope_oereb.dokumente_dokument
+    afu_geotope_oerebv2.dokumente_dokument
     (
         t_id,
         t_basket,
@@ -439,13 +439,13 @@ INSERT INTO
         afu_geotope.geotope_dokument AS dokument_geotope
         INNER JOIN dokumente_oereb
         ON dokument_geotope.t_id = dokumente_oereb.dokument
-        LEFT JOIN afu_geotope_oereb.amt_amt AS amt
+        LEFT JOIN afu_geotope_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu',
         (
             SELECT
                 t_id 
             FROM 
-                afu_geotope_oereb.t_ili2db_basket 
+                afu_geotope_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop'
         ) AS basket
@@ -505,7 +505,7 @@ hinweisvorschrift AS
         dokumente.dokument AS dokument
     FROM
         dokumente
-        INNER JOIN afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+        INNER JOIN afu_geotope_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON dokumente.geotop = eigentumsbeschraenkung.t_id
         LEFT JOIN afu_geotope.geotope_dokument AS geotope_dokument
         ON dokumente.dokument = geotope_dokument.t_id
@@ -515,7 +515,7 @@ hinweisvorschrift AS
         geotope_dokument.rechtsstatus = 'inKraft'
 )
 INSERT INTO
-    afu_geotope_oereb.transferstruktur_hinweisvorschrift 
+    afu_geotope_oerebv2.transferstruktur_hinweisvorschrift 
     (
         t_basket,
         eigentumsbeschraenkung,
@@ -531,7 +531,7 @@ INSERT INTO
             SELECT 
                 t_id 
             FROM 
-                afu_geotope_oereb.t_ili2db_basket 
+                afu_geotope_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop'
         ) AS basket
@@ -540,7 +540,7 @@ INSERT INTO
 WITH multilingualuri AS
 (
     INSERT INTO
-        afu_geotope_oereb.multilingualuri
+        afu_geotope_oerebv2.multilingualuri
         (
             t_id,
             t_basket,
@@ -548,17 +548,17 @@ WITH multilingualuri AS
             dokumente_dokument_textimweb
         )
     SELECT
-        nextval('afu_geotope_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_geotope_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         dokumente_dokument.t_id AS dokumente_dokument_textimweb
     FROM
-        afu_geotope_oereb.dokumente_dokument AS dokumente_dokument,
+        afu_geotope_oerebv2.dokumente_dokument AS dokumente_dokument,
         (
             SELECT 
                 t_id 
             FROM 
-                afu_geotope_oereb.t_ili2db_basket 
+                afu_geotope_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop'
         ) AS basket
@@ -568,7 +568,7 @@ WITH multilingualuri AS
 localiseduri AS
 (
     SELECT
-        nextval('afu_geotope_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_geotope_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
@@ -586,7 +586,7 @@ localiseduri AS
             SELECT 
                 t_id 
             FROM 
-                afu_geotope_oereb.t_ili2db_basket 
+                afu_geotope_oerebv2.t_ili2db_basket 
             WHERE 
                 t_ili_tid = 'ch.so.afu.oereb_einzelschutz_geotop'
         ) AS basket
@@ -594,7 +594,7 @@ localiseduri AS
        rechtsvorschrften_dokument.publiziert_ab IS NOT NULL
 )
 INSERT INTO
-    afu_geotope_oereb.localiseduri
+    afu_geotope_oerebv2.localiseduri
     (
         t_id,
         t_basket,

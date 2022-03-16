@@ -12,7 +12,7 @@ def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
-def dbSchemaEinzelschutzGeotopOereb = "afu_geotope_oereb"
+def dbSchemaEinzelschutzGeotopOereb = "afu_geotope_oerebv2"
 
 def einzelschutzGeotopDataSet = "ch.so.afu.oereb_einzelschutz_geotop"
 def symbolsGeotopFlaecheDataSet = einzelschutzGeotopDataSet + "_flaeche.symbole" 

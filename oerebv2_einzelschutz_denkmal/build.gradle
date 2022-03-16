@@ -14,7 +14,7 @@ def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
-def dbSchemaEinzelschutzDenkmalOereb = "ada_denkmalschutz_oereb"
+def dbSchemaEinzelschutzDenkmalOereb = "ada_denkmalschutz_oerebv2"
 
 def einzelschutzDenkmalDataSet = "ch.so.ada.oereb_einzelschutz_denkmal"
 def symbolsDenkmalFlaecheDataSet = einzelschutzDenkmalDataSet + "_flaeche.symbole" 

@@ -1,25 +1,25 @@
 DELETE FROM 
-    afu_geotope_oereb.transferstruktur_geometrie
+    afu_geotope_oerebv2.transferstruktur_geometrie
 ;
 DELETE FROM 
-    afu_geotope_oereb.transferstruktur_hinweisvorschrift
+    afu_geotope_oerebv2.transferstruktur_hinweisvorschrift
 ;
 DELETE FROM
-    afu_geotope_oereb.localiseduri
+    afu_geotope_oerebv2.localiseduri
 ;
 DELETE FROM 
-    afu_geotope_oereb.multilingualuri 
+    afu_geotope_oerebv2.multilingualuri 
 ;
 DELETE FROM 
-    afu_geotope_oereb.dokumente_dokument
+    afu_geotope_oerebv2.dokumente_dokument
 ;
 DELETE FROM 
-    afu_geotope_oereb.transferstruktur_eigentumsbeschraenkung
+    afu_geotope_oerebv2.transferstruktur_eigentumsbeschraenkung
 ;
 DELETE FROM 
-    afu_geotope_oereb.transferstruktur_legendeeintrag
+    afu_geotope_oerebv2.transferstruktur_legendeeintrag
 ;
 DELETE FROM 
-    afu_geotope_oereb.transferstruktur_darstellungsdienst
+    afu_geotope_oerebv2.transferstruktur_darstellungsdienst
 ;
 

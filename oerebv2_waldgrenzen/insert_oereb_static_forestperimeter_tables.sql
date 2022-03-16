@@ -11,14 +11,14 @@
 WITH darstellungsdienst AS 
 (
     INSERT INTO 
-        awjf_statische_waldgrenzen_oereb.transferstruktur_darstellungsdienst 
+        awjf_statische_waldgrenzen_oerebv2.transferstruktur_darstellungsdienst 
         (
             t_id,
             t_basket,
             t_ili_tid            
         )         
     SELECT
-        nextval('awjf_statische_waldgrenzen_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('awjf_statische_waldgrenzen_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id,
         uuid_generate_v4() AS t_ili_tid
     FROM 
@@ -26,7 +26,7 @@ WITH darstellungsdienst AS
         SELECT
             t_id
         FROM
-            awjf_statische_waldgrenzen_oereb.t_ili2db_basket
+            awjf_statische_waldgrenzen_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
     ) AS basket
@@ -36,7 +36,7 @@ WITH darstellungsdienst AS
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO
-        awjf_statische_waldgrenzen_oereb.multilingualuri 
+        awjf_statische_waldgrenzen_oerebv2.multilingualuri 
         (
             t_basket,
             t_seq, 
@@ -51,7 +51,7 @@ darstellungsdienst_multilingualuri AS
     RETURNING *
 )
 INSERT INTO 
-    awjf_statische_waldgrenzen_oereb.localiseduri 
+    awjf_statische_waldgrenzen_oerebv2.localiseduri 
     (
         t_basket,
         t_seq,
@@ -114,10 +114,10 @@ WITH darstellungsdienst AS
         darstellungsdienst.t_basket AS basket_t_id,
         localiseduri.atext
     FROM 
-        awjf_statische_waldgrenzen_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
-        LEFT JOIN awjf_statische_waldgrenzen_oereb.multilingualuri AS multilingualuri  
+        awjf_statische_waldgrenzen_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN awjf_statische_waldgrenzen_oerebv2.multilingualuri AS multilingualuri  
         ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
-        LEFT JOIN awjf_statische_waldgrenzen_oereb.localiseduri AS localiseduri 
+        LEFT JOIN awjf_statische_waldgrenzen_oerebv2.localiseduri AS localiseduri 
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
@@ -151,7 +151,7 @@ eigentumsbeschraenkung AS (
             SELECT 
                 t_id AS amt_t_id
             FROM 
-                awjf_statische_waldgrenzen_oereb.amt_amt 
+                awjf_statische_waldgrenzen_oerebv2.amt_amt 
             WHERE 
                 t_ili_tid = 'ch.so.awjf'
         ) AS amt
@@ -180,7 +180,7 @@ eigentumsbeschraenkung AS (
 ,
 legendeneintrag AS (
     INSERT INTO 
-        awjf_statische_waldgrenzen_oereb.transferstruktur_legendeeintrag 
+        awjf_statische_waldgrenzen_oerebv2.transferstruktur_legendeeintrag 
         (
             t_id,
             t_basket,
@@ -194,7 +194,7 @@ legendeneintrag AS (
         )
     SELECT 
         DISTINCT ON (artcode, artcodeliste)
-        nextval('awjf_statische_waldgrenzen_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        nextval('awjf_statische_waldgrenzen_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
         eintrag.symbol,
@@ -205,12 +205,12 @@ legendeneintrag AS (
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 
-        LEFT JOIN awjf_statische_waldgrenzen_oereb.legendeneintraege_legendeneintrag AS eintrag
+        LEFT JOIN awjf_statische_waldgrenzen_oerebv2.legendeneintraege_legendeneintrag AS eintrag
         ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
     RETURNING *
 )
 INSERT INTO
-    awjf_statische_waldgrenzen_oereb.transferstruktur_eigentumsbeschraenkung 
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
         t_id,
         t_basket,
@@ -257,7 +257,7 @@ WITH basket AS (
     SELECT
         t_id
     FROM
-        awjf_statische_waldgrenzen_oereb.t_ili2db_basket
+        awjf_statische_waldgrenzen_oerebv2.t_ili2db_basket
     WHERE
         t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
 )
@@ -287,7 +287,7 @@ hinweisvorschrift AS (
         --AND 
         --  dokument.typ <> 'Bericht'
     ) AS t_typ_dokument
-    RIGHT JOIN awjf_statische_waldgrenzen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+    RIGHT JOIN awjf_statische_waldgrenzen_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ON t_typ_dokument.eigentumsbeschraenkung = eigentumsbeschraenkung.t_id,
     basket
 )
@@ -295,7 +295,7 @@ hinweisvorschrift AS (
 dokumente_dokument AS
 (
     INSERT INTO 
-        awjf_statische_waldgrenzen_oereb.dokumente_dokument 
+        awjf_statische_waldgrenzen_oerebv2.dokumente_dokument 
         (
             t_id,
             t_basket,
@@ -333,7 +333,7 @@ dokumente_dokument AS
                     SELECT 
                         t_id
                     FROM
-                        awjf_statische_waldgrenzen_oereb.amt_amt 
+                        awjf_statische_waldgrenzen_oerebv2.amt_amt 
                     WHERE
                         t_ili_tid = 'ch.so.sk'
                 )
@@ -342,7 +342,7 @@ dokumente_dokument AS
                     SELECT 
                         t_id
                     FROM
-                        awjf_statische_waldgrenzen_oereb.amt_amt 
+                        awjf_statische_waldgrenzen_oerebv2.amt_amt 
                     WHERE
                         t_ili_tid = 'ch.so.awjf'
                 )
@@ -358,7 +358,7 @@ dokumente_dokument AS
         datum_archivierung IS NULL
 )
 INSERT INTO 
-    awjf_statische_waldgrenzen_oereb.transferstruktur_hinweisvorschrift 
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_hinweisvorschrift 
     (
         t_id,
         t_basket,
@@ -383,7 +383,7 @@ FROM
 WITH multilingualuri AS
 (
     INSERT INTO
-        awjf_statische_waldgrenzen_oereb.multilingualuri
+        awjf_statische_waldgrenzen_oerebv2.multilingualuri
         (
             t_id,
             t_basket,
@@ -391,17 +391,17 @@ WITH multilingualuri AS
             dokumente_dokument_textimweb
         )
     SELECT
-        nextval('awjf_statische_waldgrenzen_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('awjf_statische_waldgrenzen_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id,
         0 AS t_seq,
         dokumente_dokument.t_id AS dokumente_dokument_textimweb
     FROM
-        awjf_statische_waldgrenzen_oereb.dokumente_dokument AS dokumente_dokument,
+        awjf_statische_waldgrenzen_oerebv2.dokumente_dokument AS dokumente_dokument,
         (
             SELECT
                 t_id
             FROM
-                awjf_statische_waldgrenzen_oereb.t_ili2db_basket
+                awjf_statische_waldgrenzen_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
         ) AS basket
@@ -411,7 +411,7 @@ WITH multilingualuri AS
 localiseduri AS 
 (
     SELECT 
-        nextval('awjf_statische_waldgrenzen_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('awjf_statische_waldgrenzen_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
@@ -425,13 +425,13 @@ localiseduri AS
             SELECT
                 t_id
             FROM
-                awjf_statische_waldgrenzen_oereb.t_ili2db_basket
+                awjf_statische_waldgrenzen_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
         ) AS basket
 )
 INSERT INTO
-    awjf_statische_waldgrenzen_oereb.localiseduri
+    awjf_statische_waldgrenzen_oerebv2.localiseduri
     (
         t_id,
         t_basket,
@@ -456,7 +456,7 @@ INSERT INTO
  */
 
 INSERT INTO
-    awjf_statische_waldgrenzen_oereb.transferstruktur_geometrie
+    awjf_statische_waldgrenzen_oerebv2.transferstruktur_geometrie
     ( 
         t_basket,
         linie,
@@ -472,13 +472,13 @@ SELECT
     eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung
 FROM
     awjf_statische_waldgrenze.geobasisdaten_waldgrenze_linie AS waldgrenze
-    INNER JOIN awjf_statische_waldgrenzen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+    INNER JOIN awjf_statische_waldgrenzen_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
     ON waldgrenze.waldgrenze_typ = eigentumsbeschraenkung.t_id,
     (
         SELECT
             t_id
         FROM
-            awjf_statische_waldgrenzen_oereb.t_ili2db_basket
+            awjf_statische_waldgrenzen_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.awjf.oereb_statische_waldgrenzen' 
     ) AS basket
