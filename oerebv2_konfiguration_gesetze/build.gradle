@@ -10,7 +10,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def iliModelBasis = "OeREBKRM_V2_0"
 
-def dbSchemaKonfiguration = "agi_oereb_konfiguration"
+def dbSchemaKonfiguration = "agi_konfiguration_oerebv2"
 
 def xtfFileName = "ch.so.sk.oereb_gesetze_V2_0.xtf"
 def zipFileName = "ch.so.sk.oereb_gesetze_V2_0_xtf.zip"

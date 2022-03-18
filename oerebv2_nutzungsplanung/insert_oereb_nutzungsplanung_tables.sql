@@ -114,8 +114,8 @@ WITH availabilty AS
     SELECT 
         gemeinde
     FROM 
-        agi_oereb_konfiguration.konfiguration_gemeindemitoerebk AS gemeindemitoereb 
-        LEFT JOIN agi_oereb_konfiguration.themaref AS themaref 
+        agi_konfiguration_oerebv2.konfiguration_gemeindemitoerebk AS gemeindemitoereb 
+        LEFT JOIN agi_konfiguration_oerebv2.themaref AS themaref 
         ON themaref.konfiguratn_gmndmtrebk_themen = gemeindemitoereb.t_id
     WHERE 
         thema = 'ch.Gewaesserraum'

@@ -23,7 +23,7 @@ ext {
     /* Edit-DB */
 
     iliModelKonfiguration = "OeREBKRMkvs_V2_0"
-    dbSchemaKonfiguration = "agi_oereb_konfiguration"
+    dbSchemaKonfiguration = "agi_konfiguration_oerebv2"
 
     responsibleOfficesDataFile = "ch.so.agi.oereb_zustaendigestellen_V2_0.xtf"
     responsibleOfficesDataSet = "zustaendigestellen"
