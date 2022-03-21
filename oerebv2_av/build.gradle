@@ -67,7 +67,7 @@ task transferAV_stage(type: Db2Db, dependsOn: "deletePreviousAVData_stage") {
 task transferAV_live(type: SqlExecutor, dependsOn: "transferAV_stage") {
     description = "Transferiert AV-Daten vom Live ins Stage Schema. In der gleichen Transaktion wird zuerst gelöscht und dann mit INSERT eingefügt."
     group = GROUP
-    database = [dbUriOereb, dbUserOereb, dbPwdOereb]
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     sqlFiles = ['delete_previous_av_data.sql','uebertrag_stage_zu_live.sql']
     sqlParameters = [dbSchema: 'live']
     doLast {
