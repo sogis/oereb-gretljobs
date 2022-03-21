@@ -101,7 +101,7 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     dataset = einzelschutzDenkmalDataSet
 }
 
-task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importEmptyTransferToOereb"]) {
+task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlParameters = [s3AdaLiveBucket: "'" + s3AdaLiveBucket + "'"]
