@@ -64,6 +64,8 @@ oerebThemen.each { oerebThema ->
             database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
             dbschema = schema
             dataset = themaName
+            // bewusst nur Tid, da Bid nicht unter unserer Kontrolle
+            importTid = true
             models = iliModelTransferstruktur
             dataFile = file(Paths.get(pathToUnzipFolder.toString(), themaName + ".xtf"))
             disableValidation = false
