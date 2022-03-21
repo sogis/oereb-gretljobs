@@ -96,8 +96,8 @@ eigentumsbeschraenkung AS (
         'urn:fdc:ilismeta.interlis.ch:2022:Typ_Kanton_Planungszonen' AS artcodeliste,
         geometrie.geometrie 
     FROM
-        arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
-        INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_flaeche AS geometrie
+        arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
+        INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_flaeche AS geometrie
         ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
         LEFT JOIN darstellungsdienst
         ON darstellungsdienst.atext ILIKE '%ch.Planungszonen%'
@@ -245,8 +245,8 @@ SELECT
             )
     END AS zustaendigestelle
 FROM 
-    arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-    LEFT JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
+    arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+    LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
     ON flaeche_dokument.dokument = dokument.t_id 
     INNER JOIN arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ON eigentumsbeschraenkung.t_id = flaeche_dokument.typ_ueberlagernd_flaeche 
@@ -267,7 +267,7 @@ SELECT
     dokument.t_id AS vorschrift
 FROM 
     arp_planungszonen_oereb.dokumente_dokument AS dokument
-    LEFT JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
+    LEFT JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS flaeche_dokument 
     ON flaeche_dokument.dokument = dokument.t_id
     INNER JOIN arp_planungszonen_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ON eigentumsbeschraenkung.t_id = flaeche_dokument.typ_ueberlagernd_flaeche
@@ -311,7 +311,7 @@ localiseduri AS
         textimweb AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokumente_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokumente_dokument
         RIGHT JOIN multilingualuri 
         ON multilingualuri.dokumente_dokument_textimweb = dokumente_dokument.t_id,
         (
