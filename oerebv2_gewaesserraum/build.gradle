@@ -12,7 +12,7 @@ def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
-def dbSchemaGewaesserraumOereb = "afu_gewaesserraum_oereb"
+def dbSchemaGewaesserraumOereb = "afu_gewaesserraum_oerebv2"
 
 def gewaesserraumDataSet = "ch.so.afu.oereb_gewaesserraum"
 def symbolsGewaesserraumFlaecheDataSet = gewaesserraumDataSet + "_flaeche.symbole" 

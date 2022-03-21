@@ -1,14 +1,14 @@
 WITH darstellungsdienst AS 
 (
     INSERT INTO 
-        afu_gewaesserraum_oereb.transferstruktur_darstellungsdienst 
+        afu_gewaesserraum_oerebv2.transferstruktur_darstellungsdienst 
         (
             t_id,
             t_basket,
             t_ili_tid            
         )         
     SELECT
-        nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id,
         uuid_generate_v4() AS t_ili_tid
     FROM 
@@ -16,7 +16,7 @@ WITH darstellungsdienst AS
         SELECT
             t_id
         FROM
-            afu_gewaesserraum_oereb.t_ili2db_basket
+            afu_gewaesserraum_oerebv2.t_ili2db_basket
         WHERE
             t_ili_tid = 'ch.so.afu.oereb_gewaesserraum' 
     ) AS basket
@@ -26,7 +26,7 @@ WITH darstellungsdienst AS
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO
-        afu_gewaesserraum_oereb.multilingualuri 
+        afu_gewaesserraum_oerebv2.multilingualuri 
         (
             t_basket,
             t_seq, 
@@ -41,7 +41,7 @@ darstellungsdienst_multilingualuri AS
     RETURNING *
 )
 INSERT INTO 
-    afu_gewaesserraum_oereb.localiseduri 
+    afu_gewaesserraum_oerebv2.localiseduri 
     (
         t_basket,
         t_seq,
@@ -85,10 +85,10 @@ darstellungsdienst AS
         darstellungsdienst.t_basket AS basket_t_id,
         localiseduri.atext
     FROM 
-        afu_gewaesserraum_oereb.transferstruktur_darstellungsdienst AS darstellungsdienst
-        LEFT JOIN afu_gewaesserraum_oereb.multilingualuri AS multilingualuri  
+        afu_gewaesserraum_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN afu_gewaesserraum_oerebv2.multilingualuri AS multilingualuri  
         ON multilingualuri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id 
-        LEFT JOIN afu_gewaesserraum_oereb.localiseduri AS localiseduri 
+        LEFT JOIN afu_gewaesserraum_oerebv2.localiseduri AS localiseduri 
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
@@ -113,7 +113,7 @@ eigentumsbeschraenkung AS (
         ON geobasisdaten_typ.t_id = geometrie.typ_grundnutzung 
         LEFT JOIN darstellungsdienst
         ON darstellungsdienst.atext ILIKE '%ch.Gewaesserraum%'
-        LEFT JOIN afu_gewaesserraum_oereb.amt_amt AS amt 
+        LEFT JOIN afu_gewaesserraum_oerebv2.amt_amt AS amt 
         ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
     WHERE 
         CAST(geobasisdaten_typ.t_datasetname AS int4) IN 
@@ -150,7 +150,7 @@ eigentumsbeschraenkung AS (
         ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
         LEFT JOIN darstellungsdienst
         ON darstellungsdienst.atext ILIKE '%ch.Gewaesserraum%'
-        LEFT JOIN afu_gewaesserraum_oereb.amt_amt AS amt 
+        LEFT JOIN afu_gewaesserraum_oerebv2.amt_amt AS amt 
         ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
     WHERE 
         CAST(geobasisdaten_typ.t_datasetname AS int4) IN 
@@ -187,7 +187,7 @@ eigentumsbeschraenkung AS (
         ON geobasisdaten_typ.t_id = geometrie.typ_erschliessung_linienobjekt 
         LEFT JOIN darstellungsdienst
         ON darstellungsdienst.atext ILIKE '%ch.Gewaesserraum%'
-        LEFT JOIN afu_gewaesserraum_oereb.amt_amt AS amt 
+        LEFT JOIN afu_gewaesserraum_oerebv2.amt_amt AS amt 
         ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
     WHERE 
         CAST(geobasisdaten_typ.t_datasetname AS int4) IN 
@@ -205,7 +205,7 @@ eigentumsbeschraenkung AS (
 ,
 legendeneintrag AS (
     INSERT INTO 
-        afu_gewaesserraum_oereb.transferstruktur_legendeeintrag 
+        afu_gewaesserraum_oerebv2.transferstruktur_legendeeintrag 
         (
             t_id,
             t_basket,
@@ -219,7 +219,7 @@ legendeneintrag AS (
         )
     SELECT 
         DISTINCT ON (artcode, artcodeliste)
-        nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
         basket_t_id,
         uuid_generate_v4(),
         eintrag.symbol,
@@ -230,14 +230,14 @@ legendeneintrag AS (
         darstellungsdienst
     FROM 
         eigentumsbeschraenkung 
-        LEFT JOIN afu_gewaesserraum_oereb.legendeneintraege_legendeneintrag AS eintrag
+        LEFT JOIN afu_gewaesserraum_oerebv2.legendeneintraege_legendeneintrag AS eintrag
         ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
    RETURNING *
 )
 ,
 geometrie_flaeche AS (
     INSERT INTO 
-        afu_gewaesserraum_oereb.transferstruktur_geometrie 
+        afu_gewaesserraum_oerebv2.transferstruktur_geometrie 
         (
             t_id,
             t_basket,
@@ -248,7 +248,7 @@ geometrie_flaeche AS (
             eigentumsbeschraenkung
         )
     SELECT 
-        nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass),
+        nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass),
         basket_t_id,
         uuid_generate_v4(),
         geometrie,
@@ -263,7 +263,7 @@ geometrie_flaeche AS (
 ,
 geometrie_linie AS (
     INSERT INTO 
-        afu_gewaesserraum_oereb.transferstruktur_geometrie 
+        afu_gewaesserraum_oerebv2.transferstruktur_geometrie 
         (
             t_id,
             t_basket,
@@ -274,7 +274,7 @@ geometrie_linie AS (
             eigentumsbeschraenkung
         )
     SELECT 
-        nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass),
+        nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass),
         basket_t_id,
         uuid_generate_v4(),
         geometrie,
@@ -287,7 +287,7 @@ geometrie_linie AS (
         ST_GeometryType(geometrie) = 'ST_LineString'
 )
 INSERT INTO
-    afu_gewaesserraum_oereb.transferstruktur_eigentumsbeschraenkung 
+    afu_gewaesserraum_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
         t_id,
         t_basket,
@@ -375,7 +375,7 @@ WITH dokument_typ AS
 dokumente AS 
 (
     INSERT INTO 
-        afu_gewaesserraum_oereb.dokumente_dokument
+        afu_gewaesserraum_oerebv2.dokumente_dokument
         (
             t_id,
             t_basket,
@@ -413,7 +413,7 @@ dokumente AS
                     SELECT 
                         t_id
                     FROM
-                        afu_gewaesserraum_oereb.amt_amt 
+                        afu_gewaesserraum_oerebv2.amt_amt 
                     WHERE
                         t_ili_tid = 'ch.so.sk'
                 )
@@ -422,18 +422,18 @@ dokumente AS
                     SELECT 
                         t_id
                     FROM
-                        afu_gewaesserraum_oereb.amt_amt 
+                        afu_gewaesserraum_oerebv2.amt_amt 
                     WHERE
                         t_ili_tid = 'ch.' || dokument_typ.t_datasetname
                 )
         END AS zustaendigestelle
     FROM 
         dokument_typ
-        INNER JOIN afu_gewaesserraum_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+        INNER JOIN afu_gewaesserraum_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
         ON eigentumsbeschraenkung.t_id = dokument_typ.typ_eigentumsbeschraenkung
 )
 INSERT INTO
-    afu_gewaesserraum_oereb.transferstruktur_hinweisvorschrift
+    afu_gewaesserraum_oerebv2.transferstruktur_hinweisvorschrift
     (
         t_id,
         t_basket,
@@ -441,20 +441,20 @@ INSERT INTO
         vorschrift 
     )
 SELECT 
-    nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass),
+    nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass),
     eigentumsbeschraenkung.t_basket,
     eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
     dokument_typ.t_id AS vorschrift
 FROM 
     dokument_typ
-    INNER JOIN afu_gewaesserraum_oereb.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
+    INNER JOIN afu_gewaesserraum_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung 
     ON eigentumsbeschraenkung.t_id = dokument_typ.typ_eigentumsbeschraenkung
 ;
 
 WITH multilingualuri AS
 (
     INSERT INTO
-        afu_gewaesserraum_oereb.multilingualuri
+        afu_gewaesserraum_oerebv2.multilingualuri
         (
             t_id,
             t_basket,
@@ -462,17 +462,17 @@ WITH multilingualuri AS
             dokumente_dokument_textimweb
         )
     SELECT
-        nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id,
         0 AS t_seq,
         dokumente_dokument.t_id AS dokumente_dokument_textimweb
     FROM
-        afu_gewaesserraum_oereb.dokumente_dokument AS dokumente_dokument,
+        afu_gewaesserraum_oerebv2.dokumente_dokument AS dokumente_dokument,
         (
             SELECT
                 t_id
             FROM
-                afu_gewaesserraum_oereb.t_ili2db_basket
+                afu_gewaesserraum_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_gewaesserraum' 
         ) AS basket
@@ -482,7 +482,7 @@ WITH multilingualuri AS
 localiseduri AS 
 (
     SELECT 
-        nextval('afu_gewaesserraum_oereb.t_ili2db_seq'::regclass) AS t_id,
+        nextval('afu_gewaesserraum_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
@@ -496,13 +496,13 @@ localiseduri AS
             SELECT
                 t_id
             FROM
-                afu_gewaesserraum_oereb.t_ili2db_basket
+                afu_gewaesserraum_oerebv2.t_ili2db_basket
             WHERE
                 t_ili_tid = 'ch.so.afu.oereb_gewaesserraum' 
         ) AS basket
 )
 INSERT INTO
-    afu_gewaesserraum_oereb.localiseduri
+    afu_gewaesserraum_oerebv2.localiseduri
     (
         t_id,
         t_basket,
@@ -522,4 +522,80 @@ INSERT INTO
         localiseduri
 ;
 
-
+/**
+ * Es werden die Darstellungsdienste gelöscht, die nicht verwendet werden. Sonst
+ * gibt es Validierungsfehler. Ich teste nur ggü den Eigentumsbeschränkungen. 
+ * Eigentlich müsste auch ggü den Legenden getestest werden. In unserem Fall scheint
+ * mir das nicht notwendig, weil es keine Legenden ohne Eigentumsbeschränkung geben
+ * darf. 
+ */
+WITH dangling_darstellungsdienst AS 
+(
+    SELECT 
+        darstellungsdienst.t_id
+    FROM
+        afu_gewaesserraum_oerebv2.transferstruktur_darstellungsdienst AS darstellungsdienst
+        LEFT JOIN afu_gewaesserraum_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschrankung
+        ON darstellungsdienst.t_id = eigentumsbeschrankung.darstellungsdienst 
+    WHERE 
+        eigentumsbeschrankung.t_id IS NULL       
+)
+,
+dangling_multilingualuri AS 
+(
+    SELECT 
+        muri.t_id
+    FROM 
+        afu_gewaesserraum_oerebv2.multilingualuri AS muri
+        INNER JOIN dangling_darstellungsdienst AS darstellungsdienst 
+        ON muri.transfrstrkstllngsdnst_verweiswms = darstellungsdienst.t_id
+)
+,
+dangling_localiseduri AS 
+(
+    SELECT 
+        luri.t_id
+    FROM 
+        afu_gewaesserraum_oerebv2.localiseduri AS luri
+        INNER JOIN dangling_multilingualuri AS multilingualuri 
+        ON luri.multilingualuri_localisedtext = multilingualuri.t_id
+)
+,
+delete_dangling_localiseduri AS 
+(
+    DELETE FROM 
+        afu_gewaesserraum_oerebv2.localiseduri
+    WHERE 
+        t_id IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_localiseduri
+        )
+)
+,
+delete_dangling_multilingualuri AS 
+(
+    DELETE FROM 
+        afu_gewaesserraum_oerebv2.multilingualuri m 
+    WHERE 
+        t_id IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_multilingualuri
+        )
+)
+DELETE FROM 
+    afu_gewaesserraum_oerebv2.transferstruktur_darstellungsdienst 
+    WHERE 
+        t_id IN 
+        (
+            SELECT 
+                t_id 
+            FROM 
+                dangling_darstellungsdienst
+        )
+;
