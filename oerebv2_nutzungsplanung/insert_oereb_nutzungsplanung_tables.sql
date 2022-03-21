@@ -154,8 +154,8 @@ eigentumsbeschraenkung AS (
         'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Grundnutzung.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
         geometrie.geometrie 
     FROM
-        arp_nutzungsplanung.nutzungsplanung_typ_grundnutzung AS geobasisdaten_typ
-        INNER JOIN arp_nutzungsplanung.nutzungsplanung_grundnutzung AS geometrie
+        arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung AS geobasisdaten_typ
+        INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_grundnutzung AS geometrie
         ON geobasisdaten_typ.t_id = geometrie.typ_grundnutzung 
         LEFT JOIN darstellungsdienst
         ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungGrundnutzung%'
@@ -216,8 +216,8 @@ eigentumsbeschraenkung AS (
             'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
             geometrie.geometrie 
         FROM
-            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
-            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_flaeche AS geometrie
+            arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_flaeche AS geometrie
             ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
             LEFT JOIN darstellungsdienst
             ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungUeberlagernd%'
@@ -286,8 +286,8 @@ eigentumsbeschraenkung AS (
             'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
             geometrie.geometrie 
         FROM
-            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_linie AS geobasisdaten_typ
-            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_linie AS geometrie
+            arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_linie AS geometrie
             ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_linie 
             LEFT JOIN darstellungsdienst
             ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungUeberlagernd%'
@@ -317,8 +317,8 @@ eigentumsbeschraenkung AS (
             'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
             geometrie.geometrie 
         FROM
-            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_punkt AS geobasisdaten_typ
-            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_punkt AS geometrie
+            arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_punkt AS geometrie
             ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_punkt
             LEFT JOIN darstellungsdienst
             ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungUeberlagernd%'
@@ -348,8 +348,8 @@ eigentumsbeschraenkung AS (
             'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
             geometrie.geometrie 
         FROM
-            arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
-            INNER JOIN arp_nutzungsplanung.nutzungsplanung_ueberlagernd_flaeche AS geometrie
+            arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_ueberlagernd_flaeche AS geometrie
             ON geobasisdaten_typ.t_id = geometrie.typ_ueberlagernd_flaeche 
             LEFT JOIN darstellungsdienst
             ON darstellungsdienst.atext ILIKE '%ch.SO.NutzungsplanungSondernutzungsplaene%'
@@ -392,8 +392,8 @@ eigentumsbeschraenkung AS (
             'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
             geometrie.geometrie 
         FROM
-            arp_nutzungsplanung.erschlssngsplnung_typ_erschliessung_linienobjekt AS geobasisdaten_typ
-            INNER JOIN arp_nutzungsplanung.erschlssngsplnung_erschliessung_linienobjekt AS geometrie
+            arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung_v1.erschlssngsplnung_erschliessung_linienobjekt AS geometrie
             ON geobasisdaten_typ.t_id = geometrie.typ_erschliessung_linienobjekt 
             LEFT JOIN darstellungsdienst
             ON 
@@ -460,8 +460,8 @@ eigentumsbeschraenkung AS (
             'urn:fdc:ilismeta.interlis.ch:2020:Typ_Kanton_Empfindlichkeitsstufe.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
             geometrie.geometrie 
         FROM
-            arp_nutzungsplanung.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS geobasisdaten_typ
-            INNER JOIN arp_nutzungsplanung.laermmpfhktsstfen_empfindlichkeitsstufe AS geometrie
+            arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS geobasisdaten_typ
+            INNER JOIN arp_nutzungsplanung_v1.laermmpfhktsstfen_empfindlichkeitsstufe AS geometrie
             ON geobasisdaten_typ.t_id = geometrie.typ_empfindlichkeitsstufen 
             LEFT JOIN darstellungsdienst
             ON darstellungsdienst.atext ILIKE '%ch.Laermempfindlichkeitsstufen%'
@@ -645,8 +645,8 @@ WITH dokument_typ AS
         dokument.rechtsvorschrift,
         typ_dokument.typ_grundnutzung AS typ_eigentumsbeschraenkung
     FROM 
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_grundnutzung_dokument AS typ_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_grundnutzung_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id   
         
     UNION ALL 
@@ -664,8 +664,8 @@ WITH dokument_typ AS
         dokument.rechtsvorschrift,
         typ_dokument.typ_ueberlagernd_flaeche AS typ_eigentumsbeschraenkung
     FROM 
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id
         
     UNION ALL 
@@ -683,8 +683,8 @@ WITH dokument_typ AS
         dokument.rechtsvorschrift,
         typ_dokument.typ_ueberlagernd_linie AS typ_eigentumsbeschraenkung
     FROM 
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_linie_dokument AS typ_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_linie_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id
         
     UNION ALL 
@@ -702,8 +702,8 @@ WITH dokument_typ AS
         dokument.rechtsvorschrift,
         typ_dokument.typ_ueberlagernd_punkt AS typ_eigentumsbeschraenkung
     FROM 
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-        INNER JOIN arp_nutzungsplanung.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung_v1.nutzungsplanung_typ_ueberlagernd_punkt_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id
         
     UNION ALL 
@@ -721,8 +721,8 @@ WITH dokument_typ AS
         dokument.rechtsvorschrift,
         typ_dokument.typ_erschliessung_linienobjekt AS typ_eigentumsbeschraenkung
     FROM 
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-        INNER JOIN arp_nutzungsplanung.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id
         
     UNION ALL 
@@ -740,8 +740,8 @@ WITH dokument_typ AS
         dokument.rechtsvorschrift,
         typ_dokument.typ_empfindlichkeitsstufen AS typ_eigentumsbeschraenkung
     FROM 
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokument
-        INNER JOIN arp_nutzungsplanung.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument AS typ_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokument
+        INNER JOIN arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id
 )
 ,
@@ -863,7 +863,7 @@ localiseduri AS
         textimweb AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
-        arp_nutzungsplanung.rechtsvorschrften_dokument AS dokumente_dokument
+        arp_nutzungsplanung_v1.rechtsvorschrften_dokument AS dokumente_dokument
         RIGHT JOIN multilingualuri 
         ON multilingualuri.dokumente_dokument_textimweb = dokumente_dokument.t_id,
         (
