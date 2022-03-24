@@ -9,6 +9,9 @@ pipeline {
 
     stages {
         stage('GRETL job') {
+            options {
+                retry(2)
+            }
             steps {
                 git url: "${gretlJobsRepoUrlOereb}", branch: "${params.BRANCH ?: 'master'}", changelog: false
                 container('gretl') {
