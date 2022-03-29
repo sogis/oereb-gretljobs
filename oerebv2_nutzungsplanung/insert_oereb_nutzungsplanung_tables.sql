@@ -398,9 +398,9 @@ eigentumsbeschraenkung AS (
             LEFT JOIN darstellungsdienst
             ON 
             (
-                darstellungsdienst.atext ILIKE '%ch.Waldabstandslinien%'
+                darstellungsdienst.atext ILIKE '%ch.Waldabstandslinien%' AND typ_kt = 'E725_Waldabstandslinie'
                 OR 
-                darstellungsdienst.atext ILIKE '%ch.SO.Baulinien%'
+                darstellungsdienst.atext ILIKE '%ch.SO.Baulinien%' AND typ_kt != 'E725_Waldabstandslinie'
             )
             LEFT JOIN arp_nutzungsplanung_oerebv2.amt_amt AS amt 
             ON substring(amt.t_ili_tid FROM 4 FOR 4) = geobasisdaten_typ.t_datasetname 
