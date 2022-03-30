@@ -106,7 +106,7 @@ eigentumsbeschraenkung AS (
     WHERE 
         geobasisdaten_typ.typ_kt = 'N692_Planungszone'
         AND 
-        geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
 )
 ,
 legendeneintrag AS (

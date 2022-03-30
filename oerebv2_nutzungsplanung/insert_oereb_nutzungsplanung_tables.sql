@@ -197,7 +197,7 @@ eigentumsbeschraenkung AS (
             )
         )
         AND 
-        geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
         
         UNION ALL 
         
@@ -267,7 +267,7 @@ eigentumsbeschraenkung AS (
                 )
             )
             AND 
-            geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
 
         UNION ALL
             
@@ -298,7 +298,7 @@ eigentumsbeschraenkung AS (
                 typ_kt = 'N799_weitere_linienbezogene_Festlegungen_NP' AND verbindlichkeit = 'Nutzungsplanfestlegung'
             )
             AND 
-            geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
 
         UNION ALL
             
@@ -329,7 +329,7 @@ eigentumsbeschraenkung AS (
                 typ_kt = 'N899_weitere_punktbezogene_Festlegungen_NP' AND verbindlichkeit = 'Nutzungsplanfestlegung'
             )
             AND 
-            geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
             
         UNION ALL 
         
@@ -365,7 +365,7 @@ eigentumsbeschraenkung AS (
                 )
             )
             AND 
-            geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
 
         UNION ALL    
             
@@ -441,7 +441,7 @@ eigentumsbeschraenkung AS (
                 )
             )
             AND 
-            geometrie.rechtsstatus = 'inKraft'
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
 
         UNION ALL 
             
@@ -481,7 +481,7 @@ eigentumsbeschraenkung AS (
                 )
             )
             AND 
-            geometrie.rechtsstatus = 'inKraft'            
+        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
 )
 ,
 legendeneintrag AS (
