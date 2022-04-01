@@ -601,7 +601,7 @@ WITH eigentumsbeschraenkung_thema AS
     WHERE 
         legende.subthema = 'ch.SO.Baulinien'
         AND 
-        legende.artcodeliste = 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt%'
+        legende.artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt%'
 )
 ,
 dokumente AS 
