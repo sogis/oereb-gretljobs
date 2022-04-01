@@ -146,7 +146,11 @@ eigentumsbeschraenkung AS (
         'ch.Nutzungsplanung' AS thema,
         'ch.SO.NutzungsplanungGrundnutzung' AS subthema,
         geometrie.rechtsstatus,
-        geometrie.publiziertab AS publiziertab,
+        CASE 
+            WHEN geometrie.publiziertab IS NULL THEN '2100-12-31'
+            ELSE geometrie.publiziertab 
+        END AS publiziertab,
+        --geometrie.publiziertab AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
         amt.t_id AS zustaendigestelle,
         geobasisdaten_typ.bezeichnung AS legendetext_de,
