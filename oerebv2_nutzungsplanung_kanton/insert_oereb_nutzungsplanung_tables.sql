@@ -144,7 +144,7 @@ eigentumsbeschraenkung AS (
     WHERE
         typ_kt IN ('N526_kantonale_Landwirtschafts_und_Schutzzone_Witi', 'N527_kantonale_Uferschutzzone', 'N690_kantonales_Vorranggebiet_Natur_und_Landschaft')
         AND
-        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
+        geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
     
     UNION ALL
         
@@ -175,7 +175,7 @@ eigentumsbeschraenkung AS (
     WHERE
         typ_kt = 'N610_Perimeter_kantonaler_Nutzungsplan'
         AND
-        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
+        geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
 
     UNION ALL    
         

@@ -126,7 +126,7 @@ eigentumsbeschraenkung AS (
         AND 
         geobasisdaten_typ.typ_kt IN ('N161_kommunale_Uferschutzzone_innerhalb_Bauzone', 'N320_Gewaesser', 'N329_weitere_Zonen_fuer_Gewaesser_und_ihre_Ufer')
         AND 
-        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
+        geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
         
     UNION ALL 
     
@@ -163,7 +163,7 @@ eigentumsbeschraenkung AS (
         AND 
         geobasisdaten_typ.typ_kt = 'N528_kommunale_Uferschutzzone_ausserhalb_Bauzonen'
         AND 
-        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
+        geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
         
     UNION ALL 
     
@@ -200,7 +200,7 @@ eigentumsbeschraenkung AS (
         AND 
         geobasisdaten_typ.typ_kt IN ('E727_Baulinie_Gewaesser', 'E729_weitere_kommunale_Baulinien')
         AND 
-        geometrie.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
+        geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
 )
 ,
 legendeneintrag AS (
