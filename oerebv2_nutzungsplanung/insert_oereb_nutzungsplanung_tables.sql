@@ -645,7 +645,11 @@ WITH dokument_typ AS
         dokument.abkuerzung,
         dokument.offiziellenr,
         dokument.rechtsstatus,
-        dokument.publiziertab,
+        CASE 
+            WHEN publiziertab IS NULL THEN '2100-12-31'
+            ELSE publiziertab 
+        END AS publiziertab,
+        --dokument.publiziertab,
         dokument.rechtsvorschrift,
         typ_dokument.typ_grundnutzung AS typ_eigentumsbeschraenkung
     FROM 
