@@ -156,7 +156,7 @@ Waldgrenzen:
 
 Amtliche Vermessung:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_av/ tasks --all
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_av/ transferAV_live
 ```
 
 Planungszonen:

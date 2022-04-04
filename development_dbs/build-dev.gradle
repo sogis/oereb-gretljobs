@@ -970,5 +970,4 @@ task setupOerebDb() {
     dependsOn "importFederalLegalBasisToOereb", "importFederalThemesToOereb", "importFederalLogosToOereb", "importFederalTextToOereb",
         "importResponsibleOfficesToOereb", "importCantonalLegalBasisToOereb", "importCantonalThemesToOereb",
         "importCantonalLogosToOereb", "importCantonalTextToOereb", "importAvailabilityToOereb", "importSubunitOfLandRegisterToOereb"
-
 }
