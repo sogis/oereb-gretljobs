@@ -240,7 +240,7 @@ eigentumsbeschraenkung AS (
                     'N591_Bauliche_Einschraenkungen',
                     'N690_kantonales_Vorranggebiet_Natur_und_Landschaft',
                     'N691_kommunales_Vorranggebiet_Natur_und_Landschaft',
-                    'N692_Planungszone',
+                    --'N692_Planungszone',
                     --'N699_weitere_flaechenbezogene_Festlegungen_NP',
                     'N812_geologisches_Objekt',
                     'N813_Naturobjekt',
