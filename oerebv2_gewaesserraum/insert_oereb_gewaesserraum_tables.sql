@@ -103,8 +103,8 @@ eigentumsbeschraenkung AS (
         amt.t_id AS zustaendigestelle,
         --geobasisdaten_typ.bezeichnung AS legendetext_de,
         'Gewässerraum' AS legendetext_de,
-        --substring(geobasisdaten_typ.typ_kt FROM 2 FOR 3) AS artcode,
-        'gewaesserraum' AS artcode,        
+        substring(geobasisdaten_typ.typ_kt FROM 2 FOR 3) AS artcode,
+        --'gewaesserraum' AS artcode,        
         'urn:fdc:ilismeta.interlis.ch:2022:Typ_Kanton_Gewaesserraum_Flaeche' AS artcodeliste,
         geometrie.geometrie 
     FROM
@@ -140,8 +140,8 @@ eigentumsbeschraenkung AS (
         amt.t_id AS zustaendigestelle,
         --geobasisdaten_typ.bezeichnung AS legendetext_de,
         'Gewässerraum' AS legendetext_de,
-        --substring(geobasisdaten_typ.typ_kt FROM 2 FOR 3) AS artcode,        
-        'gewaesserraum' AS artcode,
+        substring(geobasisdaten_typ.typ_kt FROM 2 FOR 3) AS artcode,        
+        --'gewaesserraum' AS artcode,
         'urn:fdc:ilismeta.interlis.ch:2022:Typ_Kanton_Gewaesserraum_Flaeche' AS artcodeliste,
         geometrie.geometrie 
     FROM

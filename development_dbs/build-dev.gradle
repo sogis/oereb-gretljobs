@@ -123,7 +123,7 @@ task downloadResponsibleOfficesEdit(type: Download) {
     overwrite true
 }
 
-task replaceResponsibleOfficesToEdit(type: Ili2pgImport, dependsOn: "downloadResponsibleOfficesEdit") {
+task replaceResponsibleOfficesToEdit(type: Ili2pgReplace, dependsOn: "downloadResponsibleOfficesEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelBasis
@@ -146,7 +146,7 @@ task downloadCantonalLegalBasisEdit(type: Download) {
     overwrite true
 }
 
-task replaceCantonalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalLegalBasisEdit") {
+task replaceCantonalLegalBasisToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalLegalBasisEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelBasis
@@ -169,7 +169,7 @@ task downloadFederalLegalBasisEdit(type: Download) {
     overwrite true
 }
 
-task replaceFederalLegalBasisToEdit(type: Ili2pgImport, dependsOn: "downloadFederalLegalBasisEdit") {
+task replaceFederalLegalBasisToEdit(type: Ili2pgReplace, dependsOn: "downloadFederalLegalBasisEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
@@ -192,7 +192,7 @@ task downloadFederalThemesEdit(type: Download, dependsOn: "replaceFederalLegalBa
     overwrite true
 }
 
-task replaceFederalThemesToEdit(type: Ili2pgImport, dependsOn: "downloadFederalThemesEdit") {
+task replaceFederalThemesToEdit(type: Ili2pgReplace, dependsOn: "downloadFederalThemesEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
@@ -215,7 +215,7 @@ task downloadCantonalThemesEdit(type: Download, dependsOn: "replaceFederalThemes
     overwrite true
 }
 
-task replaceCantonalThemesToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalThemesEdit") {
+task replaceCantonalThemesToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalThemesEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
@@ -238,7 +238,7 @@ task downloadCantonalLogosEdit(type: Download) {
     overwrite true
 }
 
-task replaceCantonalLogosToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalLogosEdit") {
+task replaceCantonalLogosToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalLogosEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
@@ -261,7 +261,7 @@ task downloadCantonalTextEdit(type: Download) {
     overwrite true
 }
 
-task replaceCantonalTextToEdit(type: Ili2pgImport, dependsOn: "downloadCantonalTextEdit") {
+task replaceCantonalTextToEdit(type: Ili2pgReplace, dependsOn: "downloadCantonalTextEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
@@ -284,7 +284,7 @@ task downloadAvailabilityEdit(type: Download) {
     overwrite true
 }
 
-task replaceAvailabilityToEdit(type: Ili2pgImport, dependsOn: "downloadAvailabilityEdit") {
+task replaceAvailabilityToEdit(type: Ili2pgReplace, dependsOn: "downloadAvailabilityEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
@@ -307,7 +307,7 @@ task downloadSubunitOfLandRegisterEdit(type: Download) {
     overwrite true
 }
 
-task replaceSubunitOfLandRegisterToEdit(type: Ili2pgImport, dependsOn: "downloadSubunitOfLandRegisterEdit") {
+task replaceSubunitOfLandRegisterToEdit(type: Ili2pgReplace, dependsOn: "downloadSubunitOfLandRegisterEdit") {
     group = editGroupName
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
