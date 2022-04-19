@@ -373,7 +373,7 @@ dokumente AS
             typ,
             titel_de,
             abkuerzung_de,
-            offiziellenr,
+            offiziellenr_de,
             auszugindex,
             rechtsstatus,
             publiziertab,
@@ -475,7 +475,7 @@ WITH multilingualuri AS
             FROM
                 arp_nutzungsplanung_kanton_oerebv2.t_ili2db_basket
             WHERE
-                t_ili_tid = 'ch.so.arp.oereb_nutzungsplanung' 
+                t_ili_tid = 'ch.so.arp.oereb_nutzungsplanung_kantonal' 
         ) AS basket
     RETURNING *
 )
