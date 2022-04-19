@@ -398,7 +398,10 @@ dokumente AS
             WHEN dokument_typ.rechtsvorschrift IS TRUE THEN 'Rechtsvorschrift'
             ELSE 'Hinweis'
         END AS typ,
-        dokument_typ.offiziellertitel AS titel_de,
+        CASE 
+            WHEN dokument_typ.abkuerzung = 'RRB' OR dokument_typ.titel ILIKE '%Regierungsratsbeschluss%' THEN 'Regierungsratsbeschluss, '||dokument_typ.offiziellertitel
+            ELSE dokument_typ.offiziellertitel
+        END AS titel_de,
         dokument_typ.abkuerzung AS abkuerzung_de,
         dokument_typ.offiziellenr AS offiziellenr_de,
         CASE

@@ -215,6 +215,10 @@ SELECT
         WHEN dokument.rechtsvorschrift IS TRUE THEN 'Rechtsvorschrift'
         ELSE 'Hinweis'
     END AS typ,
+    CASE 
+        WHEN dokument.abkuerzung = 'RRB' OR dokument.titel ILIKE '%Regierungsratsbeschluss%' THEN 'Regierungsratsbeschluss, '||dokument.offiziellertitel
+        ELSE dokument.offiziellertitel
+    END AS titel_de,
     dokument.offiziellertitel AS titel_de,
     dokument.abkuerzung AS abkuerzung_de,
     dokument.offiziellenr AS offiziellenr_de,
