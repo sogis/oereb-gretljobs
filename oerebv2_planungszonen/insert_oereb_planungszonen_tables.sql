@@ -91,7 +91,7 @@ eigentumsbeschraenkung AS (
         geometrie.publiziertab AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
         amt.t_id AS zustaendigestelle,
-        'Planungszone' AS legendetext_de,
+        'Gemeinde' AS legendetext_de,
         '692' AS artcode,        
         'urn:fdc:ilismeta.interlis.ch:2022:Typ_Kanton_Planungszonen' AS artcodeliste,
         geometrie.geometrie 
