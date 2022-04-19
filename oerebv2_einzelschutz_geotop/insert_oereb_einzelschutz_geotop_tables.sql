@@ -413,7 +413,7 @@ INSERT INTO
         typ,
         titel_de,
         abkuerzung_de,
-        offiziellenr,
+        offiziellenr_de,
         auszugindex,
         rechtsstatus,
         publiziertab,
