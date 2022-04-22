@@ -278,8 +278,8 @@ INSERT INTO
         'Rechtsvorschrift' AS art,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
-                THEN 'Gemeinderatsbeschluss'
-            ELSE 'Regierungsratsbeschluss'
+                THEN 'Gemeinderatsbeschluss, ' || dokument.titel
+            ELSE 'Regierungsratsbeschluss, ' || dokument.titel
         END AS titel_de,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
