@@ -258,8 +258,8 @@ INSERT INTO
         'Rechtsvorschrift' AS art,
         CASE
             WHEN dokument.typ = 'RRB'
-                 THEN 'Regierungsratsbeschluss'
-            ELSE dokument.typ
+                 THEN concat('Regierungsratsbeschluss', ' ,' || dokument.bezeichnung)
+            ELSE concat(dokument_typ, ' ,' || dokument.bezeichnung)
         END AS titel_de,
         dokument.typ AS abkuerzung_de,
         dokument.offiziellenr AS offiziellenr,
