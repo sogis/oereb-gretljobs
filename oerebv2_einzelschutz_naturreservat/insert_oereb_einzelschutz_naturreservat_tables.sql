@@ -259,7 +259,7 @@ INSERT INTO
         CASE
             WHEN dokument.typ = 'RRB'
                  THEN concat('Regierungsratsbeschluss', ' ,' || dokument.bezeichnung)
-            ELSE concat(dokument_typ, ' ,' || dokument.bezeichnung)
+            ELSE concat(dokument.typ, ' ,' || dokument.bezeichnung)
         END AS titel_de,
         dokument.typ AS abkuerzung_de,
         dokument.offiziellenr AS offiziellenr,
