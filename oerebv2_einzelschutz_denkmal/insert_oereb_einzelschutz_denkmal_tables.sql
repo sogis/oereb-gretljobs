@@ -278,8 +278,8 @@ INSERT INTO
         'Rechtsvorschrift' AS art,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
-                THEN 'Gemeinderatsbeschluss, ' || dokument.titel
-            ELSE 'Regierungsratsbeschluss, ' || dokument.titel
+                THEN 'Gemeinderatsbeschluss, ' || regexp_replace(dokument.titel, '\r?\n|\r|\s+',' ','g')
+            ELSE 'Regierungsratsbeschluss, ' || regexp_replace(dokument.titel, '\r?\n|\r|\s+',' ','g')
         END AS titel_de,
         CASE
             WHEN schutzdurchgemeinde IS TRUE
