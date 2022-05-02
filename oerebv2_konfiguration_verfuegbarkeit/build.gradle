@@ -30,7 +30,13 @@ def dbSchemas = ["stage","live"]
 
 defaultTasks "importData"
 
-task exportData(type: Ili2pgExport) {
+task updateAVImportDate(type: SqlExecutor) {
+    description = "Update des AV-Import Datums per Gemeinde"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["update_avimportdate.sql"]
+}
+
+task exportData(type: Ili2pgExport, dependsOn: "updateAVImportDate") {
     description = "Exportiert die Verfügbarkeit."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
