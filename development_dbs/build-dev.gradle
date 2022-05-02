@@ -83,7 +83,7 @@ ext {
     dbSchemaLandUsePlans = "arp_nutzungsplanung_v1"
     dbSchemaCantonalLandUsePlans = "arp_nutzungsplanung_kanton_v1"
     //landUsePlansDataSets = ["2401", "2403", "2405", "2407", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2479",  "2491", "2498", "2501", "2502", "2514", "2551", "2573", "2580", "2613", "2614", "2615", "2616"]
-    landUsePlansDataSets = ["2457"]
+    landUsePlansDataSets = ["2549"]
     //landUsePlansDataSets = ["2582"]
     cantonalLandUsePlansDataSet = "kanton"
     landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.data4dev/nutzungsplanung/"
