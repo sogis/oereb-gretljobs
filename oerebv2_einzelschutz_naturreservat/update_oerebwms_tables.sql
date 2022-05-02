@@ -74,7 +74,10 @@ eigentumsbeschraenkung_amt AS
     SELECT 
         eigentumsbeschraenkung.t_id,
         amt.aname_de AS zustaendigestelle,
-        luri.atext AS amtimweb
+        CASE 
+            WHEN luri.atext IS NULL THEN 'https://keine-webseite.com'
+            ELSE luri.atext 
+        END AS amtimweb
     FROM 
         eigentumsbeschraenkung_thema 
         LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
@@ -83,10 +86,19 @@ eigentumsbeschraenkung_amt AS
         ON amt.t_id = eigentumsbeschraenkung.zustaendigestelle 
         LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
         ON muri.oerebkrm_v2_0amt_amt_amtimweb = amt.t_id 
-        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_localiseduri AS luri 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
         ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
-    WHERE 
-        luri.alanguage = 'de'
 )
 ,
 eigentumsbeschrankung_geometrie AS 
@@ -223,7 +235,10 @@ eigentumsbeschraenkung_amt AS
     SELECT 
         eigentumsbeschraenkung.t_id,
         amt.aname_de AS zustaendigestelle,
-        luri.atext AS amtimweb
+        CASE 
+            WHEN luri.atext IS NULL THEN 'https://keine-webseite.com'
+            ELSE luri.atext 
+        END AS amtimweb
     FROM 
         eigentumsbeschraenkung_thema 
         LEFT JOIN ${dbSchema}.oerbkrmfr_v2_0transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
@@ -232,10 +247,19 @@ eigentumsbeschraenkung_amt AS
         ON amt.t_id = eigentumsbeschraenkung.zustaendigestelle 
         LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
         ON muri.oerebkrm_v2_0amt_amt_amtimweb = amt.t_id 
-        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_localiseduri AS luri 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
         ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
-    WHERE 
-        luri.alanguage = 'de'
 )
 ,
 eigentumsbeschrankung_geometrie AS 
