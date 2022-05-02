@@ -13,11 +13,11 @@ WITH av_updates AS (
 )
 UPDATE
     agi_konfiguration_oerebv2.konfiguration_gemeindemitoerebk AS munip
-        SET basedatadate=avupd.last_importdate
+        SET grundlagedatenstand=avupd.last_importdate
     FROM 
         av_updates AS avupd
     WHERE 
-        munip.municipality = avupd.bfsnr
+        munip.gemeinde = avupd.bfsnr
         AND 
         t_datasetname = 'verfuegbarkeit'
 ;
