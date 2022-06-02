@@ -24,11 +24,12 @@ WITH eigentumsbeschraenkung_thema AS
         legende.subthema = 'ch.SO.NutzungsplanungGrundnutzung'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -51,6 +52,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -181,11 +217,12 @@ WITH eigentumsbeschraenkung_thema AS
         artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche%'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -208,6 +245,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -338,11 +410,12 @@ WITH eigentumsbeschraenkung_thema AS
         artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Linie%'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -365,6 +438,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -495,11 +603,12 @@ WITH eigentumsbeschraenkung_thema AS
         artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Punkt%'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -522,6 +631,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -652,11 +796,12 @@ WITH eigentumsbeschraenkung_thema AS
         legende.artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Erschliessung_Linienobjekt%'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -679,6 +824,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -809,11 +989,12 @@ WITH eigentumsbeschraenkung_thema AS
         artcodeliste LIKE 'urn:fdc:ilismeta.interlis.ch:2017:NP_Typ_Kanton_Ueberlagernd_Flaeche%'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -836,6 +1017,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -958,11 +1174,12 @@ WITH eigentumsbeschraenkung_thema AS
         legende.thema = 'ch.Laermempfindlichkeitsstufen'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -985,6 +1202,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
@@ -1107,11 +1359,12 @@ WITH eigentumsbeschraenkung_thema AS
         legende.thema = 'ch.Waldabstandslinien'
 )
 ,
-dokumente AS 
+dokumente_pre AS 
 (
     SELECT 
         hinweisvorschrift.eigentumsbeschraenkung,
         hinweisvorschrift.vorschrift AS t_id,
+        dokument.t_id AS dok_t_id,
         dokument.t_ili_tid,
         dokument.typ,
         dokument.titel_de,
@@ -1134,6 +1387,41 @@ dokumente AS
             FROM 
                 eigentumsbeschraenkung_thema
         )
+)
+,
+dokumente AS 
+(
+    SELECT 
+        dokumente_pre.eigentumsbeschraenkung,
+        dokumente_pre.t_id,
+        dokumente_pre.dok_t_id,
+        dokumente_pre.t_ili_tid,
+        dokumente_pre.typ,
+        dokumente_pre.titel_de,
+        luri.atext AS textimweb,
+        dokumente_pre.abkuerzung_de,
+        dokumente_pre.offiziellenr_de,
+        dokumente_pre.auszugindex,
+        dokumente_pre.rechtsstatus,
+        dokumente_pre.publiziertab,
+        dokumente_pre.publiziertbis
+    FROM 
+        dokumente_pre 
+        LEFT JOIN ${dbSchema}.oerebkrm_v2_0_multilingualuri AS muri 
+        ON muri.oerbkrm_v2_kmnt_dkment_textimweb = dokumente_pre.dok_t_id 
+        LEFT JOIN 
+        (
+            SELECT 
+                t_id,
+                alanguage,
+                atext,
+                oerbkrm_v2__mltlngluri_localisedtext
+            FROM
+                ${dbSchema}.oerebkrm_v2_0_localiseduri 
+            WHERE 
+                alanguage = 'de'
+        ) AS luri        
+        ON luri.oerbkrm_v2__mltlngluri_localisedtext = muri.t_id
 )
 ,
 eigentumsbeschraenkung_dokumente AS 
