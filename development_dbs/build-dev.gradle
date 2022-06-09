@@ -72,6 +72,11 @@ ext {
     dbSchemaStaticForestPerimeters = "awjf_statische_waldgrenze"
     staticForestPerimetersDataFile = "ch.so.awjf.statische_waldgrenze_edit.xtf"
     staticForestPerimetersBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
+
+    iliModelWaldreservate = "SO_ARP_Waldreservate_20220607"
+    dbSchemaWaldreservate = "arp_waldreservate_v1"
+    waldreservateDataFile = "ch.so.arp.waldreservate_edit.xtf"
+    waldreservateBaseUrl = "https://github.com/sogis-oereb/oereb-gretljobs/raw/main/development_dbs/"
     
     iliModelCadastralSurveying = "DM01AVSO24LV95"
     dbSchemaCadastralSurveying = "agi_dm01avso24"
@@ -493,6 +498,27 @@ task replaceDataStaticForestPerimetersToEdit(type: Ili2pgImport, dependsOn: "dow
     models = iliModelStaticForestPerimeters
     dbschema = dbSchemaStaticForestPerimeters
     dataFile = file(Paths.get(pathToTempFolder.toString(), staticForestPerimetersDataFile))
+    deleteData = true
+    disableValidation = true
+}
+
+// Waldreservate
+task downloadDataWaldreservateEdit(type: Download) {
+    group = editGroupName
+    src waldreservateBaseUrl + waldreservateDataFile
+    dest pathToTempFolder
+    overwrite true
+    doLast {
+        println "File downloaded to: " + pathToTempFolder
+    }
+}
+
+task replaceDataWaldreservateToEdit(type: Ili2pgImport, dependsOn: "downloadDataWaldreservateEdit") {
+    group = editGroupName
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelWaldreservate
+    dbschema = dbSchemaWaldreservate
+    dataFile = file(Paths.get(pathToTempFolder.toString(), waldreservateDataFile))
     deleteData = true
     disableValidation = true
 }

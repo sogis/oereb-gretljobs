@@ -65,6 +65,11 @@ docker-compose down # (this command is optional; it's just for cleaning up any a
 docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataStaticForestPerimeters"
 ```
 
+Waldreservate:
+```
+docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataWaldreservate"
+```
+
 ## GRETL-Job
 
 Start the GRETL job (use the --job-directory option to point to the desired GRETL job; find out the names of your Docker networks by running `docker network ls`):
@@ -162,6 +167,12 @@ Amtliche Vermessung:
 Planungszonen:
 ```
 ./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_planungszonen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+```
+
+Waldreservate:
+```
+./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_waldreservate/ deleteFromOereb
+........
 ```
 
 Gewässerraum:
