@@ -42,45 +42,45 @@ task deleteFromOereb(type: SqlExecutor) {
     sqlFiles = ["delete_oereb_waldreservate_tables.sql"]
 }
 
-// task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
-//     doFirst {
-//         println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
-//     }
-//     description = "Download zuständige Stellen ($responsibleOfficesDataSet)."
-//     src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
-//     dest pathToTempFolder
-//     overwrite true
-// }
+task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
+    doFirst {
+        println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    }
+    description = "Download zuständige Stellen ($responsibleOfficesDataSet)."
+    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
 
-// task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadResponsibleOffices') {
-//     description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelBasis
-//     dbschema = dbSchemaWaldreservateOereb
-//     dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
-//     importBid = true
-//     dataset = responsibleOfficesDataSet
-// }
+task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadResponsibleOffices') {
+    description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelBasis
+    dbschema = dbSchemaWaldreservateOereb
+    dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
+    importBid = true
+    dataset = responsibleOfficesDataSet
+}
 
-// task importSymbolsToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
-//     description = "Import Symbole ($symbolsDataSet)."
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelSymbole
-//     dbschema = dbSchemaWaldreservateOereb
-//     dataFile = file(symbolsFileName)
-//     importBid = true
-//     dataset = symbolsDataSet
-// }
+task importSymbolsToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
+    description = "Import Symbole ($symbolsDataSet)."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelSymbole
+    dbschema = dbSchemaWaldreservateOereb
+    dataFile = file(symbolsFileName)
+    importBid = true
+    dataset = symbolsDataSet
+}
 
-// task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
-//     description = "Import eines leeren Planungszonen-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelTransferstruktur
-//     dbschema = dbSchemaWaldreservateOereb
-//     dataFile = file(emptyTransferFile)
-//     importBid = true
-//     dataset = waldreservateDataSet
-// }
+task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb') {
+    description = "Import eines leeren Planungszonen-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaWaldreservateOereb
+    dataFile = file(emptyTransferFile)
+    importBid = true
+    dataset = waldreservateDataSet
+}
 
 
 // task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
