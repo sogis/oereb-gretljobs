@@ -1,4 +1,3 @@
-/*
 WITH darstellungsdienst AS 
 (
     INSERT INTO 
@@ -59,14 +58,12 @@ SELECT
 FROM
     darstellungsdienst_multilingualuri
 ;
-*/
 
 /*
  * (1): Der Code muss für sämtliche Teilobjekte eines Waldreservates gleich sein. Sonst muss man die Query 
  * anders machen.
  * 
  */
-
 WITH darstellungsdienst AS 
 (
     SELECT
@@ -113,6 +110,166 @@ eigentumsbeschraenkung AS (
                 t_ili_tid = 'ch.so.arp'
         ) AS amt
 )
-SELECT * FROM eigentumsbeschraenkung
+,
+legendeneintrag AS (
+    INSERT INTO 
+        arp_waldreservate_oerebv2.transferstruktur_legendeeintrag 
+        (
+            t_id,
+            t_basket,
+            t_ili_tid,
+            symbol,
+            legendetext_de,
+            artcode,
+            artcodeliste,
+            thema,
+            darstellungsdienst    
+        )
+    SELECT 
+        DISTINCT ON (artcode, artcodeliste)
+        nextval('arp_waldreservate_oerebv2.t_ili2db_seq'::regclass) AS legendeneintrag_t_id,
+        basket_t_id,
+        uuid_generate_v4(),
+        eintrag.symbol,
+        legendetext_de,
+        eigentumsbeschraenkung.artcode,
+        eigentumsbeschraenkung.artcodeliste,
+        eigentumsbeschraenkung.thema,
+        darstellungsdienst
+    FROM 
+        eigentumsbeschraenkung 
+        LEFT JOIN arp_waldreservate_oerebv2.legendeneintraege_legendeneintrag AS eintrag
+        ON eigentumsbeschraenkung.artcode = eintrag.artcode 
+    RETURNING *
+)
+INSERT INTO
+    arp_waldreservate_oerebv2.transferstruktur_eigentumsbeschraenkung 
+    (
+        t_id,
+        t_basket,
+        t_ili_tid,
+        rechtsstatus,
+        publiziertab,
+        darstellungsdienst,
+        legende,
+        zustaendigestelle
+    )
+SELECT 
+    eigentumsbeschraenkung.t_id, 
+    eigentumsbeschraenkung.basket_t_id,
+    uuid_generate_v4(),
+    eigentumsbeschraenkung.rechtsstatus,
+    eigentumsbeschraenkung.publiziertab,
+    eigentumsbeschraenkung.darstellungsdienst,
+    legendeneintrag.t_id,
+    eigentumsbeschraenkung.zustaendigestelle
+FROM 
+    eigentumsbeschraenkung 
+    LEFT JOIN legendeneintrag 
+    ON (eigentumsbeschraenkung.artcode = legendeneintrag.artcode)
+;
 
 
+/*
+ * Muss angepasst werden, falls nicht mehr alle Objekte (Waldreservate)
+ * 1:1 in den ÖREB-Kataster kommen.
+ */
+INSERT INTO
+    arp_waldreservate_oerebv2.transferstruktur_geometrie
+    ( 
+        t_basket,
+        flaeche,
+        rechtsstatus,
+        publiziertab,
+        eigentumsbeschraenkung
+    )
+SELECT
+    basket.t_id AS t_basket,
+    teilobjekt.geo_obj AS flaeche,
+    eigentumsbeschraenkung.rechtsstatus ,
+    eigentumsbeschraenkung.publiziertab AS publiziertab,
+    eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung
+FROM
+    arp_waldreservate_v1.geobasisdaten_waldreservat_teilobjekt AS teilobjekt
+    INNER JOIN arp_waldreservate_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
+    ON teilobjekt.wr = eigentumsbeschraenkung.t_id,
+    (
+        SELECT
+            t_id
+        FROM
+            arp_waldreservate_oerebv2.t_ili2db_basket
+        WHERE
+            t_ili_tid = 'ch.so.arp.oereb_waldreservate' 
+    ) AS basket
+;
+
+
+/*
+ * Das funktioniert solange man einfach alles kopieren kann und die Modellstruktur identisch ist.
+ */
+WITH basket AS (
+    SELECT
+        t_id
+    FROM
+        arp_waldreservate_oerebv2.t_ili2db_basket
+    WHERE
+        t_ili_tid = 'ch.so.arp.oereb_waldreservate' 
+)
+,
+dokumente_dokument AS
+(
+    INSERT INTO 
+        arp_waldreservate_oerebv2.dokumente_dokument 
+        (
+            t_id,
+            t_basket,
+            t_ili_tid,
+            typ,
+            titel_de,
+            abkuerzung_de,
+            offiziellenr_de,
+            auszugindex,
+            rechtsstatus,
+            publiziertab,
+            zustaendigestelle
+        )
+    SELECT 
+        dokument.t_id,
+        basket.t_id AS t_basket,
+        '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
+        'Rechtsvorschrift'AS typ,
+        dokument.titel AS titel_de,
+        dokument.abkuerzung AS abkuerzung_de,
+        dokument.offiziellenr AS offiziellenr_de,
+        998 AS auzugindex,
+        dokument.rechtsstatus AS rechtsstatus,
+        dokument.publiziertab AS publiziertab,
+        (
+            SELECT 
+                t_id
+            FROM
+                arp_waldreservate_oerebv2.amt_amt 
+            WHERE
+                t_ili_tid = 'ch.so.sk'
+        ) AS zustaendigestelle
+    FROM 
+        arp_waldreservate_v1.dokumente_dokument AS dokument,
+        basket
+)
+INSERT INTO 
+    arp_waldreservate_oerebv2.transferstruktur_hinweisvorschrift 
+    (
+        t_basket,
+        t_ili_tid,
+        eigentumsbeschraenkung,
+        vorschrift
+    )
+SELECT 
+    basket.t_id AS t_basket, 
+    '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
+    waldreservat_dokument.festlegung,
+    waldreservat_dokument.dokumente
+FROM 
+    arp_waldreservate_v1.geobasisdaten_waldreservat_dokument AS waldreservat_dokument,
+    basket
+;

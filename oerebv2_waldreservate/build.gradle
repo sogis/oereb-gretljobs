@@ -82,36 +82,32 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     dataset = waldreservateDataSet
 }
 
+task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
+    description = "Führt den Datenumbau in das Transferschema durch."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["insert_oereb_waldreservate_tables.sql"]
+}
 
-// task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
-//     description = "Führt den Datenumbau in das Transferschema durch."
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     sqlFiles = ["insert_oereb_planungszonen_tables.sql"]
-// }
+task exportData(type: Ili2pgExport, dependsOn: "transferData") {
+    description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaWaldreservateOereb
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = waldreservateDataSet
+    disableValidation = true
+}
 
-
-// task exportData(type: Ili2pgExport, dependsOn: "transferData") {
-//     description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
-//     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-//     models = iliModelTransferstruktur
-//     dbschema = dbSchemaWaldreservateOereb
-//     dataFile = file(Paths.get("$rootDir", xtfFileName))
-//     dataset = waldreservateDataSet
-//     disableValidation = true
-// }
-
-
-// task replaceWmsServer(dependsOn: "exportData") {
-//     description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
-//     doLast {
-//         ant.replace(
-//         file: file(Paths.get("$rootDir", xtfFileName)),
-//         token: '${wmsHost}',
-//         value: 'https://' + geoservicesHostName,
-//         encoding: 'UTF-8')
-//     }
-// }
-
+task replaceWmsServer(dependsOn: "exportData") {
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
+    doLast {
+        ant.replace(
+        file: file(Paths.get("$rootDir", xtfFileName)),
+        token: '${wmsHost}',
+        value: 'https://' + geoservicesHostName,
+        encoding: 'UTF-8')
+    }
+}
 
 // task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
 //     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
