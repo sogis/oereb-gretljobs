@@ -83,7 +83,7 @@ eigentumsbeschraenkung AS (
         DISTINCT ON (waldreservate.t_id)
         waldreservate.t_id,
         darstellungsdienst.basket_t_id,
-        'ch.Waldgrenzen' AS thema,
+        'ch.Waldreservate' AS thema,
         waldreservate.rechtsstatus,
         waldreservate.publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
@@ -272,4 +272,76 @@ SELECT
 FROM 
     arp_waldreservate_v1.geobasisdaten_waldreservat_dokument AS waldreservat_dokument,
     basket
+;
+
+
+WITH multilingualuri AS
+(
+    INSERT INTO
+        arp_waldreservate_oerebv2.multilingualuri
+        (
+            t_id,
+            t_basket,
+            t_seq,
+            dokumente_dokument_textimweb
+        )
+    SELECT
+        nextval('arp_waldreservate_oerebv2.t_ili2db_seq'::regclass) AS t_id,
+        basket.t_id,
+        0 AS t_seq,
+        dokumente_dokument.t_id AS dokumente_dokument_textimweb
+    FROM
+        arp_waldreservate_oerebv2.dokumente_dokument AS dokumente_dokument,
+        (
+            SELECT
+                t_id
+            FROM
+                arp_waldreservate_oerebv2.t_ili2db_basket
+            WHERE
+                t_ili_tid = 'ch.so.arp.oereb_waldreservate' 
+        ) AS basket
+    RETURNING *
+)
+,
+localiseduri AS 
+(
+    SELECT 
+        nextval('arp_waldreservate_oerebv2.t_ili2db_seq'::regclass) AS t_id,
+        basket.t_id AS basket_t_id,
+        0 AS t_seq,
+        'de' AS alanguage,
+        textimweb AS atext,
+        multilingualuri.t_id AS multilingualuri_localisedtext
+    FROM
+        arp_waldreservate_v1.dokumente_dokument AS dokumente_dokument
+        RIGHT JOIN multilingualuri 
+        ON multilingualuri.dokumente_dokument_textimweb = dokumente_dokument.t_id,
+        (
+            SELECT
+                t_id
+            FROM
+                arp_waldreservate_oerebv2.t_ili2db_basket
+            WHERE
+                t_ili_tid = 'ch.so.arp.oereb_waldreservate' 
+        ) AS basket
+)
+INSERT INTO
+    arp_waldreservate_oerebv2.localiseduri
+    (
+        t_id,
+        t_basket,
+        t_seq,
+        alanguage,
+        atext,
+        multilingualuri_localisedtext
+    )
+    SELECT 
+        t_id,
+        basket_t_id,
+        t_seq,
+        alanguage,
+        atext,
+        multilingualuri_localisedtext
+    FROM 
+        localiseduri
 ;
