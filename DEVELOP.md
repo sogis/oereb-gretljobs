@@ -217,5 +217,5 @@ java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbpor
 ```
 
 ```
-java -jar ../apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr bjsvwzie --dbpwd 100S.pellegrino --dbschema arp_waldreservate_v1 --models SO_ARP_Waldreservate_20220607 --dbparams db.properties --import ch.so.arp.waldreservate_edit.xtf
+java -jar ../apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema arp_waldreservate_v1 --models SO_ARP_Waldreservate_20220607 --dbparams db.properties --import ch.so.arp.waldreservate_edit.xtf
 ```
