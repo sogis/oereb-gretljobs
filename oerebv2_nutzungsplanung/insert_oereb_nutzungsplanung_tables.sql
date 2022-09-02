@@ -460,7 +460,7 @@ eigentumsbeschraenkung AS (
             amt.t_id AS zustaendigestelle,
             geobasisdaten_typ.bezeichnung AS legendetext_de,
             substring(geobasisdaten_typ.typ_kt FROM 2 FOR 3) AS artcode,        
-            'urn:fdc:ilismeta.interlis.ch:2020:Typ_Kanton_Empfindlichkeitsstufe.'||geobasisdaten_typ.t_datasetname AS artcodeliste,
+            'urn:fdc:ilismeta.interlis.ch:2020:Typ_Kanton_Empfindlichkeitsstufe' AS artcodeliste,
             geometrie.geometrie 
         FROM
             arp_nutzungsplanung_v1.laermmpfhktsstfen_typ_empfindlichkeitsstufe AS geobasisdaten_typ
