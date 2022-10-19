@@ -10,7 +10,7 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 
 def iliModelBasis = "OeREBKRM_V2_0"
 
-def federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze_20210414.xml"
+def federalLegalBasisDataFile = "OeREBKRM_V2_0_Gesetze.xml"
 def federalLegalBasisDataSet = "ch.admin.bk.oereb_gesetze"
 def federalConfigurationBaseUrl = "https://models.geo.admin.ch/V_D/OeREB/"
 
