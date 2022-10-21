@@ -142,10 +142,10 @@ eigentumsbeschraenkung AS
         amt.t_id AS zustaendigestelle,
         geometrie
     FROM
-        afu_gewaesserschutz.gwszonen_gwszone AS gwszone
+        afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwszone AS gwszone
         LEFT JOIN afu_grundwasserschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu'
-        LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
+        LEFT JOIN afu_gewaesserschutz_zonen_areale_v1.gwszonen_status AS status
         ON gwszone.astatus = status.t_id
         LEFT JOIN darstellungsdienst 
         ON darstellungsdienst.atext ILIKE '%ch.Grundwasserschutzzonen%'
@@ -170,10 +170,10 @@ eigentumsbeschraenkung AS
         amt.t_id AS zustaendigestelle,
         geometrie
     FROM
-        afu_gewaesserschutz.gwszonen_gwsareal AS gwszone
+        afu_gewaesserschutz_zonen_areale_v1.gwszonen_gwsareal AS gwszone
         LEFT JOIN afu_grundwasserschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.afu'
-        LEFT JOIN afu_gewaesserschutz.gwszonen_status AS status
+        LEFT JOIN afu_gewaesserschutz_zonen_areale_v1.gwszonen_status AS status
         ON gwszone.astatus = status.t_id
         LEFT JOIN darstellungsdienst 
         ON darstellungsdienst.atext ILIKE '%ch.Grundwasserschutzareale%'
@@ -312,7 +312,7 @@ INSERT INTO
         dokument.publiziertab AS publiziertab,
         amt.t_id AS zustaendigestelle
     FROM
-        afu_gewaesserschutz.gwszonen_dokument AS dokument,
+        afu_gewaesserschutz_zonen_areale_v1.gwszonen_dokument AS dokument,
         (
             SELECT 
                 t_id
@@ -355,7 +355,7 @@ INSERT INTO
             gwszone AS eigentumsbeschraenkung,
             rechtsvorschrift AS vorschrift_vorschriften_dokument
         FROM
-            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwszone
+            afu_gewaesserschutz_zonen_areale_v1.gwszonen_rechtsvorschriftgwszone
 
         UNION ALL
 
@@ -364,7 +364,7 @@ INSERT INTO
             gwsareal AS eigentumsbeschraenkung,
             rechtsvorschrift AS vorschrift_vorschriften_dokument
         FROM
-            afu_gewaesserschutz.gwszonen_rechtsvorschriftgwsareal            
+            afu_gewaesserschutz_zonen_areale_v1.gwszonen_rechtsvorschriftgwsareal            
     ) AS hinweisvorschrift
     INNER JOIN afu_grundwasserschutz_oerebv2.dokumente_dokument AS dokumente_dokument
     ON dokumente_dokument.t_id = hinweisvorschrift.vorschrift_vorschriften_dokument,  
@@ -427,7 +427,7 @@ localiseduri AS
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
-        afu_gewaesserschutz.gwszonen_dokument AS rechtsvorschrften_dokument
+        afu_gewaesserschutz_zonen_areale_v1.gwszonen_dokument AS rechtsvorschrften_dokument
         RIGHT JOIN multilingualuri 
         ON multilingualuri.dokumente_dokument_textimweb = rechtsvorschrften_dokument.t_id,
         (
