@@ -85,7 +85,7 @@ for (jobFile in jobFiles) {
         upstream(properties.getProperty('triggers.upstream'), 'SUCCESS')
       }
     }
-    if (productionEnv) { // we want triggers only in production environment
+    if (false) { // don't set cron triggers anymore
       triggers {
         cron(properties.getProperty('triggers.cron'))
       }
