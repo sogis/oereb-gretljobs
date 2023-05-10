@@ -106,7 +106,8 @@ task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importRespo
     sqlFiles = [
         "sql/insert_darstellungsdienst.sql",
         "sql/insert_legende.sql",
-        "sql/insert_beschraenkung_et_al.sql"
+        "sql/insert_beschraenkung_et_al.sql",
+        "sql/insert_dokument_uris.sql"
     ]
 }
 
