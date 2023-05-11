@@ -11,10 +11,6 @@ import de.undercouch.gradle.tasks.download.Download
 def tmpFolder = new File(project.buildDir, 'temp/');
 tmpFolder.mkdir();
 
-def pdfExportFolder = new File(project.buildDir, 'oerebadaarch/');
-pdfExportFolder.mkdir();
-
-
 def iliModelBasis = "OeREBKRM_V2_0"
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
@@ -142,17 +138,13 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     allObjectsAccessible = true
 }
 
-task localExec(dependsOn: validateData)
-
-/*
-
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-    description = "Import des Planungszonen-ÖREB-Datensatz in das Stage-Schema."
+    description = "Import des Archäologie-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
-    dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = planungszonenDataSet 
+    dataFile = xtfFile
+    dataset = dataSetName 
     importBid = true
     importTid = true
     disableValidation = true
@@ -161,17 +153,17 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlFiles = ["sql/update_oerebwms_tables.sql"]
     sqlParameters = [dbSchema: 'stage']
 }
 
 task importDataToLive(type: Ili2pgReplace) {
-    description = "Import des Planungszonen-ÖREB-Datensatz in das Live-Schema."
+    description = "Import des Archäologie-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "live"
-    dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = planungszonenDataSet 
+    dataFile = xtfFile
+    dataset = dataSetName 
     importBid = true
     importTid = true
     disableValidation = true
@@ -180,26 +172,25 @@ task importDataToLive(type: Ili2pgReplace) {
 task refreshOerebWMSTablesLive(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlFiles = ["sql/update_oerebwms_tables.sql"]
     sqlParameters = [dbSchema: 'live']
 }
 
 task zipXtfFile(type: Zip) {
-    description = "Zipt das XTF-File mit den Planungszonen für den Upload nach S3"
-    from "$rootDir"
-    include xtfFileName
+    description = "Zipt das XTF-File mit den Fundstellen für den Upload nach S3"
+    from xtfFile.getParentFile()
+    include xtfFile.getName()
     archiveName xtfZipFileName
-    destinationDir(file("$rootDir"))
+    destinationDir(xtfFile.getParentFile())
 }
 
 task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "XTF-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
+    sourceFile = new File(tmpFolder , xtfZipFileName)
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket
     acl = "public-read"
 }
-*/

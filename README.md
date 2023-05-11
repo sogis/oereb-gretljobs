@@ -57,6 +57,12 @@ triggers.cron=H H(1-3) * * *
 
 For running a GRETL job using the GRETL wrapper script, see the `start-gretl.sh` command example below. Set any DB connection parameter environment variables before running the command.
 
+```
+./start-gretl.sh --docker-image sogis/gretl:latest --docker-network [network-name] --job-directory $PWD/oerebv2_einzelschutz_archaeologie [taskName]
+
+./start-gretl.sh --docker-image sogis/gretl:latest --docker-network host --job-directory $PWD/oerebv2_einzelschutz_archaeologie validateData
+```
+
 If you want to set up development databases for developing new GRETL jobs, use the following `docker-compose` command before running your GRETL job in order to prepare the necessary DBs.
 
 Start two DBs ("oereb" and "edit"), import data required for the data transformation (the so called legal basis data and some more files) into the "oereb" DB, and import demo data into the "edit" DB.
