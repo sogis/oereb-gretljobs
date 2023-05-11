@@ -186,7 +186,7 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     description = "XTF-File nach S3 hochladen."
     accessKey = awsAccessKeyAgi
     secretKey = awsSecretAccessKeyAgi
-    sourceFile = Paths.get(tmpFolderPath, xtfZipFileName)
+    sourceFile = file(Paths.get(tmpFolderPath, xtfZipFileName))
     endPoint = "https://s3.eu-central-1.amazonaws.com"
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket
