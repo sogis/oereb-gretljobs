@@ -343,6 +343,8 @@ WITH dokument_typ AS
         arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument AS dokument
         INNER JOIN arp_nutzungsplanung_kanton_v1.nutzungsplanung_typ_ueberlagernd_flaeche_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id
+	WHERE 
+		dokument.rechtsstatus = 'inKraft'
                     
     UNION ALL 
     
@@ -360,6 +362,8 @@ WITH dokument_typ AS
         arp_nutzungsplanung_kanton_v1.rechtsvorschrften_dokument AS dokument
         INNER JOIN arp_nutzungsplanung_kanton_v1.erschlssngsplnung_typ_erschliessung_linienobjekt_dokument AS typ_dokument
         ON typ_dokument.dokument = dokument.t_id        
+	WHERE 
+		dokument.rechtsstatus = 'inKraft'
 )
 ,
 dokumente AS 
