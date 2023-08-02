@@ -257,7 +257,7 @@ geometrie_flaeche AS (
         nextval('arp_nutzungsplanung_kanton_oerebv2.t_ili2db_seq'::regclass),                    
         basket_t_id,
         uuid_generate_v4(),
-        ST_ReducePrecision(geometrie, 0.001),
+        geometrie,
         rechtsstatus,
         publiziertab,
         t_id
@@ -283,7 +283,7 @@ geometrie_linie AS (
         nextval('arp_nutzungsplanung_kanton_oerebv2.t_ili2db_seq'::regclass),                    
         basket_t_id,
         uuid_generate_v4(),
-        ST_ReducePrecision(geometrie, 0.001),
+        geometrie,
         rechtsstatus,
         publiziertab,
         t_id
