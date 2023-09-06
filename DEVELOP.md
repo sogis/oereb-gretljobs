@@ -56,7 +56,7 @@ docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project
 
 Nutzungsplanung (auch für Planungszonen und Gewässerraum)
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataLandUsePlans replaceCantonalDataLandUsePlans"
+docker compose run --rm -u $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataLandUsePlans replaceCantonalDataLandUsePlans
 ```
 
 Statische Waldgrenzen:
