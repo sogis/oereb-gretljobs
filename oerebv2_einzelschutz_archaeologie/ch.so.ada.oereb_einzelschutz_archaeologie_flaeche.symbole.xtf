@@ -2,7 +2,7 @@
 <HEADERSECTION SENDER="SOGIS" VERSION="2.3"><MODELS><MODEL NAME="SO_AGI_OeREB_Legendeneintraege_20211020" VERSION="2021-10-20" URI="https://geo.so.ch/models/AGI"></MODEL></MODELS></HEADERSECTION>
 <DATASECTION>
 <SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege BID="ch.so.agi.oereb.legendeneintraege.einzelschutz.flaeche">
-<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAATUlEQVR4Xu3PMQ3AMBDAwEcbTkVWCB1DoQCC4CJLN3nzPLMuM2fStSRoSdCSoCVBS4KWBC0JWhK0JGhJ0JKgJUFLgpYELQlaEsx+v8v81jD+ivJiEXIAAAAASUVORK5CYII=</BINBLBOX></Symbol><LegendeTextAggregiert>geschütztes historisches Kulturdenkmal</LegendeTextAggregiert><ArtCode>geschuetztes_Kulturdenkmal</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_archaeologisches_Kulturdenkmal_Flaeche</ArtCodeliste><Thema>ch.SO.Einzelschutz</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
+<SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag TID="1"><Symbol><BINBLBOX>iVBORw0KGgoAAAANSUhEUgAAAEYAAAAjCAIAAACmdes6AAAATUlEQVR4Xu3PMQ3AMBDAwEcbTkVWCB1DoQCC4CJLN3nzPLMuM2fStSRoSdCSoCVBS4KWBC0JWhK0JGhJ0JKgJUFLgpYELQlaEsx+v8v81jD+ivJiEXIAAAAASUVORK5CYII=</BINBLBOX></Symbol><LegendeTextAggregiert>geschütztes archäologisches Kulturdenkmal</LegendeTextAggregiert><ArtCode>geschuetztes_Kulturdenkmal</ArtCode><ArtCodeliste>urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_archaeologisches_Kulturdenkmal_Flaeche</ArtCodeliste><Thema>ch.SO.Einzelschutz</Thema></SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege.Legendeneintrag>
 </SO_AGI_OeREB_Legendeneintraege_20211020.Legendeneintraege>
 </DATASECTION>
 </TRANSFER>

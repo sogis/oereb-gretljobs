@@ -50,7 +50,7 @@ SELECT
     basket.t_id,
     uuid_generate_v4(),
     agilegende.symbol,
-    'geschütztes historisches Kulturdenkmal' AS legendetext_de,
+    'geschütztes archäologisches Kulturdenkmal' AS legendetext_de,
     agilegende.artcode,
     agilegende.artcodeliste,
     agilegende.thema,
