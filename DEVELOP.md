@@ -56,7 +56,7 @@ docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project
 
 Nutzungsplanung (auch für Planungszonen und Gewässerraum)
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataLandUsePlans replaceCantonalDataLandUsePlans"
+docker compose run --rm -u $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataLandUsePlans replaceCantonalDataLandUsePlans
 ```
 
 Statische Waldgrenzen:
@@ -76,118 +76,118 @@ Start the GRETL job (use the --job-directory option to point to the desired GRET
 
 Bundesgesetze:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_bundesgesetze downloadData importData
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_bundesgesetze downloadData importData
 ```
 
 Bundeskonfiguration:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_bundeskonfiguration importFederalThemes importFederalLogos importFederalText
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_bundeskonfiguration importFederalThemes importFederalLogos importFederalText
 ```
 
 Zuständige Stellen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_zustaendigestellen/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_zustaendigestellen/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Gesetze:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_gesetze/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_gesetze/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Themen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_themen/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_themen/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Logos:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_logo/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_logo/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Kantonale Texte:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_text/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_text/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Verfügbarkeit:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_verfuegbarkeit/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_verfuegbarkeit/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Grundbuchkreis:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_konfiguration_grundbuchkreis/ exportData validateData importData uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_konfiguration_grundbuchkreis/ exportData validateData importData uploadXtfToS3Geodata
 ```
 
 Bundesdaten:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_bundesdaten importData
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_bundesdaten importData
 ```
 
 PLZ/Ortschaft:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_plzo/ importPLZO
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_plzo/ importPLZO
 ```
 
 KbS:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_belastete_standorte/ unzipData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_belastete_standorte/ unzipData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive uploadXtfToS3Geodata
 ```
 
 Grundwasserschutz:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_grundwasserschutz/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_grundwasserschutz/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Naturreservat (Einzelschutz):
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_einzelschutz_naturreservat/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_einzelschutz_naturreservat/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Geotope (Einzelschutz):
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_einzelschutz_geotop/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_einzelschutz_geotop/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Denkmal (Einzelschutz):
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_einzelschutz_denkmal/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData exportPdfFromDatabase uploadPdfToS3Stage importDataToStage refreshOerebWMSTablesStage copyPdfToS3Live importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_einzelschutz_denkmal/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData exportPdfFromDatabase uploadPdfToS3Stage importDataToStage refreshOerebWMSTablesStage copyPdfToS3Live importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Waldgrenzen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_waldgrenzen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_waldgrenzen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Amtliche Vermessung:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_av/ transferAV_live
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_av/ transferAV_live
 ```
 
 Planungszonen:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_planungszonen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_planungszonen/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Waldreservate:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_waldreservate/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_waldreservate/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ........
 ```
 
 Gewässerraum:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_gewaesserraum/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_gewaesserraum/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Nutzungsplanung:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_nutzungsplanung/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_nutzungsplanung/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Nutzungsplanung kantonal:
 ```
-./start-gretl.sh --docker-image sogis/gretl-local:latest --docker-network oereb-gretljobs_default --job-directory $PWD/oerebv2_nutzungsplanung_kanton/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl --project-dir=oerebv2_nutzungsplanung_kanton/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 ## Import config data into gdi db
