@@ -202,7 +202,9 @@ eigentumsbeschraenkung AS (
         )
         AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
-        
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
+
         UNION ALL 
         
         -- Überlagernd (Fläche)
@@ -271,6 +273,8 @@ eigentumsbeschraenkung AS (
             )
             AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
 
         UNION ALL
             
@@ -302,6 +306,8 @@ eigentumsbeschraenkung AS (
             )
             AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
 
         UNION ALL
             
@@ -333,6 +339,8 @@ eigentumsbeschraenkung AS (
             )
             AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
             
         UNION ALL 
         
@@ -369,6 +377,8 @@ eigentumsbeschraenkung AS (
             )
             AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
 
         UNION ALL    
             
@@ -445,6 +455,8 @@ eigentumsbeschraenkung AS (
             )
             AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
 
         UNION ALL 
             
@@ -485,6 +497,8 @@ eigentumsbeschraenkung AS (
             )
             AND 
         geometrie.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+        AND
+        CAST(geobasisdaten_typ.t_datasetname AS int4) = ${bfsnr}
 )
 ,
 legendeneintrag AS (

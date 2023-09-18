@@ -13,7 +13,8 @@ def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
 def dbSchemaNutzungsplanungOereb = "arp_nutzungsplanung_oerebv2"
-def nutzungsplanungDataSet = "ch.so.arp.oereb_nutzungsplanung"
+def nutzungsplanungIdentifier = "ch.so.arp.oereb_nutzungsplanung"
+def nutzungsplanungDataSet = nutzungsplanungIdentifier + "." + bfsnr
 
 def nutzungsplanungGrundnutzungDataSet = "ch.so.arp.oereb_nutzungsplanung_grundnutzung" 
 def symbolsNutzungsplanungGrundnutzungDataSet = nutzungsplanungGrundnutzungDataSet + ".symbole" 
@@ -47,7 +48,7 @@ if ( gretlEnvironment == 'production' ) {
     bucketSuffix = '-' + gretlEnvironment
 }
 
-def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+def responsibleOfficesBaseUrl = "file:///home/gradle/project/oerebv2_konfiguration_zustaendigestellen/" //  "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
 def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
 
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
@@ -108,13 +109,14 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     dbschema = dbSchemaNutzungsplanungOereb
     dataFile = file(emptyTransferFile)
     importBid = true
-    dataset = nutzungsplanungDataSet
+    dataset = nutzungsplanungIdentifier
 }
 
 task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     sqlFiles = ["insert_oereb_nutzungsplanung_tables.sql"]
+    sqlParameters = [bfsnr: bfsnr]
 }
 
 task exportData(type: Ili2pgExport, dependsOn: "transferData") {
@@ -123,7 +125,7 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     models = iliModelTransferstruktur
     dbschema = dbSchemaNutzungsplanungOereb
     dataFile = file(Paths.get("$rootDir", xtfFileName))
-    dataset = nutzungsplanungDataSet
+    dataset = nutzungsplanungIdentifier
     disableValidation = true
 }
 
@@ -155,7 +157,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = nutzungsplanungDataSet 
-    importBid = true
+    importBid = false
     importTid = true
     disableValidation = true
 }
@@ -174,7 +176,7 @@ task importDataToLive(type: Ili2pgReplace) {
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = nutzungsplanungDataSet 
-    importBid = true
+    importBid = false
     importTid = true
     disableValidation = true
 }
@@ -203,4 +205,22 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket
     acl = "public-read"
+}
+
+task deleteOldNplDatasetStage(type: Ili2pgDelete) {
+    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Stage-Schema"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "stage"
+    dataset = "ch.so.arp.oereb_nutzungsplanung"
+    failOnException = false
+}
+
+task deleteOldNplDatasetLive(type: Ili2pgDelete) {
+    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Live-Schema"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "live"
+    dataset = "ch.so.arp.oereb_nutzungsplanung"
+    failOnException = false
 }
