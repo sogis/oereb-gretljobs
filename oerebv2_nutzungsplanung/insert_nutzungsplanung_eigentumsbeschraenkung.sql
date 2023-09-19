@@ -1,3 +1,4 @@
+-- Liste der Gemeinden, welche den Gewässerraum ausgeschieden haben
 WITH availabilty AS 
 (
     SELECT 

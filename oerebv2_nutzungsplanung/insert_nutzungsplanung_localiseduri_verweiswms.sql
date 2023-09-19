@@ -71,7 +71,7 @@ darstellungsdienst_insert AS (
         darstellungsdienst
 )
 ,
--- Schreibe für jedes Thema einen Verweis auf den WMS Dienst
+-- Schreibe für jedes Thema einen Verweis auf den WMS Darstellungsdienst
 darstellungsdienst_multilingualuri AS 
 (
     INSERT INTO

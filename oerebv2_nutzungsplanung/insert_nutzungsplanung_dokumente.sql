@@ -4,7 +4,6 @@
  * wird für die Zwischentabelle verwendet.
  * 
  */
-
 --- Verknüpfung der Dokumente mit den Grundnutzungen
 WITH dokument_typ_grundnutzung AS
 (
