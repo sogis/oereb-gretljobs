@@ -56,7 +56,7 @@ def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 task deleteFromOereb(type: SqlExecutor) {
     description = "Löscht die Daten aus dem Transferschema."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["delete_oereb_nutzungsplanung_tables.sql"]
+    sqlFiles = ["delete_nutzungsplanung_tables.sql"]
 }
 
 task downloadResponsibleOffices(type: Download, dependsOn: 'deleteFromOereb') {
@@ -115,7 +115,11 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
 task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["insert_oereb_nutzungsplanung_tables.sql"]
+    sqlFiles = ["insert_nutzungsplanung_localiseduri_verweiswms.sql",\
+                "insert_nutzungsplanung_eigentumsbeschraenkung.sql",\
+                "insert_nutzungsplanung_dokumente.sql",\
+                "insert_nutzungsplanung_localiseduri_dokumentimweb.sql",\
+                "delete_nutzungsplanung_dangling_darstellungsdienst.sql"]
     sqlParameters = [bfsnr: bfsnr]
 }
 
@@ -205,22 +209,4 @@ task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
     region = "eu-central-1"
     bucketName = s3AgiTargetBucket
     acl = "public-read"
-}
-
-task deleteOldNplDatasetStage(type: Ili2pgDelete) {
-    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Stage-Schema"
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    models = iliModelTransferstruktur
-    dbschema = "stage"
-    dataset = "ch.so.arp.oereb_nutzungsplanung"
-    failOnException = false
-}
-
-task deleteOldNplDatasetLive(type: Ili2pgDelete) {
-    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Live-Schema"
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    models = iliModelTransferstruktur
-    dbschema = "live"
-    dataset = "ch.so.arp.oereb_nutzungsplanung"
-    failOnException = false
 }

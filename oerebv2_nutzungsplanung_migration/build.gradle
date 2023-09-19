@@ -1,0 +1,25 @@
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.tasks.*
+
+defaultTasks "deleteOldNplDatasetStage"
+
+def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+
+task deleteOldNplDatasetStage(type: Ili2pgDelete) {
+    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Stage-Schema"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "stage"
+    dataset = "ch.so.arp.oereb_nutzungsplanung"
+    failOnException = false
+}
+
+task deleteOldNplDatasetLive(type: Ili2pgDelete) {
+    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Live-Schema"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "live"
+    dataset = "ch.so.arp.oereb_nutzungsplanung"
+    failOnException = false
+}
