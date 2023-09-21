@@ -26,32 +26,32 @@ Für die meisten Themen sind Testdaten im Github-Repo im Ordner `development_dbs
 
 Konfiguration:
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceResponsibleOfficesToEdit replaceCantonalLegalBasisToEdit replaceCantonalThemesToEdit replaceCantonalLogosToEdit replaceCantonalTextToEdit replaceAvailabilityToEdit replaceSubunitOfLandRegisterToEdit
 ```
 
 Amtliche Vermessung:
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceCadastralSurveying"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceCadastralSurveying
 ```
 
 Gewässerschutz:
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataGroundwaterProtection"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataGroundwaterProtection
 ```
 
 Naturreservate (Einzelschutz)
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzNaturreservat"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataEinzelschutzNaturreservat
 ```
 
 Geotope (Einzelschutz):
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzGeotop"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataEinzelschutzGeotop
 ```
 
 Denkmal (Einzelschutz):
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataEinzelschutzDenkmal"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataEinzelschutzDenkmal
 ```
 
 Nutzungsplanung (auch für Planungszonen und Gewässerraum)
@@ -61,13 +61,13 @@ docker compose run --rm -u $UID gretl -b build-dev.gradle --project-dir=developm
 
 Statische Waldgrenzen:
 ``` 
-docker-compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataStaticForestPerimeters"
+docker compose down # (this command is optional; it's just for cleaning up any already existing DB containers)
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataStaticForestPerimeters
 ```
 
 Waldreservate:
 ```
-docker-compose run --user $UID --rm -v $PWD/development_dbs:/home/gradle/project gretl "sleep 20 && cd /home/gradle && gretl -b project/build-dev.gradle replaceDataWaldreservate"
+docker compose run --rm --user $UID gretl -b build-dev.gradle --project-dir=development_dbs replaceDataWaldreservate
 ```
 
 ## GRETL-Job
