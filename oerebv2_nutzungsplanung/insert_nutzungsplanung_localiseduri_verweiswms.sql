@@ -39,7 +39,7 @@ darstellungsdienst AS
     SELECT
         nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket.t_id AS basket_t_id,
-        uuid_generate_v4() AS t_ili_tid,
+        NULL AS t_ili_tid, --asdfuuid_generate_v4() AS t_ili_tid,
         themen.thema,
         themen.subthema
     FROM 

@@ -91,7 +91,7 @@ dokument_typ_ueberlagernd_punkt AS
 -- Verknüpfung der Dokumente mit den Erschliessungen (Linien)
 -- !!!!!!!!!!!!!
 -- Wo bleibend die Verknüpfungen zu den Flächen- und Punktobjekten der Erschliessung?
--- !!!!!!!!!!!!!
+-- !!!!!!!!!!!!! => inhaltlich abklären ...
 dokument_typ_erschliessung_linienobjekt AS
 (
     SELECT 
@@ -187,8 +187,34 @@ dokumente AS
         DISTINCT ON (dokument_typ.t_id)
         dokument_typ.t_id, 
         eigentumsbeschraenkung.t_basket,
-        -- Wieso ist diese t_ili_id mit Underline prefixed?
-        '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
+        --
+        -- Wieso wird hier der UUID einen Underscore vorangestellt?
+        --
+        -- Gemäss Modell OeREBKRM_V2_0.ili kommt hier eine OEREBOID:
+        --
+        -- Wertebereich für Objektidentifikatoren: Der Wert soll mit einem
+        -- gültigen Internet Domain-Name anfangen, z.B. "ch.admin.sr.720"
+        -- OEREBOID = OID TEXT*255;
+        --
+        -- Aus dem INTERLIS Referenz Handbuch Kaptiel 2.8.9:
+        --
+        -- OID-Werte von textlichen OID-Wertebereichen müssen die Regeln des
+        -- XML-ID-Typs erfüllen: erstes Zeichen muss Buchstabe oder Unterstrich,
+        -- sein, dann folgen Buchstaben, Ziffern, Punkte, Minuszeichen,
+        -- Unterstriche; keine Doppelpunkte (!)
+        --
+        -- siehe auch folgende Ausführungen:
+        -- https://github.com/opengisch/QgisModelBaker/issues/599#issuecomment-983473359 
+        -- https://gist.github.com/signedav/fd2426650230e2c4eabf3958aee14cc9
+        --
+        -- Die Funktion uuid_genereate_v4 in Postgres erzeugt aber beliebige
+        -- UUID, welche eben auch mit Ziffern beginnen können.
+        --
+        -- Gemäss Modell soll diese OEREBID mit einem Internet Domain beginnen,
+        -- daher können wir direkt ch.so. anstatt einem Unterstrich voranstellen,
+        -- Zeichen haben wir genügend (nämlich 255).
+        --
+        'ch.so.'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
         CASE 
             WHEN dokument_typ.rechtsvorschrift IS TRUE THEN 'Rechtsvorschrift'
             ELSE 'Hinweis'

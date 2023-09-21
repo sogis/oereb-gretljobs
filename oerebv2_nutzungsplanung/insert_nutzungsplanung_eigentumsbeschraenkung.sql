@@ -426,7 +426,7 @@ legendeneintrag AS
         (
             t_id,
             t_basket,
-            t_ili_tid,
+            --t_ili_tid,
             symbol,
             legendetext_de,
             artcode,
@@ -439,7 +439,7 @@ legendeneintrag AS
         DISTINCT ON (artcode, artcodeliste)
         nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass) AS t_id,
         basket_t_id,
-        uuid_generate_v4(),
+        --uuid_generate_v4(),
         eintrag.symbol,
         legendetext_de,
         eigentumsbeschraenkung.artcode,
@@ -462,7 +462,10 @@ geometrie_flaeche AS
         (
             t_id,
             t_basket,
-            t_ili_tid,
+            -- Wenn wir beim Export die Option exportTid nicht verwenden, können
+            -- wir uns sparen, diese Spalte abzufüllen. Dasselbe gilt auch für
+            -- die Abfragen Linien und Punkte
+            --t_ili_tid,
             flaeche,
             rechtsstatus,
             publiziertab,
@@ -471,7 +474,7 @@ geometrie_flaeche AS
     SELECT 
         nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass),                    
         basket_t_id,
-        uuid_generate_v4(),
+        --uuid_generate_v4(),
         ST_ReducePrecision(geometrie, 0.001),
         rechtsstatus,
         publiziertab,
@@ -490,7 +493,7 @@ geometrie_linie AS
         (
             t_id,
             t_basket,
-            t_ili_tid,
+            --t_ili_tid,
             linie,
             rechtsstatus,
             publiziertab,
@@ -499,7 +502,7 @@ geometrie_linie AS
     SELECT 
         nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass),                    
         basket_t_id,
-        uuid_generate_v4(),
+        --uuid_generate_v4(),
         ST_ReducePrecision(geometrie, 0.001),
         rechtsstatus,
         publiziertab,
@@ -518,7 +521,7 @@ geometrie_punkt AS
         (
             t_id,
             t_basket,
-            t_ili_tid,
+            --t_ili_tid,
             punkt,
             rechtsstatus,
             publiziertab,
@@ -527,7 +530,7 @@ geometrie_punkt AS
     SELECT 
         nextval('arp_nutzungsplanung_oerebv2.t_ili2db_seq'::regclass),                    
         basket_t_id,
-        uuid_generate_v4(),
+        --uuid_generate_v4(),
         ST_ReducePrecision(geometrie, 0.001),
         rechtsstatus,
         publiziertab,
@@ -543,7 +546,7 @@ INSERT INTO
     (
         t_id,
         t_basket,
-        t_ili_tid,
+        --t_ili_tid,
         rechtsstatus,
         publiziertab,
         darstellungsdienst,
@@ -554,7 +557,7 @@ SELECT
     DISTINCT ON (eigentumsbeschraenkung.t_id)
     eigentumsbeschraenkung.t_id, 
     eigentumsbeschraenkung.basket_t_id,
-    uuid_generate_v4(),
+    --uuid_generate_v4(),
     eigentumsbeschraenkung.rechtsstatus,
     eigentumsbeschraenkung.publiziertab,
     eigentumsbeschraenkung.darstellungsdienst,
