@@ -1,10 +1,20 @@
+apply plugin: "de.undercouch.download"
 apply plugin: "ch.so.agi.gretl"
 
 import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
 
 defaultTasks "deleteOldNplDatasetStage"
 
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+
+def xtfFileName = "ch.so.arp.oereb_nutzungsplanung_v2_0.xtf"
+//def xtfFileName = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
+def pathToUserFolder = System.getProperty("user.dir")
 
 task deleteOldNplDatasetStage(type: Ili2pgDelete) {
     description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Stage-Schema"
@@ -22,4 +32,57 @@ task deleteOldNplDatasetLive(type: Ili2pgDelete) {
     dbschema = "live"
     dataset = "ch.so.arp.oereb_nutzungsplanung"
     failOnException = false
+}
+
+task downloadOldFullData(type: Download) {
+    description "Lade den aktuellen Datensatz kommunale Nutzungsplanung\n\
+                des gesamten Kantons von S3 runter"
+    src "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata/ch.so.arp.oereb_nutzungsplanung_V2_0_xtf.zip"
+    dest file(Paths.get("$rootDir", "ch.so.arp.oereb_nutzungsplanung_V2_0_xtf.zip"))
+    overwrite true
+    doLast {
+        println "File downloaded to: " + Paths.get("$rootDir", "ch.so.arp.oereb_nutzungsplanung_V2_0_xtf.zip")
+    }        
+}
+
+task unzipOldFullData(type: Copy) {
+    description "Entzippe den aktuellen Datensatz kommunale Nutzungsplanung\n\
+                des ganzen Kantons"
+    dependsOn downloadOldFullData
+    from zipTree(Paths.get("$rootDir", "ch.so.arp.oereb_nutzungsplanung_V2_0_xtf.zip"))
+    into file(Paths.get("$rootDir"))
+    include {
+        it.file.name.toLowerCase().endsWith("xtf")
+    }         
+    rename { String fileName ->
+        return fileName.toLowerCase()
+    }
+}
+
+task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
+    dependsOn unzipOldFullData
+    description = "Importiere den aktuellen Datensatz kommunale Nutzungsplanung\n\
+                  des ganzen Kantons in das Schema test_stage in der edit Datenbank"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = 'test_stage'
+    dataFile = file(Paths.get("$rootDir", xtfFileName))                                                                                                                                                             
+    dataset = "ch.so.arp.oereb_nutzungsplanung"
+    importBid = false
+    importTid = true
+    disableValidation = true
+}
+
+task countObjectsTestStage(type: SqlExecutor){
+    description = "Zähle die Objekte gemäss der zuständigen Stelle im kantonalen Datensatz"
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    sqlFiles = ["count_transferstruktur_test_stage.sql"]
+    sqlParameters = [bfsnr: bfsnr]
+}
+
+task countObjectsOerebStage(type: SqlExecutor){
+    description = "Zähle die Objekte gemäss Gemeinde Dataset"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["count_transferstruktur_stage_dataset.sql"]
+    sqlParameters = [bfsnr: bfsnr]
 }
