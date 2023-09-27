@@ -84,14 +84,14 @@ ext {
     //cadastralSurveyingDataSets = ["2582"]
     cadastralSurveyingBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.av.dm01avso24lv95/"
 
-    iliModelLandUsePlans = "SO_ARP_Nutzungsplanung_Nachfuehrung_20201005"
+    iliModelLandUsePlans = "SO_ARP_Nutzungsplanung_Nachfuehrung_20221118"
     dbSchemaLandUsePlans = "arp_nutzungsplanung_v1"
     dbSchemaCantonalLandUsePlans = "arp_nutzungsplanung_kanton_v1"
-    //landUsePlansDataSets = ["2401", "2403", "2405", "2407", "2408", "2456", "2457", "2473", "2474", "2475", "2476", "2479",  "2491", "2498", "2501", "2502", "2514", "2551", "2573", "2580", "2613", "2614", "2615", "2616"]
-    landUsePlansDataSets = ["2549"]
+    landUsePlansDataSets = ["2401","2403","2405","2407","2408","2421","2424","2455","2456","2457","2464","2473","2474","2475","2476","2477","2479","2481","2491","2492","2501","2502","2514","2516","2518","2523","2541","2542","2546","2548","2549","2550","2551","2573","2574","2575","2580","2581","2582","2586","2613","2614","2615","2616","2617","2620","2621","2622"]
     //landUsePlansDataSets = ["2582"]
     cantonalLandUsePlansDataSet = "kanton"
-    landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.data4dev/nutzungsplanung/"
+    //landUsePlansBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.oereb.data4dev/nutzungsplanung/"
+    landUsePlansBaseUrl = "https://files.geo.so.ch/ch.so.arp.nutzungsplanung.kommunal.relational/aktuell/"
     
     /* OEREB-DB */
 
@@ -430,9 +430,10 @@ task replaceDataEinzelschutzDenkmal(type: Ili2pgImport, dependsOn: "unzipEinzels
 
 landUsePlansDataSets.each { landUsePlansDataSet ->
     def dataSet = landUsePlansDataSet.toString()
+    def datasetIdentifier = "ch.so.arp.nutzungsplanung.kommunal.relational"
     task "downloadDataLandUsePlans_$dataSet"(type: Download) {
         group = editGroupName
-        src landUsePlansBaseUrl + dataSet + ".xtf"
+        src landUsePlansBaseUrl + dataSet + "." + datasetIdentifier + ".xtf.zip"
         dest pathToTempFolder
         overwrite true
 
@@ -440,13 +441,24 @@ landUsePlansDataSets.each { landUsePlansDataSet ->
             println "File downloaded to: " + pathToTempFolder
         }        
     }
+    
+    task "unzipDataLandUsePlans_$dataSet"(type: Copy, dependsOn: "downloadDataLandUsePlans_$dataSet") {
+        from zipTree(Paths.get(pathToTempFolder.toString(), dataSet + "." + datasetIdentifier + ".xtf.zip"))
+        into file(Paths.get(pathToTempFolder.toString()))
+        include {
+            it.file.name.toLowerCase().endsWith("xtf")
+        }         
+        rename { String fileName ->
+            return fileName.toLowerCase()
+        }
+    }
 
-    task "replaceDataLandUsePlans_$dataSet"(type: Ili2pgReplace, dependsOn: "downloadDataLandUsePlans_$dataSet") {
+    task "replaceDataLandUsePlans_$dataSet"(type: Ili2pgReplace, dependsOn: "unzipDataLandUsePlans_$dataSet") {
         group = editGroupName
         database = [dbUriEdit, dbUserEdit, dbPwdEdit]
         models = iliModelLandUsePlans
         dbschema = dbSchemaLandUsePlans
-        dataFile = file(Paths.get(pathToTempFolder.toString(), dataSet + ".xtf"))
+        dataFile = file(Paths.get(pathToTempFolder.toString(), dataSet + "." + datasetIdentifier + ".xtf"))
         dataset = dataSet
         disableValidation = true
     }
