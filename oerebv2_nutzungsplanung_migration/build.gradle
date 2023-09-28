@@ -62,39 +62,3 @@ task countObjectsOerebStage(type: SqlExecutor){
     sqlFiles = ["count_transferstruktur_stage_dataset.sql"]
     sqlParameters = [bfsnr: bfsnr]
 }
-
-/**
- * Die folgenden Task können verwendet werden um einzelne Shapefiles zu
- * exportieren.
- */
-task createViewObjectsTestStage(type: SqlExecutor){
-    description = "Erstelle eine Tabellen View pro Geometrietyp"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["view_transferstruktur_test_stage.sql"]
-    sqlParameters = [bfsnr: bfsnr]
-}
-
-task exportObjectsFlaecheTestStage(type: ShpExport){
-    dependsOn createViewObjectsTestStage
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "test_stage"
-    tableName = "transferstruktur_geom_zustelle_flaeche"
-    dataFile = "transferstruktur_geom_zustelle_flaeche." + bfsnr + ".shp"
-}
-
-task exportObjectsLinieTestStage(type: ShpExport){
-    dependsOn createViewObjectsTestStage
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "test_stage"
-    tableName = "transferstruktur_geom_zustelle_linie"
-    dataFile = "transferstruktur_geom_zustelle_linie." + bfsnr + ".shp"
-}
-
-task exportObjectsPunktTestStage(type: ShpExport){
-    dependsOn createViewObjectsTestStage
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    schemaName = "test_stage"
-    tableName = "transferstruktur_geom_zustelle_punkt"
-    dataFile = "transferstruktur_geom_zustelle_punkt." + bfsnr + ".shp"
-}
-
