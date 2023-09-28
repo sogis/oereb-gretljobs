@@ -1,0 +1,11 @@
+task deleteOldNplDatasetStage {
+    doLast {
+        println name
+    }
+}
+
+task deleteOldNplDatasetLive {
+    doLast {
+        println name
+    }
+}
