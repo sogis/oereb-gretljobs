@@ -5,7 +5,7 @@ import ch.so.agi.gretl.tasks.*
 import java.nio.file.Paths
 import de.undercouch.gradle.tasks.download.Download
 
-defaultTasks "deleteOldNplDatasetStage"
+defaultTasks "deleteOldNplDatasetLive"
 
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 
@@ -17,7 +17,8 @@ def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToUserFolder = System.getProperty("user.dir")
 
 task deleteOldNplDatasetStage(type: Ili2pgDelete) {
-    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Stage-Schema"
+    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL\n\
+                   im Stage-Schema"
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "stage"
@@ -26,7 +27,9 @@ task deleteOldNplDatasetStage(type: Ili2pgDelete) {
 }
 
 task deleteOldNplDatasetLive(type: Ili2pgDelete) {
-    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL im Live-Schema"
+    dependsOn deleteOldNplDatasetStage
+    description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL\n\
+                   im Live-Schema"
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
     dbschema = "live"
@@ -34,6 +37,10 @@ task deleteOldNplDatasetLive(type: Ili2pgDelete) {
     failOnException = false
 }
 
+/**
+ * Achtung: Task mitsamt wird nur während Entwicklung zur Überprüfung der
+ * Datensätze verwendet!
+ */
 task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
     description = "Importiere den aktuellen Datensatz kommunale Nutzungsplanung\n\
                   des ganzen Kantons in das Schema test_stage in der edit Datenbank"
@@ -49,6 +56,10 @@ task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
     disableValidation = true
 }
 
+/**
+ * Achtung: Task mitsamt SQL Datenbankabfrage wird nur während Entwicklung zur
+ * Überprüfung der Datensätze verwendet!
+ */
 task countObjectsTestStage(type: SqlExecutor){
     description = "Zähle die Objekte gemäss der zuständigen Stelle im kantonalen Datensatz"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -56,6 +67,10 @@ task countObjectsTestStage(type: SqlExecutor){
     sqlParameters = [bfsnr: bfsnr]
 }
 
+/**
+ * Achtung: Task mitsamt SQL Datenbankabfrage wird nur während Entwicklung zur
+ * Überprüfung der Datensätze verwendet!
+ */
 task countObjectsOerebStage(type: SqlExecutor){
     description = "Zähle die Objekte gemäss Gemeinde Dataset"
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
