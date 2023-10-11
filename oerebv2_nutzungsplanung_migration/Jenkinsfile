@@ -10,8 +10,7 @@ node('master') {
         inputFile = input (
             message: 'Datei hochladen',
             parameters: [
-                file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende Datei auswählen'),
-                string(name: 'ili2pgDataset', description: 'BFS-Nummer (Dataset) der Daten angeben')
+                file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende Datei auswählen')
             ]
         )
         dir(buildDir) {
