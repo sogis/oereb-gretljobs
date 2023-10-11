@@ -1,3 +1,28 @@
+// Start with a scripted pipeline part
+node('master') {
+    stage('Prepare') {
+        uploadDirName = 'upload'
+        uploadFileName = 'uploadFile'
+        // By default the uploaded file is stored in the following directory:
+        buildDir = "$JENKINS_HOME/jobs/$JOB_BASE_NAME/builds/$BUILD_NUMBER"
+        // Create a subdirectory for the uploaded file:
+        sh "mkdir $buildDir/$uploadDirName"
+        inputFile = input (
+            message: 'Datei hochladen',
+            parameters: [
+                file(name: "$uploadDirName/$uploadFileName", description: 'Hochzuladende Datei auswählen'),
+                string(name: 'ili2pgDataset', description: 'BFS-Nummer (Dataset) der Daten angeben')
+            ]
+        )
+        dir(buildDir) {
+            stash name: 'uploadDir', includes: "upload/**"
+        }
+        sh "rm -r $buildDir/$uploadDirName"
+    }
+}
+
+
+// Declarative pipeline starts here
 pipeline {
     agent { label 'gretl' }
     stages {
