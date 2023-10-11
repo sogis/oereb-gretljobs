@@ -89,9 +89,6 @@ dokument_typ_ueberlagernd_punkt AS
         ON typ_dokument.dokument = dokument.t_id
 ),
 -- Verknüpfung der Dokumente mit den Erschliessungen (Linien)
--- !!!!!!!!!!!!!
--- Wo bleibend die Verknüpfungen zu den Flächen- und Punktobjekten der Erschliessung?
--- !!!!!!!!!!!!! => inhaltlich abklären ...
 dokument_typ_erschliessung_linienobjekt AS
 (
     SELECT 
