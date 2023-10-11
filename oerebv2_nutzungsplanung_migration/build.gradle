@@ -8,9 +8,13 @@ import de.undercouch.gradle.tasks.download.Download
 defaultTasks "deleteOldNplDatasetLive"
 
 def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+def iliModelKonfiguration = "OeREBKRMkvs_V2_0"
 
 def xtfFileName = "ch.so.arp.oereb_nutzungsplanung_V2_0.xtf"
 //def xtfFileName = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
+
+def dbSchemaKonfiguration = "agi_konfiguration_oerebv2"
+def dataSet = "verfuegbarkeit"
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
@@ -35,6 +39,23 @@ task deleteOldNplDatasetLive(type: Ili2pgDelete) {
     dbschema = "live"
     dataset = "ch.so.arp.oereb_nutzungsplanung"
     failOnException = false
+}
+
+task copyXtfFile(type: Copy) {
+    from "upload/"
+    into "upload/"
+    include("uploadFile")
+    rename("uploadFile", "ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf")
+}
+
+task updateKonfigurationVerfuegbarkeit(type: Ili2pgUpdate) {
+    dependsOn "copyXtfFile"
+    description = "Importiere die Konfiguration Verfügbarkeit."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelKonfiguration
+    dbschema = dbSchemaKonfiguration
+    dataFile = "upload/ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
+    dataset = dataSet
 }
 
 /**
