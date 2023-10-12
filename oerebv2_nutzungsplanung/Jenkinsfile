@@ -36,7 +36,7 @@ pipeline {
                 unstash name: "gretljob"
                 container('gretl') {
                     dir(env.JOB_BASE_NAME) {
-                        sh 'gretl -Pbfsnr=${params.bfsnr} importDataToLive refreshOerebWMSTablesLive uploadXtfToS3Geodata'
+                        sh "gretl -Pbfsnr=${params.bfsnr} importDataToLive refreshOerebWMSTablesLive uploadXtfToS3Geodata"
                     }
                 }
             }
