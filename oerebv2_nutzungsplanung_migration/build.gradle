@@ -56,7 +56,7 @@ task copyXtfFile(type: Copy) {
  * Task muss ausgeführt werden, um die Verfügbarkeit der Nutzungsplanung 
  * "runterzunehmen" und nach Abschluss der Arbeiten wieder aufzuschalten
  */
-task updateKonfigurationVerfuegbarkeit(type: Ili2pgUpdate) {
+task updateKonfigurationVerfuegbarkeit(type: Ili2pgReplace) {
     dependsOn "copyXtfFile"
     description = "Importiere die Konfiguration der verfügbaren Datensätze"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -64,6 +64,8 @@ task updateKonfigurationVerfuegbarkeit(type: Ili2pgUpdate) {
     dbschema = dbSchemaKonfiguration
     dataFile = "upload/ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
     dataset = dataSet
+    importBid = true
+    importTid = true
 }
 
 /**
