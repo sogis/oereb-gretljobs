@@ -47,7 +47,7 @@ if ( gretlEnvironment == 'production' ) {
     bucketSuffix = '-' + gretlEnvironment
 }
 
-def responsibleOfficesBaseUrl = "file:///home/gradle/project/oerebv2_konfiguration_zustaendigestellen/" //  "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
 def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
 
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
