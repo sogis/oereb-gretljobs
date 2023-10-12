@@ -62,7 +62,8 @@ task updateKonfigurationVerfuegbarkeit(type: Ili2pgReplace) {
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelKonfiguration
     dbschema = dbSchemaKonfiguration
-    dataFile = "upload/ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"
+    dataFile = file(Paths.get("$rootDir", "upload/ch.so.agi.oereb_verfuegbarkeit_V2_0.xtf"))
+    
     dataset = dataSet
     importBid = true
     importTid = true
