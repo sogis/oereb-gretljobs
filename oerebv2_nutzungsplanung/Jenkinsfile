@@ -24,12 +24,16 @@ pipeline {
                 )
             }
         }
+        /*
+         * Schalte die manuelle Validierung während der Migration aus, damit
+         * der Job in Jenkins nicht bestätigt werden muss
         stage('Validation') {
             agent { label 'master' }
             steps {
                 input message: "Fortfahren und die Daten publizieren?", ok: "OK"
             }
         }
+        */
         stage('Import into live schema') {
             agent { label 'gretl' }
             steps {
