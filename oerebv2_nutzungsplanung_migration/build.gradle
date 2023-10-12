@@ -71,7 +71,7 @@ task updateKonfigurationVerfuegbarkeit(type: Ili2pgReplace) {
 /**
  * Achtung: Task mitsamt wird nur während Entwicklung zur Überprüfung der
  * Datensätze verwendet!
- */
+ *
 task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
     description = "Importiere den aktuellen Datensatz kommunale Nutzungsplanung\n\
                   des ganzen Kantons in das Schema test_stage in der edit Datenbank"
@@ -90,7 +90,7 @@ task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
 /**
  * Achtung: Task mitsamt SQL Datenbankabfrage wird nur während Entwicklung zur
  * Überprüfung der Datensätze verwendet!
- */
+ *
 task countObjectsTestStage(type: SqlExecutor){
     description = "Zähle die Objekte gemäss der zuständigen Stelle im kantonalen Datensatz"
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -101,10 +101,10 @@ task countObjectsTestStage(type: SqlExecutor){
 /**
  * Achtung: Task mitsamt SQL Datenbankabfrage wird nur während Entwicklung zur
  * Überprüfung der Datensätze verwendet!
- */
+ *
 task countObjectsOerebStage(type: SqlExecutor){
     description = "Zähle die Objekte gemäss Gemeinde Dataset"
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     sqlFiles = ["count_transferstruktur_stage_dataset.sql"]
     sqlParameters = [bfsnr: bfsnr]
-}
+}*/
