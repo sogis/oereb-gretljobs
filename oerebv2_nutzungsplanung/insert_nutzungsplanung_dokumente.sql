@@ -211,7 +211,7 @@ dokumente AS
         -- daher können wir direkt ch.so. anstatt einem Unterstrich voranstellen,
         -- Zeichen haben wir genügend (nämlich 255).
         --
-        'ch.so.'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
+        '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
         CASE 
             WHEN dokument_typ.rechtsvorschrift IS TRUE THEN 'Rechtsvorschrift'
             ELSE 'Hinweis'
