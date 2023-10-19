@@ -68,23 +68,29 @@ task updateKonfigurationVerfuegbarkeit(type: Ili2pgReplace) {
     importTid = true
 }
 
+task updateWmsHostToIntegration(type: SqlExecutor) {
+    description = "Ersetzt den wmshost von geo.so.ch zu geo-i.so.ch"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["set_wmshost_to_integration.sql"]
+}
+
 /**
  * Achtung: Task mitsamt wird nur während Entwicklung zur Überprüfung der
  * Datensätze verwendet!
  *
 task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
-    description = "Importiere den aktuellen Datensatz kommunale Nutzungsplanung\n\
-                  des ganzen Kantons in das Schema test_stage in der edit Datenbank"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    models = iliModelTransferstruktur
-    dbschema = 'test_stage'
-    // Achtung: diese Datei muss aus den gleichen Daten erzeugt worden sein, wie
-    // die Datei pro Gemeinde!!
-    dataFile = file(Paths.get("$rootDir", xtfFileName))                                                                                                                                                             
-    dataset = "ch.so.arp.oereb_nutzungsplanung"
-    importBid = false
-    importTid = true
-    disableValidation = true
+description = "Importiere den aktuellen Datensatz kommunale Nutzungsplanung\n\
+des ganzen Kantons in das Schema test_stage in der edit Datenbank"
+database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+models = iliModelTransferstruktur
+dbschema = 'test_stage'
+// Achtung: diese Datei muss aus den gleichen Daten erzeugt worden sein, wie
+// die Datei pro Gemeinde!!
+dataFile = file(Paths.get("$rootDir", xtfFileName))                                                                                                                                                             
+dataset = "ch.so.arp.oereb_nutzungsplanung"
+importBid = false
+importTid = true
+disableValidation = true
 }
 
 /**
@@ -92,10 +98,10 @@ task replaceOldFullDataToTestStage(type: Ili2pgReplace) {
  * Überprüfung der Datensätze verwendet!
  *
 task countObjectsTestStage(type: SqlExecutor){
-    description = "Zähle die Objekte gemäss der zuständigen Stelle im kantonalen Datensatz"
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlFiles = ["count_transferstruktur_test_stage.sql"]
-    sqlParameters = [bfsnr: bfsnr]
+description = "Zähle die Objekte gemäss der zuständigen Stelle im kantonalen Datensatz"
+database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+sqlFiles = ["count_transferstruktur_test_stage.sql"]
+sqlParameters = [bfsnr: bfsnr]
 }
 
 /**
@@ -103,8 +109,8 @@ task countObjectsTestStage(type: SqlExecutor){
  * Überprüfung der Datensätze verwendet!
  *
 task countObjectsOerebStage(type: SqlExecutor){
-    description = "Zähle die Objekte gemäss Gemeinde Dataset"
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["count_transferstruktur_stage_dataset.sql"]
-    sqlParameters = [bfsnr: bfsnr]
+description = "Zähle die Objekte gemäss Gemeinde Dataset"
+database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+sqlFiles = ["count_transferstruktur_stage_dataset.sql"]
+sqlParameters = [bfsnr: bfsnr]
 }*/
