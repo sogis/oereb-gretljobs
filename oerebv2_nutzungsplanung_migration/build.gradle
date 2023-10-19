@@ -68,12 +68,6 @@ task updateKonfigurationVerfuegbarkeit(type: Ili2pgReplace) {
     importTid = true
 }
 
-task updateWmsHostToIntegration(type: SqlExecutor) {
-    description = "Ersetzt den wmshost von geo.so.ch zu geo-i.so.ch"
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["set_wmshost_to_integration.sql"]
-}
-
 /**
  * Achtung: Task mitsamt wird nur während Entwicklung zur Überprüfung der
  * Datensätze verwendet!
