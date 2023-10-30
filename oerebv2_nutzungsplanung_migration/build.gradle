@@ -41,6 +41,19 @@ task deleteOldNplDatasetLive(type: Ili2pgDelete) {
     failOnException = false
 }
 
+task replaceHttpsToHttp(type: SqlExecutor) {
+    description = "Ändert die SSL Verbindungen in der Tabelle oerebkrm_v2_0_localiseduri von HTTPS zu HTTP"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_https_to_http.sql"]
+}
+
+task replaceHttpToHttps(type: SqlExecutor) {
+    description = "Ändert die SSL Verbindungen in der Tabelle oerebkrm_v2_0_localiseduri von HTTP zu HTTPS"
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_http_to_https.sql"]
+}
+
+
 /**
  * Benenne die hochgeladene Datei um
  */
