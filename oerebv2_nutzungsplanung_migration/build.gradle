@@ -20,12 +20,16 @@ def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToUserFolder = System.getProperty("user.dir")
 
+// Introduced during migration
+def stageSchema = "stage_v2"
+def liveSchema = "live_v2"
+
 task deleteOldNplDatasetStage(type: Ili2pgDelete) {
     description = "Löscht einmalig das kantonsweite Dataset der kommunalen NPL\n\
                    im Stage-Schema"
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
-    dbschema = "stage"
+    dbschema = stageSchema
     dataset = "ch.so.arp.oereb_nutzungsplanung"
     failOnException = false
 }
@@ -36,7 +40,7 @@ task deleteOldNplDatasetLive(type: Ili2pgDelete) {
                    im Live-Schema"
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
-    dbschema = "live"
+    dbschema = liveSchema
     dataset = "ch.so.arp.oereb_nutzungsplanung"
     failOnException = false
 }

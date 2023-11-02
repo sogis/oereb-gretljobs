@@ -38,6 +38,10 @@ def xtfFileName = nutzungsplanungDataSet + "_V2_0.xtf"
 def xtfZipFileName = nutzungsplanungDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
 
+// Introduced during migration
+def stageSchema = "stage_v2"
+def liveSchema = "live_v2"
+
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
     bucketSuffix = ''
@@ -157,7 +161,7 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
-    dbschema = "stage"
+    dbschema = stageSchema
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = nutzungsplanungDataSet 
     importBid = false
@@ -169,14 +173,14 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     sqlFiles = ["update_oerebwms_tables.sql"]
-    sqlParameters = [dbSchema: 'stage']
+    sqlParameters = [dbSchema: stageSchema]
 }
 
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Nutzungsplanung-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
-    dbschema = "live"
+    dbschema = liveSchema
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = nutzungsplanungDataSet 
     importBid = false
@@ -188,7 +192,7 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     sqlFiles = ["update_oerebwms_tables.sql"]
-    sqlParameters = [dbSchema: 'live']
+    sqlParameters = [dbSchema: liveSchema]
 }
 
 task zipXtfFile(type: Zip) {
