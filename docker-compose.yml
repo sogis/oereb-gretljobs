@@ -3,16 +3,6 @@ services:
   gretl:
     image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.373}
     entrypoint: ["gretl", "--project-cache-dir=/home/gradle/projectcache"]
-    environment:
-      ORG_GRADLE_PROJECT_dbUriEdit: "jdbc:postgresql://edit-db/edit"
-      ORG_GRADLE_PROJECT_dbUserEdit: gretl
-      ORG_GRADLE_PROJECT_dbPwdEdit: gretl
-      ORG_GRADLE_PROJECT_dbUriOerebV2: "jdbc:postgresql://oereb-db/oereb"
-      ORG_GRADLE_PROJECT_dbUserOerebV2: gretl
-      ORG_GRADLE_PROJECT_dbPwdOerebV2: gretl
-      ORG_GRADLE_PROJECT_awsAccessKeyAgi: ${ORG_GRADLE_PROJECT_awsAccessKeyAgi} 
-      ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi: ${ORG_GRADLE_PROJECT_awsSecretAccessKeyAgi}
-      ORG_GRADLE_PROJECT_gretlEnvironment: ${ORG_GRADLE_PROJECT_gretlEnvironment:-dev}
     volumes:
       - type: bind
         source: $HOME/gretljobs.properties

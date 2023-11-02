@@ -1,3 +1,7 @@
+/**
+ * Löscht die Daten in der Transferstruktur sowie die Dokumente und die dazu-
+ * gehörigen URI.
+ */
 DELETE FROM 
     arp_nutzungsplanung_oerebv2.transferstruktur_geometrie
 ;
