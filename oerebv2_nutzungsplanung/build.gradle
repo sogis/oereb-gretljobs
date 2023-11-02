@@ -39,8 +39,8 @@ def xtfZipFileName = nutzungsplanungDataSet + "_V2_0_xtf.zip"
 def emptyTransferFile = "ch.so.arp.oereb_nutzungsplanung.empty.xtf"
 
 // Introduced during migration
-def stageSchema = "stage_v2"
-def liveSchema = "live_v2"
+def stageSchema = "stage"
+def liveSchema = "live"
 
 def bucketSuffix = '-undefined'
 if ( gretlEnvironment == 'production' ) {
