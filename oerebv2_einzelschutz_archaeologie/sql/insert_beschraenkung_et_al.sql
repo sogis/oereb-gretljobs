@@ -122,7 +122,7 @@ dokument_insert AS (
         basket.t_id AS t_basket,
         '_'||CAST(uuid_generate_v4() AS TEXT) AS t_ili_tid,
         'Rechtsvorschrift' AS typ,
-        'Regierungsratsbeschluss' AS titel_de,
+        'Regierungsratsbeschluss, ' || regexp_replace(dok.titel, '\r?\n|\r|\s+',' ','g'),
         'RRB' AS abkuerzung_de,
         dok.rrb_nummer AS offiziellenr_de,
         CAST(998 AS int) AS auszugindex,
