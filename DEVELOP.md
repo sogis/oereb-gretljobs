@@ -181,8 +181,10 @@ docker compose run --rm -u $UID gretl --project-dir=oerebv2_gewaesserraum/ delet
 ```
 
 Nutzungsplanung:
+
+Mit der Umstellung auf eine gemeindeweise Publikation muss zusätzlich die BFS Nummer als Parameter übergeben werden mit `-Pbfsnr=XXXX`.
 ```
-docker compose run --rm -u $UID gretl --project-dir=oerebv2_nutzungsplanung/ deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
+docker compose run --rm -u $UID gretl -Pbfsnr=2527 --project-dir=oerebv2_nutzungsplanung deleteFromOereb importResponsibleOfficesToOereb importSymbolsToOereb importEmptyTransferToOereb transferData exportData replaceWmsServer validateData importDataToStage refreshOerebWMSTablesStage importDataToLive refreshOerebWMSTablesLive zipXtfFile uploadXtfToS3Geodata
 ```
 
 Nutzungsplanung kantonal:
