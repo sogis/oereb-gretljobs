@@ -107,7 +107,7 @@ eigentumsbeschraenkung AS (
             FROM 
                 arp_waldreservate_oerebv2.amt_amt 
             WHERE 
-                t_ili_tid = 'ch.so.arp'
+                t_ili_tid = 'ch.so.awjf'
         ) AS amt
 )
 ,
