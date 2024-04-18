@@ -1,7 +1,7 @@
 version: '3'
 services:
   gretl:
-    image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.438}
+    image: sogis/gretl:${GRETL_IMAGE_TAG:-2.2.453}
     entrypoint: ["gretl", "--project-cache-dir=/home/gradle/projectcache"]
     volumes:
       - type: bind
