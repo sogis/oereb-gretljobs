@@ -23,7 +23,7 @@ node('master') {
 
 // Declarative pipeline starts here
 pipeline {
-    agent { label 'gretl' }
+    agent { label env.NODE_LABEL ?: 'gretl' }
     stages {
         stage('GRETL job') {
             options {
