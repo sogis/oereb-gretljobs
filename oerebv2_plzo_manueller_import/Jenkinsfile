@@ -1,10 +1,10 @@
 pipeline {
     agent { label env.NODE_LABEL ?: 'gretl' }
-    options {
-        timeout(time: 6, unit: 'HOURS')
-    }
     stages {
-        stage('Run GRETL job') {
+        stage('GRETL job') {
+            options {
+                retry(2)
+            }
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
