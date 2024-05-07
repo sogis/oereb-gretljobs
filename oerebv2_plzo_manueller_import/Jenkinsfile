@@ -1,11 +1,10 @@
 pipeline {
-    agent none
+    agent { label env.NODE_LABEL ?: 'gretl' }
     options {
-        timeout(time: 7, unit: 'DAYS')
+        timeout(time: 6, unit: 'HOURS')
     }
     stages {
-        stage('Import into schema') {
-            agent { label env.NODE_LABEL ?: 'gretl' }
+        stage('Run GRETL job') {
             steps {
                 git url: "${env.GIT_REPO_URL}", branch: "${params.BRANCH ?: 'main'}", changelog: false
                 container('gretl') {
