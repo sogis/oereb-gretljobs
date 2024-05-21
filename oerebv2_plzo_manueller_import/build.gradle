@@ -15,34 +15,24 @@ def dbSchemas = ["stage","live"]
 
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
-def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
+def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.itf")
 def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),"PLZO_ITF_LV95/PLZO_ITF_LV95.itf")
 
 task copyZipFile(type: Copy) {
     from 'upload/'
     include('uploadFile')
     into pathToTempFolder
-    rename('uploadFile', 'uploadFile.zip')
-}
-
-task unzipData(type: Copy, dependsOn: 'copyZipFile'){
-    description = "Unzip PLZO_INTERLIS_LV95.zip."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
-    include "**/*.itf"
+    rename('uploadFile', 'uploadFile.itf')
 }
 
 dbSchemas.each { dbSchema ->
-    task "importPLZO_$dbSchema"(type: Ili2pgReplace, dependsOn: "unzipData"){
+    task "importPLZO_$dbSchema"(type: Ili2pgReplace, dependsOn: "copyZipFile"){
         description = "Datenübertrag ins PLZO-Bundesodell."    
         group = GROUP
         database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
         dbschema = dbSchema
         models = "PLZOCH1LV95D"
-        dataFile = file(xtfFilePath)
+        dataFile = file(pathToDataZip)
         dataset = "PLZO_INTERLIS_LV95"
         disableValidation = true
     }
