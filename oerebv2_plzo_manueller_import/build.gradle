@@ -24,17 +24,7 @@ task copyZipFile(type: Copy) {
     into pathToTempFolder
     rename('uploadFile', 'uploadFile.itf')
 }
-/*
-task unzipData(type: Copy, dependsOn: 'copyZipFile'){
-    description = "Unzip PLZO_INTERLIS_LV95.zip."
-    doLast {
-        println "File unzipped to directory: " + pathToUnzipFolder
-    }
-    from zipTree(pathToDataZip)
-    into file(pathToUnzipFolder)
-    include "**/*.itf"
-}
-*/
+
 dbSchemas.each { dbSchema ->
     task "importPLZO_$dbSchema"(type: Ili2pgReplace, dependsOn: "copyZipFile"){
         description = "Datenübertrag ins PLZO-Bundesodell."    
