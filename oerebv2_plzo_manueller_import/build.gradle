@@ -16,7 +16,7 @@ def dbSchemas = ["stage","live"]
 def pathToTempFolder = System.getProperty("java.io.tmpdir")
 def pathToUnzipFolder = Paths.get(pathToTempFolder, 'unzip_data')
 def pathToDataZip = Paths.get(pathToTempFolder, "uploadFile.zip")
-def xtfFilePath = Paths.get(pathToUnzipFolder.toString(), InterlisFile)
+def xtfFilePath = Paths.get(pathToUnzipFolder.toString(),"PLZO_ITF_LV95.itf")
 
 task copyZipFile(type: Copy) {
     from 'upload/'
