@@ -160,7 +160,7 @@ dokument_typ AS
     --   - alle Dokumente müssen in Kraft sein
     --   - nur Dokumente aus dem Dataset der entsprechenden Gemeinde
     -- => so können wir bereits hier diese temporäre Tabelle reduzieren.
-    WHERE dokument_typ_unfiltered.rechtsstatus = 'inKraft'
+    WHERE dokument_typ_unfiltered.rechtsstatus != 'aufgehoben'
         AND CAST(dokument_typ_unfiltered.t_datasetname AS int4) = ${bfsnr}
 ),
 dokumente AS 
