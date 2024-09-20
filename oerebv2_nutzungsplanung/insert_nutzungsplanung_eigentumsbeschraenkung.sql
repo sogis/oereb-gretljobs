@@ -415,7 +415,7 @@ eigentumsbeschraenkung AS
     --   - alle Beschränkungen müssen in Kraft sein
     --   - nur Eigentumsbeschränkungen aus dem Dataset der entsprechenden Gemeinde
     -- => so können wir bereits hier diese temporäre Tabelle reduzieren.
-    WHERE eigentumsbeschränkung_unfiltered.rechtsstatus IN ('inKraft'/*, 'AenderungMitVorwirkung'*/)
+    WHERE eigentumsbeschränkung_unfiltered.rechtsstatus IN ('inKraft', 'AenderungMitVorwirkung')
         AND CAST(eigentumsbeschränkung_unfiltered.t_datasetname AS int4) = ${bfsnr}
 )
 ,
