@@ -15,6 +15,7 @@ def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
 def dbSchemaEinzelschutzDenkmalOereb = "ada_denkmalschutz_oerebv2"
+def interlisModelDir = "http://models.interlis.ch/;%ILI_FROM_DB"
 
 def einzelschutzDenkmalDataSet = "ch.so.ada.oereb_einzelschutz_denkmal"
 def symbolsDenkmalFlaecheDataSet = einzelschutzDenkmalDataSet + "_flaeche.symbole" 
@@ -62,6 +63,7 @@ task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadRe
     description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelBasis
+    modeldir = interlisModelDir
     dbschema = dbSchemaEinzelschutzDenkmalOereb
     dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
     importBid = true
@@ -76,6 +78,7 @@ symbolsDataSets.each { symbolsDataSet ->
         dbschema = dbSchemaEinzelschutzDenkmalOereb
         dataset = symbols
         models = iliModelSymbole
+        modeldir = interlisModelDir
         dataFile = file(Paths.get("$rootDir", symbols + ".xtf"))
         disableValidation = true
         importBid = true
@@ -95,6 +98,7 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     description = "Import eines leeren Grund-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
+    modeldir = interlisModelDir
     dbschema = dbSchemaEinzelschutzDenkmalOereb
     dataFile = file(emptyTransferFile)
     importBid = true
