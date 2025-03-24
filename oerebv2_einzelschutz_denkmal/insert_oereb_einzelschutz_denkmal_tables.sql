@@ -94,7 +94,7 @@ eigentumsbeschraenkung AS
         basket.t_id AS basket_t_id,
         'ch.SO.Einzelschutz' AS thema,
         'inKraft' AS rechtsstatus,
-        rechtsvorschrift_link.datum AS publiziertab,
+        COALESCE(rechtsvorschrift_link.datum,'unbekannt') AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
         amt.t_id AS zustaendigestelle,
         'geschütztes historisches Kulturdenkmal' AS legendetext_de,        
