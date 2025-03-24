@@ -106,16 +106,16 @@ eigentumsbeschraenkung AS
                 THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche'
         END AS artcodeliste
     FROM
-        ada_denkmalschutz.fachapplikation_denkmal AS denkmal
+        ada_denkmalschutz_v1.fachapplikation_denkmal AS denkmal
         LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada'
-        INNER JOIN ada_denkmalschutz.gis_geometrie AS gis_geometrie
+        INNER JOIN ada_denkmalschutz_v1.gis_geometrie AS gis_geometrie
         ON denkmal.id = gis_geometrie.denkmal_id
         AND
         ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
          OR
         (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
-        INNER JOIN ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
+        INNER JOIN ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
         ON denkmal.id = rechtsvorschrift_link.denkmal_id,
         (
             SELECT
@@ -152,7 +152,7 @@ geometrie_flaeche AS
         eigentumsbeschraenkung.publiziertab,
         eigentumsbeschraenkung.id
     FROM 
-        ada_denkmalschutz.gis_geometrie AS geometrie
+        ada_denkmalschutz_v1.gis_geometrie AS geometrie
         INNER JOIN eigentumsbeschraenkung 
         ON geometrie.denkmal_id = eigentumsbeschraenkung.id
     WHERE 
@@ -181,7 +181,7 @@ geometrie_punkt AS
         eigentumsbeschraenkung.publiziertab,
         eigentumsbeschraenkung.id
     FROM 
-        ada_denkmalschutz.gis_geometrie AS geometrie
+        ada_denkmalschutz_v1.gis_geometrie AS geometrie
         INNER JOIN eigentumsbeschraenkung 
         ON geometrie.denkmal_id = eigentumsbeschraenkung.id
     WHERE 
@@ -296,8 +296,8 @@ INSERT INTO
         dokument.datum AS publiziertab,
         amt.t_id AS zustaendigestelle
     FROM
-        ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS dokument
-        INNER JOIN ada_denkmalschutz.fachapplikation_denkmal AS denkmal
+        ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS dokument
+        INNER JOIN ada_denkmalschutz_v1.fachapplikation_denkmal AS denkmal
         ON denkmal.id = dokument.denkmal_id
         LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
@@ -325,7 +325,7 @@ INSERT INTO
          eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
          typ_dokument.t_id AS vorschrift_vorschriften_dokument
       FROM
-        ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS typ_dokument
+        ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS typ_dokument
         INNER JOIN ada_denkmalschutz_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON typ_dokument.denkmal_id = eigentumsbeschraenkung.t_id,
         (
@@ -377,12 +377,12 @@ localiseduri AS
         'de' AS alanguage,
         CASE
             WHEN rechtsvorschrften_dokument.multimedia_link IS NULL
-                THEN 'https://s3.eu-central-1.amazonaws.com/'||${s3AdaLiveBucket}||'/pdf_404.pdf'
-            ELSE regexp_replace(rechtsvorschrften_dokument.multimedia_link, 'artplus\.verw\.rootso\.org/MpWeb-apSolothurnDenkmal/download/(.*)\?mode=gis', 's3.eu-central-1.amazonaws.com/'||${s3AdaLiveBucket}||'/ada_\1.pdf')
+                THEN 'https://geo.so.ch/docs/ch.so.ada.denkmalschutz/Error_404.pdf'
+            ELSE 'https://geo.so.ch/docs/ch.so.ada.denkmalschutz/rechtsvorschrift/'||multimedia_id||'.pdf'
         END AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
-        ada_denkmalschutz.fachapplikation_rechtsvorschrift_link AS rechtsvorschrften_dokument
+        ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS rechtsvorschrften_dokument
         RIGHT JOIN multilingualuri 
         ON multilingualuri.dokumente_dokument_textimweb = rechtsvorschrften_dokument.t_id,
         (
