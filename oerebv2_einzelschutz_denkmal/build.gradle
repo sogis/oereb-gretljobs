@@ -116,6 +116,7 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
+    modeldir = interlisModelDir
     dbschema = dbSchemaEinzelschutzDenkmalOereb
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet
@@ -168,7 +169,8 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
 //task importDataToStage(type: Ili2pgReplace) {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    models = iliModelTransferstruktur
+    models = iliModelTransferstruktur 
+    modeldir = interlisModelDir
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet
@@ -208,6 +210,7 @@ task importDataToLive(type: Ili2pgReplace, dependsOn: "refreshOerebWMSTablesStag
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
+    modeldir = interlisModelDir
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet 
