@@ -338,8 +338,8 @@ INSERT INTO
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
-    -- WHERE
-    --    typ_dokument.datum IS NOT NULL
+     WHERE
+        typ_dokument.datum IS NOT NULL
 ;
 
 WITH multilingualuri AS
