@@ -293,7 +293,7 @@ INSERT INTO
         END AS offiziellenr,
         CAST(998 AS int) AS auszugindex,
         'inKraft' AS rechtsstatus,
-        dokument.datum AS publiziertab,
+        COALESCE(dokument.datum, '1291-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
         amt.t_id AS zustaendigestelle
     FROM
         ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS dokument
