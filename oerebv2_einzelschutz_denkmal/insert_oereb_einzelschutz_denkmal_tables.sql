@@ -94,7 +94,7 @@ eigentumsbeschraenkung AS
         basket.t_id AS basket_t_id,
         'ch.SO.Einzelschutz' AS thema,
         'inKraft' AS rechtsstatus,
-        COALESCE(rechtsvorschrift_link.datum, '1291-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
+        COALESCE(rechtsvorschrift_link.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
         darstellungsdienst.t_id AS darstellungsdienst,
         amt.t_id AS zustaendigestelle,
         'geschütztes historisches Kulturdenkmal' AS legendetext_de,        
@@ -293,7 +293,7 @@ INSERT INTO
         END AS offiziellenr,
         CAST(998 AS int) AS auszugindex,
         'inKraft' AS rechtsstatus,
-        COALESCE(dokument.datum, '1291-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
+        COALESCE(dokument.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
         amt.t_id AS zustaendigestelle
     FROM
         ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS dokument
