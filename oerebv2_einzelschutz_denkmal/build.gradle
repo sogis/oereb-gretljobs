@@ -155,9 +155,6 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     importBid = true
     importTid = true
     disableValidation = true
-    finalizedBy {
-        updateS3StageLink
-    }
 }
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
