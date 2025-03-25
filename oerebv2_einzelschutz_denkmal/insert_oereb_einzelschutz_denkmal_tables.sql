@@ -311,6 +311,8 @@ INSERT INTO
         ) AS basket
     WHERE
         denkmal.schutzstufe_code = 'geschuetzt'
+        AND 
+        dokument.nummer IS NOT NULL --Damit nur RRBs im Oereb erscheinen
 ;
 
 INSERT INTO
