@@ -104,7 +104,7 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     importBid = true
     dataset = einzelschutzDenkmalDataSet
 }
-/* HIER ANPASSEN!!! */
+
 task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
@@ -143,30 +143,8 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     logFile = "ilivalidator.log"
     allObjectsAccessible = true
 }
-/* Braucht es nicht mehr weil Files jetzt woanders liegen!
-task exportPdfFromDatabase(type: DatabaseDocumentExport, dependsOn: "validateData") {
-    description = "PDF aus Datenbank exportieren."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    qualifiedTableName = "ada_denkmalschutz.fachapplikation_rechtsvorschrift_link"
-    documentColumn = "multimedia_link"
-    targetDir = file(pathToPdfExportFolder)
-    fileNamePrefix = "ada_"
-    fileNameExtension = "pdf"
-}
 
-task uploadPdfToS3Stage(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
-    description = "PDF aus Verzeichnis nach S3 hochladen."
-    accessKey = awsAccessKeyAda
-    secretKey = awsSecretAccessKeyAda
-    sourceDir = file(pathToPdfExportFolder)
-    endPoint = "https://s3.eu-central-1.amazonaws.com"
-    region = "eu-central-1"
-    bucketName = s3AdaStageBucket
-    acl = "public-read"
-}
-*/
 task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
-//task importDataToStage(type: Ili2pgReplace) {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur 
@@ -182,12 +160,6 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     }
 }
 
-task updateS3StageLink(type: SqlExecutor) {
-    description = "Setzt den Link der PDF auf die Stage-Umbebung"
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["update_rechtsvorschriften_localiseduri.sql"]
-}
-
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
     description = "Aktualisiert OEREB WMS Tabellen."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
@@ -195,18 +167,7 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
     sqlParameters = [dbSchema: 'stage']
 }
 
-/* Es müssen keine PDFs mehr nach S3 kopiert werden
-task copyPdfToS3Live(type: S3Bucket2Bucket) {
-    accessKey = awsAccessKeyAda
-    secretKey = awsSecretAccessKeyAda
-    sourceBucket = s3AdaStageBucket
-    targetBucket = s3AdaLiveBucket
-    acl = "public-read"
-}
-*/
-
 task importDataToLive(type: Ili2pgReplace, dependsOn: "refreshOerebWMSTablesStage") {
-//task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
@@ -224,23 +185,4 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     sqlFiles = ["update_oerebwms_tables.sql"]
     sqlParameters = [dbSchema: 'live']
-}
-
-task zipXtfFile(type: Zip) {
-    description = "Zipt das xtf-File mit den Einzelschutz-Denkmal-Daten für den Upload nach S3"
-    from "$rootDir"
-    include xtfFileName
-    archiveName xtfZipFileName
-    destinationDir(file("$rootDir"))
-}
-
-task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
-    description = "Xtf-File nach S3 hochladen."
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
-    endPoint = "https://s3.eu-central-1.amazonaws.com"
-    region = "eu-central-1"
-    bucketName = s3AgiTargetBucket
-    acl = "public-read"
 }
