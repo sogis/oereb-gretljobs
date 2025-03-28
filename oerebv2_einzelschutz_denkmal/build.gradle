@@ -183,3 +183,22 @@ task refreshOerebWMSTablesLive(type: SqlExecutor) {
     sqlFiles = ["update_oerebwms_tables.sql"]
     sqlParameters = [dbSchema: 'live']
 }
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das xtf-File mit den Einzelschutz-Denkmal-Daten für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName xtfZipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "Xtf-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}
