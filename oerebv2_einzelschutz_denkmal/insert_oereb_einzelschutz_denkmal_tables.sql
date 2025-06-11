@@ -377,14 +377,10 @@ localiseduri AS
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
-        CASE
-            WHEN rechtsvorschrften_dokument.multimedia_link IS NULL
-                THEN 'https://geo.so.ch/docs/ch.so.ada.denkmalschutz/Error_404.pdf'
-            ELSE 'https://geo.so.ch/docs/ch.so.ada.denkmalschutz/rechtsvorschrift/'||multimedia_id||'.pdf'
-        END AS atext,
+        dok_download_url AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
-        ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS rechtsvorschrften_dokument
+        ada_denkmalschutz_v1.oereb_doclink_v AS rechtsvorschrften_dokument
         RIGHT JOIN multilingualuri 
         ON multilingualuri.dokumente_dokument_textimweb = rechtsvorschrften_dokument.t_id,
         (
@@ -395,8 +391,6 @@ localiseduri AS
             WHERE 
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal'
         ) AS basket
-    --WHERE
-     --   rechtsvorschrften_dokument.datum IS NOT NULL
 )
 INSERT INTO
     ada_denkmalschutz_oerebv2.localiseduri
@@ -418,4 +412,3 @@ INSERT INTO
     FROM
         localiseduri
 ;
-
