@@ -382,7 +382,6 @@ localiseduri AS
                 THEN 'https://geo.so.ch/docs/ch.so.ada.denkmalschutz/Error_404.pdf'
             ELSE dok_download_url
         END AS atext,
-        dok_download_url AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
         ada_denkmalschutz_v1.oereb_doclink_v AS rechtsvorschrften_dokument
