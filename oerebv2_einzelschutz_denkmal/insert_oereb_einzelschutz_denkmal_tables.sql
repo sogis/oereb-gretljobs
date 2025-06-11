@@ -377,6 +377,11 @@ localiseduri AS
         basket.t_id AS basket_t_id,
         0 AS t_seq,
         'de' AS alanguage,
+        CASE
+            WHEN dok_download_url IS NULL
+                THEN 'https://geo.so.ch/docs/ch.so.ada.denkmalschutz/Error_404.pdf'
+            ELSE dok_download_url
+        END AS atext,
         dok_download_url AS atext,
         multilingualuri.t_id AS multilingualuri_localisedtext
     FROM
