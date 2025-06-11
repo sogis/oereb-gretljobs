@@ -15,6 +15,7 @@ def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
 def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
 
 def dbSchemaEinzelschutzDenkmalOereb = "ada_denkmalschutz_oerebv2"
+def interlisModelDir = "https://models.interlis.ch/;https://models.geo.admin.ch/;%ILI_FROM_DB"
 
 def einzelschutzDenkmalDataSet = "ch.so.ada.oereb_einzelschutz_denkmal"
 def symbolsDenkmalFlaecheDataSet = einzelschutzDenkmalDataSet + "_flaeche.symbole" 
@@ -62,6 +63,7 @@ task importResponsibleOfficesToOereb(type: Ili2pgReplace, dependsOn: 'downloadRe
     description = "Import zuständige Stellen ($responsibleOfficesDataSet)."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelBasis
+    modeldir = interlisModelDir
     dbschema = dbSchemaEinzelschutzDenkmalOereb
     dataFile = file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf"))
     importBid = true
@@ -76,6 +78,7 @@ symbolsDataSets.each { symbolsDataSet ->
         dbschema = dbSchemaEinzelschutzDenkmalOereb
         dataset = symbols
         models = iliModelSymbole
+        modeldir = interlisModelDir
         dataFile = file(Paths.get("$rootDir", symbols + ".xtf"))
         disableValidation = true
         importBid = true
@@ -95,6 +98,7 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
     description = "Import eines leeren Grund-Basket damit notwendige Datasets- und Basketrecords für Transferdaten in der DB erstellt werden."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
+    modeldir = interlisModelDir
     dbschema = dbSchemaEinzelschutzDenkmalOereb
     dataFile = file(emptyTransferFile)
     importBid = true
@@ -112,6 +116,7 @@ task exportData(type: Ili2pgExport, dependsOn: "transferData") {
     description = "Exportiert die umgebauten Daten aus dem Transferschema in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
+    modeldir = interlisModelDir
     dbschema = dbSchemaEinzelschutzDenkmalOereb
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet
@@ -139,47 +144,17 @@ task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
     allObjectsAccessible = true
 }
 
-task exportPdfFromDatabase(type: DatabaseDocumentExport, dependsOn: "validateData") {
-    description = "PDF aus Datenbank exportieren."
-    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    qualifiedTableName = "ada_denkmalschutz.fachapplikation_rechtsvorschrift_link"
-    documentColumn = "multimedia_link"
-    targetDir = file(pathToPdfExportFolder)
-    fileNamePrefix = "ada_"
-    fileNameExtension = "pdf"
-}
-
-task uploadPdfToS3Stage(type: S3Upload, dependsOn: "exportPdfFromDatabase") {
-    description = "PDF aus Verzeichnis nach S3 hochladen."
-    accessKey = awsAccessKeyAda
-    secretKey = awsSecretAccessKeyAda
-    sourceDir = file(pathToPdfExportFolder)
-    endPoint = "https://s3.eu-central-1.amazonaws.com"
-    region = "eu-central-1"
-    bucketName = s3AdaStageBucket
-    acl = "public-read"
-}
-
-task importDataToStage(type: Ili2pgReplace, dependsOn: "uploadPdfToS3Stage") {
-//task importDataToStage(type: Ili2pgReplace) {
+task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Stage-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    models = iliModelTransferstruktur
+    models = iliModelTransferstruktur 
+    modeldir = interlisModelDir
     dbschema = "stage"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet
     importBid = true
     importTid = true
     disableValidation = true
-    finalizedBy {
-        updateS3StageLink
-    }
-}
-
-task updateS3StageLink(type: SqlExecutor) {
-    description = "Setzt den Link der PDF auf die Stage-Umbebung"
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["update_rechtsvorschriften_localiseduri.sql"]
 }
 
 task refreshOerebWMSTablesStage(type: SqlExecutor) {
@@ -189,19 +164,11 @@ task refreshOerebWMSTablesStage(type: SqlExecutor) {
     sqlParameters = [dbSchema: 'stage']
 }
 
-task copyPdfToS3Live(type: S3Bucket2Bucket) {
-    accessKey = awsAccessKeyAda
-    secretKey = awsSecretAccessKeyAda
-    sourceBucket = s3AdaStageBucket
-    targetBucket = s3AdaLiveBucket
-    acl = "public-read"
-}
-
-task importDataToLive(type: Ili2pgReplace, dependsOn: "copyPdfToS3Live") {
-//task importDataToLive(type: Ili2pgReplace) {
+task importDataToLive(type: Ili2pgReplace, dependsOn: "refreshOerebWMSTablesStage") {
     description = "Import des Einzelschutz-ÖREB-Datensatz in das Live-Schema."
     database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
     models = iliModelTransferstruktur
+    modeldir = interlisModelDir
     dbschema = "live"
     dataFile = file(Paths.get("$rootDir", xtfFileName))
     dataset = einzelschutzDenkmalDataSet 
