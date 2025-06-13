@@ -89,7 +89,7 @@ WITH darstellungsdienst AS
 eigentumsbeschraenkung AS 
 (
     SELECT
-        --DISTINCT ON (denkmal.id)
+        DISTINCT --ON (denkmal.id)
         denkmal.id,
         basket.t_id AS basket_t_id,
         'ch.SO.Einzelschutz' AS thema,
