@@ -291,7 +291,7 @@ INSERT INTO
         rrb_jahr_nummer AS offiziellenr,
         CAST(998 AS int) AS auszugindex,
         'inKraft' AS rechtsstatus,
-        COALESCE(dokument.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
+        dokument.datum AS publiziertab,
         amt.t_id AS zustaendigestelle
     FROM
         ada_denkmalschutz_v1.oereb_doclink_v AS dokument
