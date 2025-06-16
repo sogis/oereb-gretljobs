@@ -115,7 +115,7 @@ eigentumsbeschraenkung AS
         ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
          OR
         (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
-        INNER JOIN ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS rechtsvorschrift_link
+        INNER JOIN ada_denkmalschutz_v1.oereb_doclink_v AS rechtsvorschrift_link
         ON denkmal.id = rechtsvorschrift_link.denkmal_id,
         (
             SELECT
@@ -127,7 +127,9 @@ eigentumsbeschraenkung AS
         ) AS basket,
         darstellungsdienst
      WHERE
-         denkmal.schutzstufe_code = 'geschuetzt'
+         denkmal.id IN (
+            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
+         )
 )
 ,
 geometrie_flaeche AS 
@@ -296,7 +298,7 @@ INSERT INTO
         COALESCE(dokument.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
         amt.t_id AS zustaendigestelle
     FROM
-        ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS dokument
+        ada_denkmalschutz_v1.oereb_doclink_v AS dokument
         INNER JOIN ada_denkmalschutz_v1.fachapplikation_denkmal AS denkmal
         ON denkmal.id = dokument.denkmal_id
         LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
@@ -310,9 +312,9 @@ INSERT INTO
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
     WHERE
-        denkmal.schutzstufe_code = 'geschuetzt'
-        AND 
-        dokument.nummer IS NOT NULL --Damit nur RRBs im Oereb erscheinen
+         denkmal.id IN (
+            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
+         )
 ;
 
 INSERT INTO
@@ -327,7 +329,7 @@ INSERT INTO
          eigentumsbeschraenkung.t_id AS eigentumsbeschraenkung,
          typ_dokument.t_id AS vorschrift_vorschriften_dokument
       FROM
-        ada_denkmalschutz_v1.fachapplikation_rechtsvorschrift_link AS typ_dokument
+        ada_denkmalschutz_v1.oereb_doclink_v AS typ_dokument
         INNER JOIN ada_denkmalschutz_oerebv2.transferstruktur_eigentumsbeschraenkung AS eigentumsbeschraenkung
         ON typ_dokument.denkmal_id = eigentumsbeschraenkung.t_id,
         (
@@ -338,8 +340,6 @@ INSERT INTO
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
-     WHERE
-        typ_dokument.nummer IS NOT NULL
 ;
 
 WITH multilingualuri AS
