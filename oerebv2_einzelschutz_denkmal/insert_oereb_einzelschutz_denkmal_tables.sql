@@ -128,7 +128,7 @@ eigentumsbeschraenkung AS
         darstellungsdienst
      WHERE
          denkmal.id IN (
-            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
+            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v WHERE in_oereb IS TRUE AND digitalisiert IS TRUE
          )
 )
 ,
@@ -299,8 +299,6 @@ INSERT INTO
         amt.t_id AS zustaendigestelle
     FROM
         ada_denkmalschutz_v1.oereb_doclink_v AS dokument
-        INNER JOIN ada_denkmalschutz_v1.fachapplikation_denkmal AS denkmal
-        ON denkmal.id = dokument.denkmal_id
         LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
         (
@@ -311,10 +309,6 @@ INSERT INTO
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
-    WHERE
-         denkmal.id IN (
-            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
-         )
 ;
 
 INSERT INTO
