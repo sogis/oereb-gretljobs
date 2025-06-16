@@ -127,7 +127,9 @@ eigentumsbeschraenkung AS
         ) AS basket,
         darstellungsdienst
      WHERE
-         denkmal.schutzstufe_code = 'geschuetzt'
+         denkmal.id IN (
+            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
+         )
 )
 ,
 geometrie_flaeche AS 
@@ -310,7 +312,9 @@ INSERT INTO
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
     WHERE
-        denkmal.schutzstufe_code = 'geschuetzt'
+         denkmal.id IN (
+            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
+         )
 ;
 
 INSERT INTO
