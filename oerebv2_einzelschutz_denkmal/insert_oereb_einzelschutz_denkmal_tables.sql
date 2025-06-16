@@ -288,11 +288,7 @@ INSERT INTO
                 THEN 'GRB'
             ELSE 'RRB'
         END AS abkuerzung_de,
-        CASE
-            WHEN dokument.nummer LIKE '%/%'
-                THEN dokument.nummer
-            ELSE EXTRACT(YEAR FROM datum)||'/'||nummer
-        END AS offiziellenr,
+        rrb_jahr_nummer AS offiziellenr,
         CAST(998 AS int) AS auszugindex,
         'inKraft' AS rechtsstatus,
         COALESCE(dokument.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
