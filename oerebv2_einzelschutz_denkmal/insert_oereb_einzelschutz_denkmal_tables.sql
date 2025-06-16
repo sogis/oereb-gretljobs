@@ -279,12 +279,12 @@ INSERT INTO
         '_'||SUBSTRING(REPLACE(CAST(dokument.t_id AS text), '-', ''),1,15) AS t_ili_tid,  
         'Rechtsvorschrift' AS art,
         CASE
-            WHEN schutzdurchgemeinde IS TRUE
+            WHEN nummer IS NULL
                 THEN 'Gemeinderatsbeschluss, ' || regexp_replace(dokument.titel, '\r?\n|\r|\s+',' ','g')
             ELSE 'Regierungsratsbeschluss, ' || regexp_replace(dokument.titel, '\r?\n|\r|\s+',' ','g')
         END AS titel_de,
         CASE
-            WHEN schutzdurchgemeinde IS TRUE
+            WHEN nummer IS NULL
                 THEN 'GRB'
             ELSE 'RRB'
         END AS abkuerzung_de,
