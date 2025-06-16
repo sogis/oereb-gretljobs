@@ -94,7 +94,7 @@ eigentumsbeschraenkung AS
         basket.t_id AS basket_t_id,
         'ch.SO.Einzelschutz' AS thema,
         'inKraft' AS rechtsstatus,
-        COALESCE(rechtsvorschrift_link.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
+        rechtsvorschrift_link.datum AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
         amt.t_id AS zustaendigestelle,
         'geschütztes historisches Kulturdenkmal' AS legendetext_de,        
