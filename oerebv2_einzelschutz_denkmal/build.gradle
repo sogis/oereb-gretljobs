@@ -38,9 +38,6 @@ if ( gretlEnvironment == 'production' ) {
 def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
 def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
 
-def s3AdaStageBucket = "ch.so.ada.denkmal-stage$bucketSuffix"
-def s3AdaLiveBucket = "ch.so.ada.denkmal$bucketSuffix"
-
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
 task deleteFromOereb(type: SqlExecutor) {
@@ -108,7 +105,6 @@ task importEmptyTransferToOereb(type: Ili2pgReplace, dependsOn: 'deleteFromOereb
 task transferData(type: SqlExecutor, dependsOn: ["deleteFromOereb", "importResponsibleOfficesToOereb", "importSymbolsToOereb", "importEmptyTransferToOereb"]) {
     description = "Führt den Datenumbau in das Transferschema durch."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
-    sqlParameters = [s3AdaLiveBucket: "'" + s3AdaLiveBucket + "'"]
     sqlFiles = ["insert_oereb_einzelschutz_denkmal_tables.sql"]
 }
 
