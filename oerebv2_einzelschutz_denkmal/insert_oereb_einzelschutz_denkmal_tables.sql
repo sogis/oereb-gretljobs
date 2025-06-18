@@ -60,20 +60,15 @@ FROM
 ;
 
 /*
- * (1) Inner Join mit Rechtsvorschriften_link führt dazu, dass Objekt ohne
- * Link durch die Maschen fallen. Technisch gut, weil ein Dokument zwingend ist,
- * inhaltich nicht gut, weil so das Objekt nich im Kataster publiziert wird.
- * Amt muss Daten korrigieren.
- * 
- * (2) Was mit dieser Query nicht funktioniert, sind Objekte welche eine Punkt- und
+ * Was mit dieser Query nicht funktioniert, sind Objekte welche eine Punkt- und
  * Polygongeometrie haben. Dann müsste man wegen der Artcodeliste irgendwie das
  * Objekt verdoppeln. Mehrere Punktgeometrie pro Objekt kann gemäss Modellkommentar
  * vorkommen.
  *
  */
+ WITH
 
-WITH darstellungsdienst AS 
-(
+darstellungsdienst AS (
     SELECT
         darstellungsdienst.t_id,
         darstellungsdienst.t_basket AS basket_t_id,
@@ -86,50 +81,63 @@ WITH darstellungsdienst AS
         ON localiseduri.multilingualuri_localisedtext = multilingualuri.t_id 
 )
 ,
+basket_id AS (
+    SELECT
+        t_id AS basket_t_id
+    FROM
+        ada_denkmalschutz_oerebv2.t_ili2db_basket
+    WHERE
+        t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
+)
+,
+min_rechtsvorschrift_datum AS (
+    SELECT 
+        min(datum) AS min_datum,
+        denkmal_id
+    FROM 
+        ada_denkmalschutz_v1.oereb_doclink_v
+    GROUP BY 
+        denkmal_id       
+)
+,
+amt_ada AS ( -- Gint genau eine Zeile zurück
+    SELECT 
+        t_id AS amt_tid
+    FROM 
+        ada_denkmalschutz_oerebv2.amt_amt
+    WHERE 
+        t_ili_tid = 'ch.so.ada'
+)
+,
 eigentumsbeschraenkung AS 
 (
     SELECT
-        DISTINCT ON (denkmal.id)
-        denkmal.id,
-        basket.t_id AS basket_t_id,
+        denkmal.denkmal_id,
+        basket_id.basket_t_id,
         'ch.SO.Einzelschutz' AS thema,
         'inKraft' AS rechtsstatus,
-        COALESCE(rechtsvorschrift_link.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
+        mindat.min_datum AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
-        amt.t_id AS zustaendigestelle,
+        amt_ada.amt_tid AS zustaendigestelle,
         'geschütztes historisches Kulturdenkmal' AS legendetext_de,        
         'geschuetztes_Kulturdenkmal' AS artcode,
         CASE
-            WHEN gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL
+            WHEN denkmal.digi_as_polygon IS FALSE 
                 THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Punkt'
-            WHEN gis_geometrie.apolygon IS NOT NULL AND gis_geometrie.punkt IS NULL
-                THEN 'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche'
+            ELSE
+                'urn:fdc:ilismeta.interlis.ch:2019:Typ_geschuetztes_historisches_Kulturdenkmal_Flaeche'
         END AS artcodeliste
-    FROM
-        ada_denkmalschutz_v1.fachapplikation_denkmal AS denkmal
-        LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
-        ON amt.t_ili_tid = 'ch.so.ada'
-        INNER JOIN ada_denkmalschutz_v1.gis_geometrie AS gis_geometrie
-        ON denkmal.id = gis_geometrie.denkmal_id
-        AND
-        ((gis_geometrie.punkt IS NOT NULL AND gis_geometrie.apolygon IS NULL)
-         OR
-        (gis_geometrie.punkt IS NULL AND gis_geometrie.apolygon IS NOT NULL))
-        INNER JOIN ada_denkmalschutz_v1.oereb_doclink_v AS rechtsvorschrift_link
-        ON denkmal.id = rechtsvorschrift_link.denkmal_id,
-        (
-            SELECT
-                t_id
-            FROM
-                ada_denkmalschutz_oerebv2.t_ili2db_basket
-            WHERE
-                t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
-        ) AS basket,
-        darstellungsdienst
-     WHERE
-         denkmal.id IN (
-            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
-         )
+    FROM        
+        ada_denkmalschutz_v1.denkmal_entwurfsstatus_v AS denkmal
+        INNER JOIN 
+            min_rechtsvorschrift_datum mindat ON denkmal.denkmal_id = mindat.denkmal_id,
+        amt_ada,
+        basket_id,
+        darstellungsdienst     
+    WHERE 
+            denkmal.in_oereb IS TRUE
+        AND 
+            denkmal.digitalisiert IS TRUE
 )
 ,
 geometrie_flaeche AS 
@@ -152,11 +160,11 @@ geometrie_flaeche AS
         ST_ReducePrecision(apolygon, 0.001) AS flaeche,
         eigentumsbeschraenkung.rechtsstatus,
         eigentumsbeschraenkung.publiziertab,
-        eigentumsbeschraenkung.id
+        eigentumsbeschraenkung.denkmal_id
     FROM 
         ada_denkmalschutz_v1.gis_geometrie AS geometrie
         INNER JOIN eigentumsbeschraenkung 
-        ON geometrie.denkmal_id = eigentumsbeschraenkung.id
+        ON geometrie.denkmal_id = eigentumsbeschraenkung.denkmal_id
     WHERE 
         apolygon IS NOT NULL   
 )
@@ -181,11 +189,11 @@ geometrie_punkt AS
         punkt,
         eigentumsbeschraenkung.rechtsstatus,
         eigentumsbeschraenkung.publiziertab,
-        eigentumsbeschraenkung.id
+        eigentumsbeschraenkung.denkmal_id
     FROM 
         ada_denkmalschutz_v1.gis_geometrie AS geometrie
         INNER JOIN eigentumsbeschraenkung 
-        ON geometrie.denkmal_id = eigentumsbeschraenkung.id
+        ON geometrie.denkmal_id = eigentumsbeschraenkung.denkmal_id
     WHERE 
         punkt IS NOT NULL        
 )
@@ -221,6 +229,7 @@ legendeneintrag AS (
         ON (eigentumsbeschraenkung.artcode = eintrag.artcode AND eigentumsbeschraenkung.artcodeliste = eintrag.artcodeliste)
     RETURNING *
 )
+
 INSERT INTO
     ada_denkmalschutz_oerebv2.transferstruktur_eigentumsbeschraenkung 
     (
@@ -234,7 +243,7 @@ INSERT INTO
         zustaendigestelle
     )
 SELECT 
-    eigentumsbeschraenkung.id, 
+    eigentumsbeschraenkung.denkmal_id, 
     eigentumsbeschraenkung.basket_t_id,
     uuid_generate_v4(),
     eigentumsbeschraenkung.rechtsstatus,
@@ -273,34 +282,27 @@ INSERT INTO
         zustaendigestelle
     )
     SELECT 
-        DISTINCT ON (dokument.t_id)
         dokument.t_id AS t_id,
         basket.t_id AS basket_t_id,
         '_'||SUBSTRING(REPLACE(CAST(dokument.t_id AS text), '-', ''),1,15) AS t_ili_tid,  
         'Rechtsvorschrift' AS art,
         CASE
-            WHEN schutzdurchgemeinde IS TRUE
+            WHEN rrb_jahr_nummer IS NULL
                 THEN 'Gemeinderatsbeschluss, ' || regexp_replace(dokument.titel, '\r?\n|\r|\s+',' ','g')
             ELSE 'Regierungsratsbeschluss, ' || regexp_replace(dokument.titel, '\r?\n|\r|\s+',' ','g')
         END AS titel_de,
         CASE
-            WHEN schutzdurchgemeinde IS TRUE
+            WHEN rrb_jahr_nummer IS NULL
                 THEN 'GRB'
             ELSE 'RRB'
         END AS abkuerzung_de,
-        CASE
-            WHEN dokument.nummer LIKE '%/%'
-                THEN dokument.nummer
-            ELSE EXTRACT(YEAR FROM datum)||'/'||nummer
-        END AS offiziellenr,
+        rrb_jahr_nummer AS offiziellenr,
         CAST(998 AS int) AS auszugindex,
         'inKraft' AS rechtsstatus,
-        COALESCE(dokument.datum, '2000-08-01'::date) AS publiziertab, --ACHTUNG: Muss wieder zurückgebaut werden!!!
+        dokument.datum AS publiziertab,
         amt.t_id AS zustaendigestelle
     FROM
         ada_denkmalschutz_v1.oereb_doclink_v AS dokument
-        INNER JOIN ada_denkmalschutz_v1.fachapplikation_denkmal AS denkmal
-        ON denkmal.id = dokument.denkmal_id
         LEFT JOIN ada_denkmalschutz_oerebv2.amt_amt AS amt
         ON amt.t_ili_tid = 'ch.so.ada',
         (
@@ -311,10 +313,6 @@ INSERT INTO
             WHERE
                 t_ili_tid = 'ch.so.ada.oereb_einzelschutz_denkmal' 
         ) AS basket
-    WHERE
-         denkmal.id IN (
-            SELECT denkmal_id FROM ada_denkmalschutz_v1.denkmal_entwurfsstatus_v
-         )
 ;
 
 INSERT INTO
