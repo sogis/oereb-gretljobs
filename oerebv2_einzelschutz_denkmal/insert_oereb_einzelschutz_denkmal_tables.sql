@@ -114,7 +114,7 @@ eigentumsbeschraenkung AS
     SELECT
         denkmal.denkmal_id,
         basket_id.basket_t_id,
-        'ch.so.einzelschutz' AS thema,
+        'ch.SO.Einzelschutz' AS thema,
         'inKraft' AS rechtsstatus,
         mindat.min_datum AS publiziertab,
         darstellungsdienst.t_id AS darstellungsdienst,
