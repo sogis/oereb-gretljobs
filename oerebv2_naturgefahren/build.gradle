@@ -1,0 +1,123 @@
+apply plugin: "de.undercouch.download"
+apply plugin: "ch.so.agi.gretl"
+
+import ch.so.agi.gretl.api.TransferSet
+import ch.so.agi.gretl.tasks.*
+import java.nio.file.Paths
+import de.undercouch.gradle.tasks.download.Download
+
+def pathToTempFolder = System.getProperty("java.io.tmpdir")
+
+def iliModelBasis = "OeREBKRM_V2_0"
+def iliModelTransferstruktur = "OeREBKRMtrsfr_V2_0"
+def iliModelSymbole = "SO_AGI_OeREB_Legendeneintraege_20211020"
+
+def dbSchemaHazardPerimeterOereb = "afu_naturgefahren_oereb_v2"
+    
+def HazardPerimeterDataSet = "ch.so.afu.oereb_naturgefahren"
+  
+def xtfFileName = HazardPerimeterDataSet + "_V2_0.xtf"
+def xtfZipFileName = HazardPerimeterDataSet + "_V2_0_xtf.zip"
+
+def bucketSuffix = '-undefined'
+if ( gretlEnvironment == 'production' ) {
+    bucketSuffix = ''
+} else if ( gretlEnvironment == 'integration' || gretlEnvironment == 'dev' ) {
+    bucketSuffix = '-' + gretlEnvironment.substring(0, 3)
+} else {
+    bucketSuffix = '-' + gretlEnvironment
+}
+
+def responsibleOfficesBaseUrl = "https://s3.eu-central-1.amazonaws.com/ch.so.agi.geodata$bucketSuffix/"
+def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
+
+def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
+
+
+task exportData(type: Ili2pgExport) {
+    description = "Exportiert die Daten aus dem Schema afu_naturgefahren_oereb_v2 (werden dort orginär geführt) in ein INTERLIS-Datei."
+    database = [dbUriEdit, dbUserEdit, dbPwdEdit]
+    models = iliModelTransferstruktur
+    dbschema = dbSchemaHazardPerimeterOereb
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = HazardPerimeterDataSet
+    disableValidation = true
+}
+
+task replaceWmsServer(dependsOn: "exportData") {
+    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
+    doLast {
+        ant.replace(
+        file: file(Paths.get("$rootDir", xtfFileName)),
+        token: '${wmsHost}',
+        value: 'https://' + geoservicesHostName,
+        encoding: 'UTF-8')
+    }
+}
+
+task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
+    description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
+    dataFiles = [
+                 file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf")), 
+                 file(Paths.get("$rootDir", xtfFileName))
+                ]
+    logFile = "ilivalidator.log"
+    allObjectsAccessible = true
+}
+
+task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
+    description = "Import des Naturgefahren-ÖREB-Datensatz in das Stage-Schema."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "stage"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = HazardPerimeterDataSet
+    importBid = true
+    importTid = true
+    disableValidation = true
+}
+
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
+
+task importDataToLive(type: Ili2pgReplace) {
+    description = "Import des Naturgefahren-ÖREB-Datensatz in das Live-Schema."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    models = iliModelTransferstruktur
+    dbschema = "live"
+    dataFile = file(Paths.get("$rootDir", xtfFileName))
+    dataset = HazardPerimeterDataSet 
+    importBid = true
+    importTid = true
+    disableValidation = true
+}
+
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
+
+task zipXtfFile(type: Zip) {
+    description = "Zipt das XTF-File mit den Naturgefahren für den Upload nach S3"
+    from "$rootDir"
+    include xtfFileName
+    archiveName xtfZipFileName
+    destinationDir(file("$rootDir"))
+}
+
+task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+    description = "XTF-File nach S3 hochladen."
+    accessKey = awsAccessKeyAgi
+    secretKey = awsSecretAccessKeyAgi
+    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
+    endPoint = "https://s3.eu-central-1.amazonaws.com"
+    region = "eu-central-1"
+    bucketName = s3AgiTargetBucket
+    acl = "public-read"
+}
