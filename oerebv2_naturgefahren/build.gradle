@@ -87,12 +87,13 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true
 }
 
-//task refreshOerebWMSTablesStage(type: SqlExecutor) {
-//    description = "Aktualisiert OEREB WMS Tabellen."
-//    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-//    sqlFiles = ["update_oerebwms_tables.sql"]
-//    sqlParameters = [dbSchema: 'stage']
-//}
+// SQL noch leer wegen Jenkinsfile. Wegen dem WMS muss die öreb-DB neu angelegt werden
+task refreshOerebWMSTablesStage(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'stage']
+}
 
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Naturgefahren-ÖREB-Datensatz in das Live-Schema."
@@ -106,12 +107,13 @@ task importDataToLive(type: Ili2pgReplace) {
     disableValidation = true
 }
 
-//task refreshOerebWMSTablesLive(type: SqlExecutor) {
-//    description = "Aktualisiert OEREB WMS Tabellen."
-//    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-//    sqlFiles = ["update_oerebwms_tables.sql"]
-//    sqlParameters = [dbSchema: 'live']
-//}
+// SQL noch leer wegen Jenkinsfile. Wegen dem WMS muss die öreb-DB neu angelegt werden
+task refreshOerebWMSTablesLive(type: SqlExecutor) {
+    description = "Aktualisiert OEREB WMS Tabellen."
+    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+    sqlFiles = ["update_oerebwms_tables.sql"]
+    sqlParameters = [dbSchema: 'live']
+}
 
 //task zipXtfFile(type: Zip) {
 //    description = "Zipt das XTF-File mit den Naturgefahren für den Upload nach S3"
