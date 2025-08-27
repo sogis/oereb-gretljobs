@@ -33,8 +33,17 @@ def responsibleOfficesDataSet = "ch.so.agi.oereb_zustaendigestellen_V2_0"
 
 def s3AgiTargetBucket = "ch.so.agi.geodata$bucketSuffix"
 
+task downloadResponsibleOffices(type: Download) {
+    doFirst {
+        println responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    }
+    description = "Download zuständige Stellen ($responsibleOfficesDataSet)."
+    src responsibleOfficesBaseUrl + responsibleOfficesDataSet + ".xtf"
+    dest pathToTempFolder
+    overwrite true
+}
 
-task exportData(type: Ili2pgExport) {
+task exportData(type: Ili2pgExport, dependsOn: "downloadResponsibleOffices") {
     description = "Exportiert die Daten aus dem Schema afu_naturgefahren_oereb_v2 (werden dort orginär geführt) in ein INTERLIS-Datei."
     database = [dbUriEdit, dbUserEdit, dbPwdEdit]
     models = iliModelTransferstruktur
@@ -44,18 +53,19 @@ task exportData(type: Ili2pgExport) {
     disableValidation = true
 }
 
-task replaceWmsServer(dependsOn: "exportData") {
-    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
-    doLast {
-        ant.replace(
-        file: file(Paths.get("$rootDir", xtfFileName)),
-        token: '${wmsHost}',
-        value: 'https://' + geoservicesHostName,
-        encoding: 'UTF-8')
-    }
-}
+// Für Testumgebung noch nicht umgesetzt weil Öreb-DB WMS Modell neu angelegt werden muss
+// task replaceWmsServer(dependsOn: "exportData") {
+//    description = "Ersetzt verschiedene Elemente (Host, Pfad, etc.) der WMS-Requests."
+//    doLast {
+//        ant.replace(
+//        file: file(Paths.get("$rootDir", xtfFileName)),
+//        token: '${wmsHost}',
+//        value: 'https://' + geoservicesHostName,
+//        encoding: 'UTF-8')
+//    }
+//}
 
-task validateData(type: IliValidator, dependsOn: "replaceWmsServer") {
+task validateData(type: IliValidator, dependsOn: "exportData") {
     description = "Validiert die exportierten Daten in der Transferstruktur inkl. der externen Beziehungen."
     dataFiles = [
                  file(Paths.get(pathToTempFolder.toString(), responsibleOfficesDataSet + ".xtf")), 
@@ -77,12 +87,12 @@ task importDataToStage(type: Ili2pgReplace, dependsOn: "validateData") {
     disableValidation = true
 }
 
-task refreshOerebWMSTablesStage(type: SqlExecutor) {
-    description = "Aktualisiert OEREB WMS Tabellen."
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["update_oerebwms_tables.sql"]
-    sqlParameters = [dbSchema: 'stage']
-}
+//task refreshOerebWMSTablesStage(type: SqlExecutor) {
+//    description = "Aktualisiert OEREB WMS Tabellen."
+//    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+//    sqlFiles = ["update_oerebwms_tables.sql"]
+//    sqlParameters = [dbSchema: 'stage']
+//}
 
 task importDataToLive(type: Ili2pgReplace) {
     description = "Import des Naturgefahren-ÖREB-Datensatz in das Live-Schema."
@@ -96,28 +106,28 @@ task importDataToLive(type: Ili2pgReplace) {
     disableValidation = true
 }
 
-task refreshOerebWMSTablesLive(type: SqlExecutor) {
-    description = "Aktualisiert OEREB WMS Tabellen."
-    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
-    sqlFiles = ["update_oerebwms_tables.sql"]
-    sqlParameters = [dbSchema: 'live']
-}
+//task refreshOerebWMSTablesLive(type: SqlExecutor) {
+//    description = "Aktualisiert OEREB WMS Tabellen."
+//    database = [dbUriOerebV2, dbUserOerebV2, dbPwdOerebV2]
+//    sqlFiles = ["update_oerebwms_tables.sql"]
+//    sqlParameters = [dbSchema: 'live']
+//}
 
-task zipXtfFile(type: Zip) {
-    description = "Zipt das XTF-File mit den Naturgefahren für den Upload nach S3"
-    from "$rootDir"
-    include xtfFileName
-    archiveName xtfZipFileName
-    destinationDir(file("$rootDir"))
-}
+//task zipXtfFile(type: Zip) {
+//    description = "Zipt das XTF-File mit den Naturgefahren für den Upload nach S3"
+//    from "$rootDir"
+//    include xtfFileName
+//    archiveName xtfZipFileName
+//    destinationDir(file("$rootDir"))
+//}
 
-task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
-    description = "XTF-File nach S3 hochladen."
-    accessKey = awsAccessKeyAgi
-    secretKey = awsSecretAccessKeyAgi
-    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
-    endPoint = "https://s3.eu-central-1.amazonaws.com"
-    region = "eu-central-1"
-    bucketName = s3AgiTargetBucket
-    acl = "public-read"
-}
+//task uploadXtfToS3Geodata(type: S3Upload, dependsOn: "zipXtfFile") {
+//    description = "XTF-File nach S3 hochladen."
+//    accessKey = awsAccessKeyAgi
+//    secretKey = awsSecretAccessKeyAgi
+//    sourceFile = file(Paths.get("$rootDir", xtfZipFileName))
+//    endPoint = "https://s3.eu-central-1.amazonaws.com"
+//    region = "eu-central-1"
+//    bucketName = s3AgiTargetBucket
+//    acl = "public-read"
+//}
