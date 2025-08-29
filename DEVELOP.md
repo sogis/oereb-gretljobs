@@ -203,9 +203,9 @@ java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbpor
 
 java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema agi_konfiguration_oerebv2 --importTid --importBid --models OeREBKRM_V2_0 --dataset gesetze --dbparams Downloads/db.properties --replace Downloads/oereb_konfiguration/ch.so.sk.oereb_gesetze_V2_0.xtf
 
-java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema agi_konfiguration_oerebv2 --importTid --importBid --models OeREBKRM_V2_0 --dataset ch.admin.v_d.oereb_gesetze --dbparams Downloads/db.properties --replace Downloads/oereb_konfiguration/OeREBKRM_V2_0_Gesetze_20210414.xml
+java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema agi_konfiguration_oerebv2 --importTid --importBid --models OeREBKRM_V2_0 --dataset ch.admin.v_d.oereb_gesetze --dbparams Downloads/db.properties --replace Downloads/oereb_konfiguration/OeREBKRM_V2_0_Gesetze.xml
 
-java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema agi_konfiguration_oerebv2 --importTid --importBid --models OeREBKRMkvs_V2_0 --dataset ch.admin.v_d.oereb_themen --dbparams Downloads/db.properties --replace Downloads/oereb_konfiguration/OeREBKRM_V2_0_Themen_20220301.xml
+java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema agi_konfiguration_oerebv2 --importTid --importBid --models OeREBKRMkvs_V2_0 --dataset ch.admin.v_d.oereb_themen --dbparams Downloads/db.properties --replace Downloads/oereb_konfiguration/OeREBKRM_V2_0_Themen.xml
 
 java -jar apps/ili2pg-4.3.1/ili2pg-4.3.1.jar --dbhost geodb-t.rootso.org --dbport 5432 --dbdatabase edit --dbusr USERNAME --dbpwd PASSWORD --dbschema agi_konfiguration_oerebv2 --importTid --importBid --models OeREBKRMkvs_V2_0 --dataset themen --dbparams Downloads/db.properties --replace Downloads/oereb_konfiguration/ch.so.agi.oereb_themen_V2_0.xtf
 
